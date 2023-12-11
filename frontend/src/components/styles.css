@@ -1,0 +1,37 @@
+section {
+    padding: 40px;
+}
+
+.section-title {
+    color: rgb(185, 185, 185);
+    text-transform: uppercase;
+    padding: 20px;
+}
+
+#Hero {
+    background-color: rgb(180, 180, 180);
+}
+#Navbar, .navbar {
+    background-color: rgb(146, 146, 146);
+}
+
+.socials-logo {
+    width: 50px;
+    height: 50px;
+}
+
+.contacts-logo {
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.product-card {
+    width: 15rem;
+    height: 20rem;
+    margin-bottom: 20px;
+}

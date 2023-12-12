@@ -35,7 +35,7 @@ app.get('/getLogin', (req, res) => {
 });
 
 // API endpoint for user login
-app.post('/login', (req, res) => {
+app.post('/adminLogin', (req, res) => {
   const { username, password } = req.body;
 
   const query = 'SELECT * FROM `admin` WHERE `admin_un` = ? AND `admin_pw` = ?';

@@ -26,8 +26,8 @@ db.connect((err) => {
   }
 });
 
-app.get('/getLogin', (req, res) => {
-  const q = 'SELECT * FROM `admin`';
+app.get('/products', (req, res) => {
+  const q = 'SELECT * FROM `products`';
   db.query(q, (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
@@ -37,6 +37,7 @@ app.get('/getLogin', (req, res) => {
 // API endpoint for user login
 app.post('/adminLogin', (req, res) => {
   const { username, password } = req.body;
+  
 
   const query = 'SELECT * FROM `admin` WHERE `admin_un` = ? AND `admin_pw` = ?';
 

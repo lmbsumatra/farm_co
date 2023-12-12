@@ -1,11 +1,35 @@
-import React from 'react'
-import img_1 from '../../assets/images/featured/img_1.jpg'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+import img_1 from '../../assets/images/products/img_1.png';
 import img_2 from '../../assets/images/featured/img_2.jpg'
 import img_3 from '../../assets/images/featured/img_3.jpg'
 import img_4 from '../../assets/images/featured/img_4.jpg'
+
+
 import '../styles.css';
 
 const Featured = () =>{
+    const [products, setProducts] = useState([])
+
+    useEffect(() => {
+        const fetchAllProducts = async() => {
+            try {
+                const res = await axios.get("http://localhost:5000/products");
+                setProducts(res.data)
+            }
+            catch(err) {
+                console.log(err)
+            }
+        }
+        fetchAllProducts()
+    }, [])
+
+    const featuredProducts = products.filter(products => products.is_featured === 1);
+
+
+    console.log('Featured Products:', featuredProducts);
+
   return (
     <section>
         <h4 className="section-title">Products</h4>
@@ -18,33 +42,20 @@ const Featured = () =>{
                 </nav>
 
             <div className="row justify-content-evenly">
-                <div className="card col-3 p-0 overflow-hidden product-card">
-                <img src={img_1} className="img-fluid object-fit-cover" alt="Farmco tomatoes" style={{height: "10rem"}}/>
+            {featuredProducts.map((products) => (
+                <div className="card col-3 p-0 overflow-hidden product-card"  key={products.product_id}>
+                    {console.log({`../../assets/images/products/${products.image}`})}
+                {products.image && <img src={`../../assets/images/products/${products.image}`}className="img-fluid object-fit-cover" alt="Farmco tomatoes" style={{height: "10rem"}}/>}
                     <div className="card-body">
-                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <p className="card-title">{products.product_name}</p>
+                        <p className="">{products.description}</p>
+                        <p className="">₱ {products.price}</p>
+                        <button type="button" className="btn btn-success">Add to Cart</button>
                     </div>
                 </div>
-                <div className="card col-3 p-0 overflow-hidden product-card">
-                <img src={img_2} className="img-fluid object-fit-cover" alt="Farmco eggs" style={{height: "10rem"}}/>
-                    <div className="card-body">
-                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                </div>
-                <div className="card col-3 p-0 overflow-hidden product-card">
-                <img src={img_3} className="img-fluid object-fit-cover" alt="Farmco onions" style={{height: "10rem"}}/>
-                    <div className="card-body">
-                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                </div>
-                <div className="card col-3 p-0 overflow-hidden product-card">
-                <img src={img_4} className="img-fluid object-fit-cover" alt="Farmco bellpeppers" style={{height: "10rem"}}/>
-                    <div className="card-body">
-                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                </div>
-            </div>
-            
-
+           
+            ))}
+         </div>
         </div>
     </section>
     

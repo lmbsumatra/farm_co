@@ -27,14 +27,15 @@ const EditProduct = () => {
     try {
       // Update the product data using a PUT request
       await axios.put(`http://localhost:5000/products/${product_id}`, product);
-      navigate("/");
+      // navigate("/");
+      window.location.reload()
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <>
+    <div>
       <NavBar />
       <div className="form">
         <h1>Update Item</h1>
@@ -70,7 +71,7 @@ const EditProduct = () => {
         <button onClick={handleClick}>Update</button>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

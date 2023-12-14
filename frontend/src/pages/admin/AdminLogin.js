@@ -37,7 +37,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <>
+    <div>
       <NavBar />
       <div className="container">
         <div className="row">
@@ -68,7 +68,7 @@ const AdminLogin = () => {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

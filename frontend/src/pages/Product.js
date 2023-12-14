@@ -4,7 +4,7 @@ import Footer from "../components/footer/Footer";
 
 const Product = () => {
   return (
-    <>
+    <div>
       <NavBar />
       <section id="About-us">
         <h4 className="section-title">About us</h4>
@@ -61,7 +61,7 @@ const Product = () => {
         </div>
       </section>
       <Footer />
-    </>
+    </div>
   );
 };
 

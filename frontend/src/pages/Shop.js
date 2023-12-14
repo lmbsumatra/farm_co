@@ -20,7 +20,7 @@ const Shop = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <NavBar />
       <section>
         <h4 className="section-title">Products</h4>
@@ -218,7 +218,7 @@ const Shop = () => {
         </div>
       </section>
       <Footer />
-    </>
+    </div>
   );
 };
 

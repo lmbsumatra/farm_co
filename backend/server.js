@@ -53,6 +53,26 @@ app.listen(5000, "0.0.0.0", () => {
   console.log("Server is running on port 5000");
 });
 
+app.post("/products", (req, res) => {
+  const q =
+  "INSERT INTO `products` (`product_name`, `description`, `price`, `stock_quantity`, `category_id`, `is_featured`, `image` ) VALUES(?)";
+    const values = [
+      req.body.product_name,
+      req.body.product_desc,
+      req.body.product_price,
+      req.body.product_qty,
+      req.body.product_category,
+      req.body.product_isfeatured,
+      req.body.product_img
+
+
+    ];
+    db.query(q, [values], (err, data) => {
+      if(err) return res.json(err)
+      return res.json("Successful insertion.")
+  });
+});
+
 app.get("/products", (req, res) => {
   const sql = "SELECT * FROM products";
   db.query(sql, (err, results) => {
@@ -70,8 +90,8 @@ app.put("/products/:product_id", (req, res) => {
     "UPDATE products SET `product_name` =?, `description`=?, `image`=?, `price`=? WHERE product_id=?";
     const values = [
       req.body.product_name,
-      req.body.product_desc, // Assuming this is the correct field for description
-      req.body.product_img, // Assuming this is the correct field for image
+      req.body.product_desc,
+      req.body.product_img,
       req.body.product_price,
       product_id
     ];
@@ -80,3 +100,14 @@ app.put("/products/:product_id", (req, res) => {
     return res.json("Item updated");
   });
 });
+
+app.delete("/products/:product_id", (req, res) => {
+  const product_id = req.params.product_id;
+  const q = "DELETE FROM products WHERE product_id = ?";
+
+  db.query(q, [product_id], (err, data) => {
+      if (err) return res.json(err)
+      return res.json("Successfully deleted");
+  
+  })
+})

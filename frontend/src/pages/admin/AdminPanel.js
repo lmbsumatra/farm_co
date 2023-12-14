@@ -1,88 +1,51 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 import NavBar from "../../components/navbar/NavBar";
 import Footer from "../../components/footer/Footer";
-import '../../components/styles.css'
+import "../../components/styles.css";
 
 const App = () => {
   const [products, setProducts] = useState([]);
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [image, setImage] = useState(null);
 
   useEffect(() => {
     axios
       .get("http://localhost:5000/products")
       .then((response) => setProducts(response.data))
       .catch((error) => console.error("Error fetching products: ", error));
+
+    return () => {
+      console.log("Component unmounted. Cancelling async task.");
+    };
   }, []);
 
-  const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
-  };
-
-  const handleAddProduct = () => {
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("price", price);
-    formData.append("image", image);
-
-    axios
-      .post("http://localhost:5000/products", formData)
-      .then((response) => {
-        setProducts([
-          ...products,
-          { id: response.data.id, name, price, image: response.data.image },
-        ]);
-        setName("");
-        setPrice("");
-        setImage(null);
-      })
-      .catch((error) => console.error("Error adding product: ", error));
+  const handleDelete = async (product_id) => {
+    try {
+      await axios.delete("http://localhost:5000/products/" + product_id);
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+      console.log("http://localhost:5000/products/" + product_id);
+    }
   };
 
   return (
-    <>
+    <div>
       <NavBar />
       <section>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label>Price:</label>
-          <input
-            type="text"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label>Image:</label>
-          <input type="file" onChange={handleFileChange} />
-        </div>
-
-        <button onClick={handleAddProduct}>Add Product</button>
-
         <h2>Products</h2>
         <table className="table table-striped">
           <thead>
-            <td>Id</td>
-            <td>Name</td>
-            <td>Description</td>
-            <td>Image</td>
+            <tr>
+              <td>Id</td>
+              <td>Name</td>
+              <td>Description</td>
+              <td>Image</td>
+            </tr>
           </thead>
           <tbody>
-          {products.map((product) => (
-            <>
+            {products.map((product) => (
               <tr key={product.product_id}>
                 <td>{product.product_id}</td>
                 <td>{product.product_name}</td>
@@ -94,16 +57,36 @@ const App = () => {
                     style={{ width: "50px" }}
                   />
                 </td>
-                <td><button type="button" className="btn btn-success"><Link to={`/edit-product/${product.product_id}`}>Update</Link></button></td>
-                <td><button type="button" className="btn btn-outline-danger">Delete</button></td>
+                <td>
+                  <button type="button" className="btn btn-success">
+                    <Link to={`/edit-product/${product.product_id}`}>
+                      Update
+                    </Link>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger"
+                    onClick={() => handleDelete(product.product_id)}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
-            </>
-          ))}
+            ))}
+            <tr key="add-product-row">
+              <td colSpan="4">
+                <button type="button" className="btn btn-success">
+                  <Link to={`/add-product/`}>Add</Link>
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </section>
       <Footer />
-    </>
+    </div>
   );
 };
 

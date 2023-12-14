@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { AuthProvider } from "./context/Authentication";
@@ -10,9 +10,12 @@ import Product from "./pages/Product";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminPanel from "./pages/admin/AdminPanel";
 import EditProduct from "./pages/admin/EditProduct";
+import AddProduct from "./pages/admin/AddProduct";
+
+
 
 import reportWebVitals from "./reportWebVitals";
-import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -40,10 +43,10 @@ const App = () => {
       path:"/edit-product/:product_id",
       element: <EditProduct />
     },
-    // {
-    //   path:"sample-post",
-    //   element: <SamplePost />
-    // }
+    {
+      path:"add-product",
+      element: <AddProduct />
+    }
   ]);
 
   const root = ReactDOM.createRoot(document.getElementById("root"));

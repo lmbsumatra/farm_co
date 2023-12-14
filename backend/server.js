@@ -67,3 +67,15 @@ app.get('/products', (req, res) => {
     res.json(results);
   });
 });
+
+
+app.get('/product/:', (req, res) => {
+  const sql = 'SELECT * FROM products';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Internal Server Error');
+    }
+    res.json(results);
+  });
+});

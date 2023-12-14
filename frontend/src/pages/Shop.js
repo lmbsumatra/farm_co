@@ -129,7 +129,8 @@ const Shop = () => {
                     {products.map((products) => (
                         <div className="card col-3 p-0 overflow-hidden product-card" key={products.product_id}>
                             <a className="nav-link active" href="/product">
-                                {products.image && <img src={products.image} className="img-fluid object-fit-cover" alt="Farmco tomatoes" style={{height: "10rem"}}/>}
+                            console.log(`../assets/images/products/${products.image}`)
+                {products.image && <img src={require(`../assets/images/products/img_1.png`).default} className="img-fluid object-fit-cover" alt="Farmco tomatoes" style={{height: "10rem"}}/>}
                                 <div className="card-body">
                                     <p className="card-title">{products.product_name}</p>
                                     <p className="">{products.description}</p>

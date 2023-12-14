@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql');
+const path = require('path');
 
 const app = express();
 const port = 5000;
@@ -26,13 +27,8 @@ db.connect((err) => {
   }
 });
 
-app.get('/products', (req, res) => {
-  const q = 'SELECT * FROM `products`';
-  db.query(q, (err, data) => {
-    if (err) return res.json(err);
-    return res.json(data);
-  });
-});
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 
 // API endpoint for user login
 app.post('/adminLogin', (req, res) => {
@@ -58,4 +54,16 @@ app.post('/adminLogin', (req, res) => {
 
 app.listen(5000, '0.0.0.0', () => {
   console.log('Server is running on port 5000');
+
+});
+
+app.get('/products', (req, res) => {
+  const sql = 'SELECT * FROM products';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Internal Server Error');
+    }
+    res.json(results);
+  });
 });

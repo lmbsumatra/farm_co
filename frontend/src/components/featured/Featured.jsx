@@ -7,6 +7,7 @@ import img_3 from '../../assets/images/featured/img_3.jpg'
 import img_4 from '../../assets/images/featured/img_4.jpg'
 
 
+
 import '../styles.css';
 
 const Featured = () =>{
@@ -27,9 +28,6 @@ const Featured = () =>{
 
     const featuredProducts = products.filter(products => products.is_featured === 1);
 
-
-    console.log('Featured Products:', featuredProducts);
-
   return (
     <section>
         <h4 className="section-title">Products</h4>
@@ -44,8 +42,7 @@ const Featured = () =>{
             <div className="row justify-content-evenly">
             {featuredProducts.map((products) => (
                 <div className="card col-3 p-0 overflow-hidden product-card"  key={products.product_id}>
-                    {console.log({`../../assets/images/products/${products.image}`})}
-                {products.image && <img src={`../../assets/images/products/${products.image}`}className="img-fluid object-fit-cover" alt="Farmco tomatoes" style={{height: "10rem"}}/>}
+                {products.image && <img src={'../../assets/images/products/${product.image}'} className="img-fluid object-fit-cover" alt={products.image} style={{height: "10rem"}}/>}
                     <div className="card-body">
                         <p className="card-title">{products.product_name}</p>
                         <p className="">{products.description}</p>

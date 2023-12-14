@@ -30,7 +30,7 @@ const App = () => {
     formData.append("image", image);
 
     axios
-      .post("/api/products", formData)
+      .post("http://localhost:5000/products", formData)
       .then((response) => {
         setProducts([
           ...products,
@@ -83,7 +83,7 @@ const App = () => {
           <tbody>
           {products.map((product) => (
             <>
-              <tr>
+              <tr key={product.product_id}>
                 <td>{product.product_id}</td>
                 <td>{product.product_name}</td>
                 <td>{product.description}</td>
@@ -94,9 +94,8 @@ const App = () => {
                     style={{ width: "50px" }}
                   />
                 </td>
-                <td><button type="button" class="btn btn-success"><Link to={`/edit-product/${product.product_id}`}>Update</Link></button></td>
-                <td><button type="button" class="btn btn-outline-danger">Delete</button></td>
-
+                <td><button type="button" className="btn btn-success"><Link to={`/edit-product/${product.product_id}`}>Update</Link></button></td>
+                <td><button type="button" className="btn btn-outline-danger">Delete</button></td>
               </tr>
             </>
           ))}

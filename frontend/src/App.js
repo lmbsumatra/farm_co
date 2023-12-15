@@ -28,7 +28,7 @@ const App = () => {
       element: <Shop />,
     },
     {
-      path: "/product",
+      path: "/product/:product_id",
       element: <Product />,
     },
     {
@@ -36,7 +36,7 @@ const App = () => {
       element: <AdminLogin />,
     },
     {
-      path: "/adminPanel",
+      path: "/admin-panel",
       element: <AdminPanel />,
     },
     {

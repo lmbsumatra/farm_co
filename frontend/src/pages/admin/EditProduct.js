@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import NavBar from "../../components/navbar/NavBar";
@@ -27,8 +27,8 @@ const EditProduct = () => {
     try {
       // Update the product data using a PUT request
       await axios.put(`http://localhost:5000/products/${product_id}`, product);
-      // navigate("/");
-      window.location.reload()
+      navigate("/");
+      window.location.href='http://localhost:3000/admin-panel'
     } catch (err) {
       console.log(err);
     }

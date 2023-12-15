@@ -108,6 +108,20 @@ app.delete("/products/:product_id", (req, res) => {
   db.query(q, [product_id], (err, data) => {
       if (err) return res.json(err)
       return res.json("Successfully deleted");
-  
   })
 })
+
+app.get("/product/:product_id", (req, res) => {
+  const product_id = req.params.product_id;
+  const q = "SELECT * FROM products WHERE product_id = ?";
+  db.query(q, [product_id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    
+    if (data.length === 0) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const product = data[0]; // Assuming you want the first (and only) row
+    return res.json(product);
+  });
+});

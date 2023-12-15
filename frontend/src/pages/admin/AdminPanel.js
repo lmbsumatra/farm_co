@@ -26,7 +26,6 @@ const App = () => {
       window.location.reload();
     } catch (err) {
       console.log(err);
-      console.log("http://localhost:5000/products/" + product_id);
     }
   };
 

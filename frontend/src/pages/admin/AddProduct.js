@@ -25,7 +25,7 @@ const AddProduct = () => {
         try {
             await axios.post("http://localhost:5000/products", product);
             navigate("/")
-            window.location.reload()
+            window.location.href='http://localhost:3000/admin-panel'
         }   
         catch(err) {
             console.log(err)

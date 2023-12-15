@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
 
 const Shop = () => {
-  const [product, setProducts] = useState([]);
+  const [product, setProduct] = useState([]);
 
   useEffect(() => {
-    const fetchAllProducts = async () => {
+    const fetchAllProduct = async () => {
       try {
         const res = await axios.get("http://localhost:5000/products");
-        setProducts(res.data);
+        setProduct(res.data);
       } catch (err) {
         console.log(err);
       }
     };
-    fetchAllProducts();
+    fetchAllProduct();
   }, []);
 
   return (
@@ -192,7 +193,7 @@ const Shop = () => {
                     className="card col-3 p-0 overflow-hidden product-card"
                     key={product.product_id}
                   >
-                    <a className="nav-link active" href="/product">
+                    <Link to={`/product/${product.product_id}`}>
                       {product.image && (
                         <img
                           src={`http://localhost:5000/images/products/${product.image}`}
@@ -209,7 +210,7 @@ const Shop = () => {
                           Add to Cart
                         </button>
                       </div>
-                    </a>
+                    </Link>
                   </div>
                 ))}
               </div>

@@ -12,6 +12,11 @@ https://getbootstrap.com/docs/4.0/examples/dashboard/
 1. npm init -y
 2. npm install express mysql body-parser cors
 3. npm install -g nodemon
+
+# frontend
+1. npm install react-router-dom
+** npm install --save react-scripts@latest
+** npm update
 const express = require('express');
 const mysql = require('mysql');
 

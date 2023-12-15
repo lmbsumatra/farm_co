@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './context/Authentication';
+// import { AuthProvider } from './context/Authentication';
 
 import Home from './pages/Home';
 import Shop from './pages/Shop';

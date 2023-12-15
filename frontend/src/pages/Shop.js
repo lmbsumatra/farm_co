@@ -7,7 +7,6 @@ import Footer from "../components/footer/Footer";
 
 const Shop = () => {
   const [product, setProduct] = useState([]);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchAllProduct = async () => {
@@ -16,7 +15,6 @@ const Shop = () => {
         setProduct(res.data);
       } catch (err) {
         console.error("Error fetching products:", err);
-        setError("An error occurred while fetching products. Please try again later.");
       }
     };
 

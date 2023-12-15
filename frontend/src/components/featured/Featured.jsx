@@ -27,16 +27,16 @@ const Featured = () => {
       <h4 className="section-title">Products</h4>
       <div className="container-fluid">
         <nav className="nav justify-content-center">
-          <a className="nav-link active" href="#">
+          <a className="nav-link active" href="/">
             Featured
           </a>
-          <a className="nav-link" href="#">
+          <a className="nav-link" href="/">
             New
           </a>
-          <a className="nav-link" href="#">
+          <a className="nav-link" href="/">
             Vegetables
           </a>
-          <a className="nav-link disabled" href="#">
+          <a className="nav-link disabled" href="/">
             Fruits
           </a>
         </nav>

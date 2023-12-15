@@ -17,7 +17,6 @@ const EditProduct = () => {
   const location = useLocation();
   const product_id = location.pathname.split("/")[2];
 
-
   const handleChange = (e) => {
     setProduct((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -28,7 +27,7 @@ const EditProduct = () => {
       // Update the product data using a PUT request
       await axios.put(`http://localhost:5000/products/${product_id}`, product);
       navigate("/");
-      window.location.href='http://localhost:3000/admin-panel'
+      //window.location.href = "http://localhost:3000/admin-panel";
     } catch (err) {
       console.log(err);
     }

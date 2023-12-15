@@ -7,6 +7,7 @@ import Footer from "../components/footer/Footer";
 
 const Shop = () => {
   const [product, setProduct] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchAllProduct = async () => {
@@ -14,9 +15,11 @@ const Shop = () => {
         const res = await axios.get("http://localhost:5000/products");
         setProduct(res.data);
       } catch (err) {
-        console.log(err);
+        console.error("Error fetching products:", err);
+        setError("An error occurred while fetching products. Please try again later.");
       }
     };
+
     fetchAllProduct();
   }, []);
 
@@ -36,7 +39,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Fruit
                 </label>
               </div>
@@ -47,7 +50,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Vegetables
                 </label>
               </div>
@@ -58,7 +61,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Dairy
                 </label>
               </div>
@@ -69,7 +72,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Dairy
                 </label>
               </div>
@@ -80,7 +83,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Herbs & Spices
                 </label>
               </div>
@@ -91,7 +94,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Meat & Poultry
                 </label>
               </div>
@@ -102,7 +105,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Eggs
                 </label>
               </div>
@@ -113,7 +116,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Specialty Products
                 </label>
               </div>
@@ -125,7 +128,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Organic
                 </label>
               </div>
@@ -136,7 +139,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   On sale
                 </label>
               </div>
@@ -147,7 +150,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Seasonal
                 </label>
               </div>
@@ -158,7 +161,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Local
                 </label>
               </div>
@@ -169,7 +172,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Local
                 </label>
               </div>
@@ -180,7 +183,7 @@ const Shop = () => {
                   value=""
                   id="defaultCheck1"
                 />
-                <label className="form-check-label" for="defaultCheck1">
+                <label className="form-check-label" htmlFor="defaultCheck1">
                   Price Range
                 </label>
               </div>

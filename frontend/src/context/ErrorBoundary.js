@@ -1,20 +1,29 @@
+// HigherLevelErrorBoundary.js
 import React, { Component } from 'react';
 
-class ErrorBoundary extends Component {
-  state = { hasError: false };
+class HigherLevelErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
 
   componentDidCatch(error, errorInfo) {
-    this.setState({ hasError: true });
-    // Log the error or handle it appropriately
+    // Log or handle the error as needed
+    console.error('Error caught by higher-level error boundary:', error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
-      return <p>Something went wrong.</p>;
+      // You can render a fallback UI or message here
+      return <p>Something went wrong. Please try again later.</p>;
     }
 
     return this.props.children;
   }
 }
 
-export default ErrorBoundary;
+export default HigherLevelErrorBoundary;

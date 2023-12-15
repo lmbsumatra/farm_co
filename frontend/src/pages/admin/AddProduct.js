@@ -11,8 +11,7 @@ const AddProduct = () => {
         product_price  :null,
         product_category: null,
         product_isfeatured: null,
-        product_qty: null
-        
+        product_qty: null  
     })
 
     const navigate = useNavigate();

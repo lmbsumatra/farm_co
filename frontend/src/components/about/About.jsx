@@ -33,7 +33,7 @@ const About = () => {
                   we do."
                 </p>
                 <p>
-                  <a href="">Learn More...</a>
+                  <a href="/">Learn More...</a>
                 </p>
               </div>
             </div>

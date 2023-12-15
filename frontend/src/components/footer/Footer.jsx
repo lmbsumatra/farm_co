@@ -27,22 +27,22 @@ const Footer = () => {
             <h5>Section</h5>
             <ul className="nav flex-column">
               <li className="nav-item mb-2">
-                <a href="#" className="nav-link p-0 text-body-secondary">
+                <a href="/" className="nav-link p-0 text-body-secondary">
                   Home
                 </a>
               </li>
               <li className="nav-item mb-2">
-                <a href="#" className="nav-link p-0 text-body-secondary">
+                <a href="/" className="nav-link p-0 text-body-secondary">
                   About us
                 </a>
               </li>
               <li className="nav-item mb-2">
-                <a href="#" className="nav-link p-0 text-body-secondary">
+                <a href="/" className="nav-link p-0 text-body-secondary">
                   Shop
                 </a>
               </li>
               <li className="nav-item mb-2">
-                <a href="#" className="nav-link p-0 text-body-secondary">
+                <a href="/" className="nav-link p-0 text-body-secondary">
                   Sign up
                 </a>
               </li>
@@ -53,17 +53,17 @@ const Footer = () => {
             <h5>Section</h5>
             <ul className="nav flex-column">
               <li className="nav-item mb-2">
-                <a href="#" className="nav-link p-0 text-body-secondary">
+                <a href="/" className="nav-link p-0 text-body-secondary">
                   <img src={gmail} alt="" className="socials-logo" />
                 </a>
               </li>
               <li className="nav-item mb-2">
-                <a href="#" className="nav-link p-0 text-body-secondary">
+                <a href="/" className="nav-link p-0 text-body-secondary">
                   <img src={youtube} alt="" className="socials-logo" />
                 </a>
               </li>
               <li className="nav-item mb-2">
-                <a href="#" className="nav-link p-0 text-body-secondary">
+                <a href="/" className="nav-link p-0 text-body-secondary">
                   <img src={twitter} alt="" className="socials-logo" />
                 </a>
               </li>
@@ -74,19 +74,19 @@ const Footer = () => {
             <h5>Section</h5>
             <ul className="nav flex-column">
               <li className="nav-item mb-2">
-                <a href="#" className="nav-link p-0 text-body-secondary">
+                <a href="/" className="nav-link p-0 text-body-secondary">
                   <img src={email} alt="" className="contacts-logo" />
                   farmco.ph@gmail.com
                 </a>
               </li>
               <li className="nav-item mb-2">
-                <a href="#" className="nav-link p-0 text-body-secondary">
+                <a href="/" className="nav-link p-0 text-body-secondary">
                   <img src={phone} alt="" className="contacts-logo" />
                   +639 123 456 789
                 </a>
               </li>
               <li className="nav-item mb-2">
-                <a href="#" className="nav-link p-0 text-body-secondary">
+                <a href="/" className="nav-link p-0 text-body-secondary">
                   <img src={telephone} alt="" className="contacts-logo" />
                   02 123 4567
                 </a>

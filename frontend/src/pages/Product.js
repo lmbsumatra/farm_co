@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
 
-const Product = ({  }) => {
+const Product = ( ) => {
   const [product, setProduct] = useState({});
+  const [error, setError] = useState(null);
   const location = useLocation();
   const product_id = location.pathname.split("/")[2];
 
@@ -14,17 +15,29 @@ const Product = ({  }) => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/product/${product_id}`);
-        console.log(response.data); // Log the received data
         setProduct(response.data);
       } catch (error) {
         console.error("Error fetching product:", error);
+        setError("An error occurred while fetching the product. Please try again later.");
       }
     };
+    
     fetchProduct();
-  }, []);
+  }, [product_id]);
+
+  if (error) {
+    // You can render an error message or handle it in your UI
+    return (
+      <div>
+        <NavBar />
+        <p>Error: {error}</p>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
-    <div>
+    <div key={product.product_id}>
       <NavBar />
       <section id="About-us">
         <h4 className="section-title">About us</h4>

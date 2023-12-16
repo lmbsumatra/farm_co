@@ -73,7 +73,7 @@ app.post("/products", (req, res) => {
 });
 
 app.get("/products", (req, res) => {
-  const sql = "SELECT * FROM products";
+  const sql = "SELECT p.*, c.category_name FROM products p LEFT JOIN categories c ON p.category_id = c.category_id";
   db.query(sql, (err, results) => {
     if (err) {
       console.error(err);

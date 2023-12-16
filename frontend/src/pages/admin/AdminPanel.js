@@ -29,6 +29,10 @@ const App = () => {
     }
   };
 
+  const getFeaturedStatus = (isFeatured) => {
+    return isFeatured ? 'Yes' : 'No';
+  };
+
   return (
     <div>
       <NavBar />
@@ -41,6 +45,10 @@ const App = () => {
               <td>Name</td>
               <td>Description</td>
               <td>Image</td>
+              <td>Category</td>
+              <td>Price</td>
+              <td>Stock</td>
+              <td>Featured</td>
             </tr>
           </thead>
           <tbody>
@@ -56,6 +64,10 @@ const App = () => {
                     style={{ width: "50px" }}
                   />
                 </td>
+                <td>{product.category_name}</td>
+                <td>{product.price}</td>
+                <td>{product.stock_quantity}</td>
+                <td>{getFeaturedStatus(product.is_featured)}</td>
                 <td>
                   <button type="button" className="btn btn-success">
                     <Link to={`/edit-product/${product.product_id}`}>

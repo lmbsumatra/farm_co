@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mysql = require("mysql");
 const path = require("path");
+const multer = require("multer");
 
 const app = express();
 const port = 5000;
@@ -64,8 +65,6 @@ app.post("/products", (req, res) => {
       req.body.product_category,
       req.body.product_isfeatured,
       req.body.product_img
-
-
     ];
     db.query(q, [values], (err, data) => {
       if(err) return res.json(err)
@@ -121,7 +120,23 @@ app.get("/product/:product_id", (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    const product = data[0]; // Assuming you want the first (and only) row
+    const product = data[0]; 
     return res.json(product);
   });
+});
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "/Users/DELL/farm_co/backend/images/products");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post("/images/products/", upload.single("image"), (req, res) => {
+  const filename = req.file.filename;
+  res.json({ filename });
 });

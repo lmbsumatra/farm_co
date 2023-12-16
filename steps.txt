@@ -12,6 +12,8 @@ https://getbootstrap.com/docs/4.0/examples/dashboard/
 1. npm init -y
 2. npm install express mysql body-parser cors
 3. npm install -g nodemon
+4. npm install multer
+
 
 # frontend
 1. npm install react-router-dom

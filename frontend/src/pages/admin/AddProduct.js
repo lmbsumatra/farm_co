@@ -127,9 +127,6 @@ const AddProduct = () => {
                 accept="image/*"
                 onChange={handleImageChange}
               />
-              <label className="custom-file-label" htmlFor="imageUpload">
-                Choose file
-              </label>
             </div>
           </div>
 

@@ -29,7 +29,6 @@ db.connect((err) => {
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-// API endpoint for user login
 app.post("/adminLogin", (req, res) => {
   const { username, password } = req.body;
 
@@ -86,17 +85,20 @@ app.get("/products", (req, res) => {
 app.put("/products/:product_id", (req, res) => {
   const product_id = req.params.product_id;
   const q =
-    "UPDATE products SET `product_name` =?, `description`=?, `image`=?, `price`=? WHERE product_id=?";
+    "UPDATE products SET `product_name`=?, `description`=?, `price`=?, `stock_quantity`=?, `category_id`=?, `is_featured`=?, `image`=? WHERE `product_id`=?";
     const values = [
       req.body.product_name,
       req.body.product_desc,
-      req.body.product_img,
       req.body.product_price,
+      req.body.product_qty,
+      req.body.product_category,
+      req.body.product_isfeatured,
+      req.body.product_img,
       product_id
     ];
   db.query(q, [...values, product_id], (err, data) => {
     if (err) return res.json(err);
-    return res.json("Item updated");
+    return console.log("Item updated");
   });
 });
 
@@ -137,6 +139,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post("/images/products/", upload.single("image"), (req, res) => {
+  const filename = req.file.filename;
+  res.json({ filename });
+});
+
+
+app.put("/images/products/", upload.single("image"), (req, res) => {
   const filename = req.file.filename;
   res.json({ filename });
 });

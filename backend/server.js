@@ -98,7 +98,7 @@ app.put("/products/:product_id", (req, res) => {
     ];
   db.query(q, [...values, product_id], (err, data) => {
     if (err) return res.json(err);
-    return console.log("Item updated");
+    return res.json("Item updated");
   });
 });
 

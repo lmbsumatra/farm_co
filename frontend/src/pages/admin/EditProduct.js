@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import NavBar from "../../components/navbar/NavBar";
 import Footer from "../../components/footer/Footer";
 import "../../components/styles.css";
@@ -16,53 +16,30 @@ const EditProduct = () => {
     product_isfeatured: 0,
     product_qty: null,
   });
+
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentImage, setCurrentImage] = useState("");
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      try {
-        const formData = new FormData();
-        formData.append("image", file);
-
-        const response = await axios.post(
-          "http://localhost:5000/images/products/",
-          formData
-        );
-        const { filename } = response.data;
-
-        setCurrentImage(filename);
-
-        setProduct((prev) => ({
-          ...prev,
-          product_img: filename,
-        }));
-      } catch (error) {
-        console.error("Error uploading image:", error);
-      }
-    }
-  };
   const navigate = useNavigate();
   const location = useLocation();
   const product_id = location.pathname.split("/")[2];
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/product/${product_id}`
-        );
+        const response = await axios.get(`http://localhost:5000/product/${product_id}`);
         const fetchedProduct = response.data;
 
-        // Set the product data
-        setProduct(fetchedProduct);
-
         setProduct({
-          ...fetchedProduct,
+          product_name: fetchedProduct.product_name,
+          product_desc: fetchedProduct.description,
+          product_img: fetchedProduct.image,
+          product_price: fetchedProduct.price,
+          product_category: fetchedProduct.category_id,
+          product_qty: fetchedProduct.category_id,
+          ...fetchedProduct, // Update with fetched data
           product_isfeatured: fetchedProduct.is_featured === 1,
         });
 
-        // Set the selected category based on the fetched product data
         const categoryKeyMap = {
           1: "Vegetables",
           2: "Fruits",
@@ -72,30 +49,30 @@ const EditProduct = () => {
         const selectedCategory = categoryKeyMap[fetchedProduct.category_id];
         setSelectedCategory(selectedCategory);
 
-        // Set the current image filename
         setCurrentImage(fetchedProduct.image);
       } catch (error) {
         console.error("Error fetching product:", error);
       }
-      
     };
 
     fetchProduct();
   }, [product_id]);
-  
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+
+  const updateProductState = (name, value) => {
+    setProduct((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleChange = ({ target }) => {
+    const { name, value, type, checked } = target;
 
     if (type === "checkbox") {
-      // If it's a checkbox, update the state based on the checked status
-      setProduct((prev) => ({ ...prev, [name]: checked ? 1 : 0 }));
+      updateProductState(name, checked ? 1 : 0);
     } else {
-      // For other input types, update the state based on the input value
-      setProduct((prev) => ({ ...prev, [name]: value }));
+      updateProductState(name, value);
     }
   };
 
-  const handleCategorySelect = (eventKey, event) => {
+  const handleCategorySelect = (eventKey) => {
     const categoryValueMap = {
       Vegetables: 1,
       Fruits: 2,
@@ -107,19 +84,35 @@ const EditProduct = () => {
 
     setSelectedCategory(eventKey);
 
-    setProduct((prev) => ({
-      ...prev,
-      product_category: selectedValue,
-    }));
+    updateProductState("product_category", selectedValue);
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const response = await axios.put("http://localhost:5000/images/products/", formData);
+        const { filename } = response.data;
+
+        setCurrentImage(filename);
+        updateProductState("product_img", filename);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
   };
 
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      // Update the product data using a PUT request
-      await axios.put(`http://localhost:5000/products/${product_id}`, product);
-      // navigate("/");
-      window.location.href = "http://localhost:3000/admin-panel";
+      console.log("Product before API call:", product);
+    await axios.put(`http://localhost:5000/products/${product_id}`, product);
+    console.log("After API call");
+    navigate("/admin-panel");
     } catch (err) {
       console.log(err);
     }

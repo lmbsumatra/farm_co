@@ -19,7 +19,36 @@ const db = mysql.createConnection({
   database: "farmco",
 });
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "/Users/DELL/farm_co/backend/images/products");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage: storage });
+app.post("/products", upload.single("image"), (req, res) => {
+  const q = "INSERT INTO `products` (`product_name`, `description`, `price`, `stock_quantity`, `category_id`, `is_featured`, `image`) VALUES(?)";
+  const values = [
+    req.body.product_name,
+    req.body.product_desc,
+    req.body.product_price,
+    req.body.product_qty,
+    req.body.product_category,
+    req.body.product_isfeatured,
+    //req.file.filename // Use req.file.filename for the image filename
+  ];
+
+  db.query(q, [values], (err, data) => {
+    if (err) return res.json(err);
+    //res.json({ filename: req.file.filename, message: "Successful insertion." });
+  });
+});
+
+app.use("/images", express.static(path.join(__dirname, "images")));
 db.connect((err) => {
+  
   if (err) {
     console.error("MySQL connection error:", err);
   } else {
@@ -27,7 +56,7 @@ db.connect((err) => {
   }
 });
 
-app.use("/images", express.static(path.join(__dirname, "images")));
+
 
 app.post("/adminLogin", (req, res) => {
   const { username, password } = req.body;
@@ -53,23 +82,6 @@ app.listen(5000, "0.0.0.0", () => {
   console.log("Server is running on port 5000");
 });
 
-app.post("/products", (req, res) => {
-  const q =
-  "INSERT INTO `products` (`product_name`, `description`, `price`, `stock_quantity`, `category_id`, `is_featured`, `image` ) VALUES(?)";
-    const values = [
-      req.body.product_name,
-      req.body.product_desc,
-      req.body.product_price,
-      req.body.product_qty,
-      req.body.product_category,
-      req.body.product_isfeatured,
-      req.body.product_img
-    ];
-    db.query(q, [values], (err, data) => {
-      if(err) return res.json(err)
-      return res.json("Successful insertion.")
-  });
-});
 
 app.get("/products", (req, res) => {
   const sql = "SELECT p.*, c.category_name FROM products p LEFT JOIN categories c ON p.category_id = c.category_id";
@@ -98,9 +110,11 @@ app.put("/products/:product_id", (req, res) => {
     ];
   db.query(q, [...values, product_id], (err, data) => {
     if (err) return res.json(err);
-    return res.json("Item updated");
+    return console.log("Item updated");
   });
 });
+
+
 
 app.delete("/products/:product_id", (req, res) => {
   const product_id = req.params.product_id;
@@ -127,21 +141,9 @@ app.get("/product/:product_id", (req, res) => {
   });
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "/Users/DELL/farm_co/backend/images/products");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
-  },
-});
 
-const upload = multer({ storage: storage });
 
-app.post("/images/products/", upload.single("image"), (req, res) => {
-  const filename = req.file.filename;
-  res.json({ filename });
-});
+
 
 
 app.put("/images/products/", upload.single("image"), (req, res) => {

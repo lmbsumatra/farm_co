@@ -64,13 +64,17 @@ const EditProduct = () => {
 
   const handleChange = ({ target }) => {
     const { name, value, type, checked } = target;
-
+  
     if (type === "checkbox") {
       updateProductState(name, checked ? 1 : 0);
+    } else if (type === "file") {
+      // Handle file input separately
+      updateProductState("product_img", target.files[0]);
     } else {
       updateProductState(name, value);
     }
   };
+  
 
   const handleCategorySelect = (eventKey) => {
     const categoryValueMap = {
@@ -87,36 +91,40 @@ const EditProduct = () => {
     updateProductState("product_category", selectedValue);
   };
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      try {
-        const formData = new FormData();
-        formData.append("image", file);
-
-        const response = await axios.put("http://localhost:5000/images/products/", formData);
-        const { filename } = response.data;
-
-        setCurrentImage(filename);
-        updateProductState("product_img", filename);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-      }
-    }
-  };
-
   const handleClick = async (e) => {
     e.preventDefault();
+  
     try {
+      const formData = new FormData();
+      const fileInput = document.getElementById("imageUpload");
+      const file = fileInput.files[0];
+  
+      if (file) {
+        formData.append("image", file);
+  
+        const imageResponse = await axios.put(`http://localhost:5000/products/1`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+  
+        const { filename } = imageResponse.data;
+        console.log(product_id)
+        setCurrentImage(filename);
+        updateProductState("product_img", filename);
+      }
+  
+      // Continue with product update logic
       console.log("Product before API call:", product);
-    await axios.put(`http://localhost:5000/products/${product_id}`, product);
-    console.log("After API call");
-    navigate("/admin-panel");
-    } catch (err) {
-      console.log(err);
+      await axios.put(`http://localhost:5000/products/${product_id}`, product);
+      console.log("After API call");
+      // navigate("/admin-panel");
+    } catch (error) {
+      console.error("Error uploading image or updating product:", error);
     }
   };
+  
+  
 
   return (
     <div>
@@ -156,7 +164,8 @@ const EditProduct = () => {
                 className="custom-file-input"
                 id="imageUpload"
                 accept="image/*"
-                onChange={handleImageChange}
+                onChange={handleChange}
+                name="image"
               />
               <label className="custom-file-label" htmlFor="imageUpload">
                 {currentImage || "Choose image"}

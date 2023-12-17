@@ -14,10 +14,6 @@ const App = () => {
       .get("http://localhost:5000/products")
       .then((response) => setProducts(response.data))
       .catch((error) => console.error("Error fetching products: ", error));
-
-    return () => {
-      console.log("Component unmounted. Cancelling async task.");
-    };
   }, []);
 
   const handleDelete = async (product_id) => {

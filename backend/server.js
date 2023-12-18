@@ -101,6 +101,17 @@ app.get("/products", (req, res) => {
   });
 });
 
+app.get("/categories", (req, res) => {
+  const query = "SELECT * FROM `categories`";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+    res.json(results);
+  });
+});
+
 app.put("/products/:product_id", upload.single("image"), (req, res) => {
   const product_id = req.params.product_id;
   // Handle product update logic
@@ -113,7 +124,7 @@ app.put("/products/:product_id", upload.single("image"), (req, res) => {
     req.body.product_qty,
     req.body.product_category,
     req.body.product_isfeatured,
-    req.file.filename,
+    req.file ? req.file.filename : req.body.product_img,
     product_id, // Add the product_id at the end
   ];
 

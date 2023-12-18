@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import NavBar from "../../components/navbar/NavBar";
 import Footer from "../../components/footer/Footer";
 import "../../components/styles.css";
@@ -18,15 +18,31 @@ const EditProduct = () => {
   });
 
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [currentImage, setCurrentImage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const product_id = location.pathname.split("/")[2];
 
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/categories`);
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/product/${product_id}`);
+        const response = await axios.get(
+          `http://localhost:5000/product/${product_id}`
+        );
         const fetchedProduct = response.data;
 
         setProduct({
@@ -35,19 +51,10 @@ const EditProduct = () => {
           product_img: fetchedProduct.image,
           product_price: fetchedProduct.price,
           product_category: fetchedProduct.category_id,
-          product_qty: fetchedProduct.category_id,
-          ...fetchedProduct, // Update with fetched data
+          product_qty: fetchedProduct.stock_quantity,
           product_isfeatured: fetchedProduct.is_featured === 1,
+          ...fetchedProduct,
         });
-
-        const categoryKeyMap = {
-          1: "Vegetables",
-          2: "Fruits",
-          3: "Dairy",
-          4: "Grains",
-        };
-        const selectedCategory = categoryKeyMap[fetchedProduct.category_id];
-        setSelectedCategory(selectedCategory);
 
         setCurrentImage(fetchedProduct.image);
       } catch (error) {
@@ -58,45 +65,54 @@ const EditProduct = () => {
     fetchProduct();
   }, [product_id]);
 
-  const updateProductState = (name, value) => {
-    setProduct((prev) => ({ ...prev, [name]: value }));
-  };
+  useEffect(() => {
+    const selectedCategoryObject = categories.find(
+      (category) => category.category_id === product.product_category
+    );
+
+    if (selectedCategoryObject) {
+      setSelectedCategory(selectedCategoryObject.category_name);
+    }
+  }, [product, categories]);
 
   const handleChange = ({ target }) => {
     const { name, value, type, checked } = target;
 
     if (type === "checkbox") {
-      updateProductState(name, checked ? 1 : 0);
+      setProduct((prevProduct) => ({ ...prevProduct, [name]: type === "checkbox" ? (checked ? 1 : 0) : value,}));
     } else {
-      updateProductState(name, value);
+      setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
     }
   };
 
   const handleCategorySelect = (eventKey) => {
-    const categoryValueMap = {
-      Vegetables: 1,
-      Fruits: 2,
-      Dairy: 3,
-      Grains: 4,
-    };
-
-    const selectedValue = categoryValueMap[eventKey];
-
-    setSelectedCategory(eventKey);
-
-    updateProductState("product_category", selectedValue);
+    const selectedCategoryObject = categories.find(
+      (category) => category.category_name === eventKey
+    );
+  
+    if (selectedCategoryObject) {
+      setSelectedCategory(eventKey);
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        product_category: selectedCategoryObject.category_id,
+      }));
+    }
   };
-
+  
   const handleClick = async (e) => {
     e.preventDefault();
     try {
       const fileInput = document.getElementById("imageUpload");
       const file = fileInput.files[0];
-      console.log("File:",file)
+      console.log("File:", file);
+
       const formData = new FormData();
       if (file) {
         formData.append("image", file);
+      } else {
+        formData.append("product_img", product.product_img);
       }
+
       formData.append("product_name", product.product_name);
       formData.append("product_desc", product.product_desc);
       formData.append("product_price", product.product_price);
@@ -104,18 +120,15 @@ const EditProduct = () => {
       formData.append("product_category", product.product_category);
       formData.append("product_isfeatured", product.product_isfeatured ? 1 : 0);
 
-  
-      // Append the product_id to the FormData for identifying the product to update
       formData.append("product_id", product_id);
-  
+
       await axios.put(`http://localhost:5000/products/${product_id}`, formData);
-  
+
       navigate("/admin-panel");
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.error("Error updating product:", error);
     }
   };
-  
 
   return (
     <div>
@@ -127,7 +140,7 @@ const EditProduct = () => {
             <label>Name</label>
             <input
               type="text"
-              placeholder={product.product_name}
+              value={product.product_name}
               name="product_name"
               onChange={handleChange}
               className="form-control"
@@ -138,7 +151,7 @@ const EditProduct = () => {
             <label>Description</label>
             <input
               type="text"
-              placeholder={product.description}
+              value={product.product_desc}
               name="product_desc"
               onChange={handleChange}
               className="form-control"
@@ -167,7 +180,7 @@ const EditProduct = () => {
             <label>Price</label>
             <input
               type="number"
-              placeholder={product.price}
+              value={product.product_price}
               name="product_price"
               onChange={handleChange}
               className="form-control"
@@ -184,16 +197,20 @@ const EditProduct = () => {
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Dropdown.Item eventKey="Vegetables">Vegetables</Dropdown.Item>
-                <Dropdown.Item eventKey="Fruits">Fruits</Dropdown.Item>
-                <Dropdown.Item eventKey="Dairy">Dairy</Dropdown.Item>
-                <Dropdown.Item eventKey="Grains">Grains</Dropdown.Item>
+                {categories.map((category) => (
+                  <Dropdown.Item
+                    key={category.category_id}
+                    eventKey={category.category_name}
+                  >
+                    {category.category_name}
+                  </Dropdown.Item>
+                ))}
               </Dropdown.Menu>
             </Dropdown>
           </div>
 
           <div className="col-md-3">
-            <div className="form-check  py-4">
+            <div className="form-check py-4">
               <input
                 className="form-check-input"
                 name="product_isfeatured"
@@ -212,7 +229,7 @@ const EditProduct = () => {
             <label>Quantity</label>
             <input
               type="number"
-              placeholder={product.stock_quantity}
+              value={product.product_qty}
               name="product_qty"
               onChange={handleChange}
               className="form-control"

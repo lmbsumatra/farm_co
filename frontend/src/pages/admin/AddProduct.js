@@ -1,5 +1,6 @@
+//Modules
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -14,24 +15,35 @@ import Footer from "../../components/footer/Footer";
 const AddProduct = () => {
   const [product, setProduct] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/categories`);
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Handles category selection
   const handleCategorySelect = (eventKey, event) => {
-    const categoryValueMap = {
-      Vegetables: 1,
-      Fruits: 2,
-      Dairy: 3,
-      Grains: 4,
-    };
-    const selectedValue = categoryValueMap[eventKey];
+    const selectedCategoryObject = categories.find(
+      (category) => category.category_name === eventKey
+    );
 
-    setSelectedCategory(eventKey);
-
-    setProduct((prev) => ({
-      ...prev,
-      product_category: selectedValue,
-    }));
+    if (selectedCategoryObject) {
+      setSelectedCategory(eventKey);
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        product_category: selectedCategoryObject.category_id,
+      }));
+    }
   };
 
   // Handles input changes and setting value to product variable
@@ -136,15 +148,18 @@ const AddProduct = () => {
             <label>Category</label>
             <Dropdown onSelect={handleCategorySelect}>
               <Dropdown.Toggle variant="success" id="category-dropdown">
-                {/* If selected category, show [selected]. Else show 'select a category' */}
                 {selectedCategory ? `${selectedCategory}` : "Select a category"}
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Dropdown.Item eventKey="Vegetables">Vegetables</Dropdown.Item>
-                <Dropdown.Item eventKey="Fruits">Fruits</Dropdown.Item>
-                <Dropdown.Item eventKey="Dairy">Dairy</Dropdown.Item>
-                <Dropdown.Item eventKey="Grains">Grains</Dropdown.Item>
+                {categories.map((category) => (
+                  <Dropdown.Item
+                    key={category.category_id}
+                    eventKey={category.category_name}
+                  >
+                    {category.category_name}
+                  </Dropdown.Item>
+                ))}
               </Dropdown.Menu>
             </Dropdown>
           </div>

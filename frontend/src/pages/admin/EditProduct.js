@@ -1,10 +1,15 @@
+// Modules
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import NavBar from "../../components/navbar/NavBar";
-import Footer from "../../components/footer/Footer";
+
+// UI imports
 import "../../components/styles.css";
 import { Dropdown } from "react-bootstrap";
+
+// Components
+import NavBar from "../../components/navbar/NavBar";
+import Footer from "../../components/footer/Footer";
 
 const EditProduct = () => {
   const [product, setProduct] = useState({
@@ -17,13 +22,17 @@ const EditProduct = () => {
     product_qty: null,
   });
 
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
   const [currentImage, setCurrentImage] = useState("");
   const navigate = useNavigate();
+
+  // Getting product_id
   const location = useLocation();
   const product_id = location.pathname.split("/")[2];
 
+  // Fetching categories, category_id and category_name
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -43,8 +52,10 @@ const EditProduct = () => {
         const response = await axios.get(
           `http://localhost:5000/product/${product_id}`
         );
+
         const fetchedProduct = response.data;
 
+        // Initializing current product values before user applies changes
         setProduct({
           product_name: fetchedProduct.product_name,
           product_desc: fetchedProduct.description,
@@ -56,40 +67,45 @@ const EditProduct = () => {
           ...fetchedProduct,
         });
 
+        // Initializing current product values before user applies changes: for image
         setCurrentImage(fetchedProduct.image);
+
+        // Initializing current product values before user applies changes: for category
+        const selectedCategoryObject = categories.find(
+          (category) => category.category_id === fetchedProduct.category_id
+        );
+
+        if (selectedCategoryObject) {
+          setSelectedCategory(selectedCategoryObject.category_name);
+        }
       } catch (error) {
         console.error("Error fetching product:", error);
       }
     };
 
     fetchProduct();
-  }, [product_id]);
+  }, [product_id, categories]); // Include all dependencies in the dependency array
 
-  useEffect(() => {
-    const selectedCategoryObject = categories.find(
-      (category) => category.category_id === product.product_category
-    );
-
-    if (selectedCategoryObject) {
-      setSelectedCategory(selectedCategoryObject.category_name);
-    }
-  }, [product, categories]);
-
+  // Handles input changes and setting value to product variable
   const handleChange = ({ target }) => {
     const { name, value, type, checked } = target;
 
     if (type === "checkbox") {
-      setProduct((prevProduct) => ({ ...prevProduct, [name]: type === "checkbox" ? (checked ? 1 : 0) : value,}));
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        [name]: type === "checkbox" ? (checked ? 1 : 0) : value,
+      }));
     } else {
       setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
     }
   };
 
+  // Handles input changes and setting value to product variable: for category
   const handleCategorySelect = (eventKey) => {
     const selectedCategoryObject = categories.find(
       (category) => category.category_name === eventKey
     );
-  
+
     if (selectedCategoryObject) {
       setSelectedCategory(eventKey);
       setProduct((prevProduct) => ({
@@ -98,15 +114,18 @@ const EditProduct = () => {
       }));
     }
   };
-  
+
+  // Handles button for updating product
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      const fileInput = document.getElementById("imageUpload");
-      const file = fileInput.files[0];
-      console.log("File:", file);
+      // Getting file(image) information
+      const imgInput = document.getElementById("imageUpload");
+      const file = imgInput.files[0];
 
+      // Using formdata to pass data to server
       const formData = new FormData();
+
       if (file) {
         formData.append("image", file);
       } else {
@@ -120,10 +139,11 @@ const EditProduct = () => {
       formData.append("product_category", product.product_category);
       formData.append("product_isfeatured", product.product_isfeatured ? 1 : 0);
 
-      formData.append("product_id", product_id);
+      // formData.append("product_id", product_id);
 
       await axios.put(`http://localhost:5000/products/${product_id}`, formData);
 
+      // Back to the admin panel page
       navigate("/admin-panel");
     } catch (error) {
       console.error("Error updating product:", error);

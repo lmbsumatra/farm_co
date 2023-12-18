@@ -67,8 +67,9 @@ app.listen(5000, "0.0.0.0", () => {
   console.log("Server is running on port 5000");
 });
 
+
 app.post("/products", upload.single("image"), (req, res) => {
-  const q =
+  const query =
     "INSERT INTO `products` (`product_name`, `description`, `price`, `stock_quantity`, `category_id`, `is_featured`, `image`) VALUES(?)";
 
   const values = [
@@ -82,12 +83,13 @@ app.post("/products", upload.single("image"), (req, res) => {
   ];
 
   // Execute the SQL query
-  db.query(q, [values], (err, data) => {
+  db.query(query, [values], (err, data) => {
     if (err) return res.json(err);
     // Return a response with the filename of the uploaded image
     res.json({ filename: req.file.filename, message: "Successful insertion." });
   });
 });
+
 
 app.get("/products", (req, res) => {
   const sql =
@@ -101,6 +103,7 @@ app.get("/products", (req, res) => {
   });
 });
 
+
 app.get("/categories", (req, res) => {
   const query = "SELECT * FROM `categories`";
   db.query(query, (err, results) => {
@@ -112,12 +115,15 @@ app.get("/categories", (req, res) => {
   });
 });
 
+
 app.put("/products/:product_id", upload.single("image"), (req, res) => {
   const product_id = req.params.product_id;
   // Handle product update logic
-  const q =
+  const query =
     "UPDATE products SET `product_name`=?, `description`=?, `price`=?, `stock_quantity`=?, `category_id`=?, `is_featured`=?, `image`=? WHERE `product_id`=?";
-  const values = [
+
+    // Using req.body for text formats; Using req.file for file formats
+    const values = [
     req.body.product_name,
     req.body.product_desc,
     req.body.product_price,
@@ -125,15 +131,16 @@ app.put("/products/:product_id", upload.single("image"), (req, res) => {
     req.body.product_category,
     req.body.product_isfeatured,
     req.file ? req.file.filename : req.body.product_img,
-    product_id, // Add the product_id at the end
+    product_id,
   ];
 
-  db.query(q, values, (err, data) => {
+  // SQL query execution
+  db.query(query, values, (err, data) => {
     if (err) {
       console.error("Error updating item:", err);
       return res.json(err);
     }
-    return res.json("Item updated");
+    return res.json("Successfully updated");
   });
 });
 

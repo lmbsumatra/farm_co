@@ -1,4 +1,4 @@
-//Modules
+// Modules
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -187,7 +187,7 @@ const AddProduct = () => {
             <label>Quantity</label>
             <input
               type="number"
-              placeholder="quantity"
+              placeholder="Quantity"
               name="product_qty"
               onChange={handleChange}
               className="form-control"

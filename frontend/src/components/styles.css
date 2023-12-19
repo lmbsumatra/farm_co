@@ -35,4 +35,27 @@ section {
   width: 15rem;
   height: 20rem;
   margin-bottom: 20px;
+  transition: filter 0.3s ease;
+}
+
+.product-card:hover {
+  /* background-color: #f8eaea; */
+  filter: brightness(.95); 
+  border-color: #138844;
+  
+}
+
+.no-decor {
+  text-decoration: none;
+  color: black;
+}
+
+.no-spacing {
+  line-height: 0.8;
+}
+
+.price {
+  font-size: 1rem;
+  color: #138844;
+  font-weight: 600;
 }

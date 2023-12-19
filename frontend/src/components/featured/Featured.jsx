@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 import "../styles.css";
 
 const Featured = () => {
-  const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
         const res = await axios.get("http://localhost:5000/products");
-        setProducts(res.data);
+        setProduct(res.data);
       } catch (err) {
         console.log(err);
       }
@@ -18,9 +20,13 @@ const Featured = () => {
     fetchAllProducts();
   }, []);
 
-  const featuredProducts = products.filter(
-    (products) => products.is_featured === 1
+  const featuredProducts = product.filter(
+    (product) => product.is_featured === 1
   );
+
+  const handleClick = (e) => {
+    navigate("/shop");
+  };
 
   return (
     <section>
@@ -42,24 +48,34 @@ const Featured = () => {
         </nav>
 
         <div className="row justify-content-evenly">
-          {featuredProducts.map((products) => (
+          {featuredProducts.map((product) => (
             <div
               className="card col-3 p-0 overflow-hidden product-card"
-              key={products.product_id}
+              key={product.product_id}
             >
-              <img
-                src={`http://localhost:5000/images/products/${products.image}`}
-                className="img-fluid object-fit-cover"
-                alt={products.image}
-                style={{ height: "10rem" }}
-              />
-              <div className="card-body">
-                <p className="card-title">{products.product_name}</p>
-                <p className="">{products.description}</p>
-                <p className="">₱ {products.price}</p>
-                <button type="button" className="btn btn-success">
-                  Add to Cart
-                </button>
+              <Link to={`/product/${product.product_id}`} className="no-decor">
+                {product.image && (
+                  <img
+                    src={`http://localhost:5000/images/products/${product.image}`}
+                    className="img-fluid object-fit-cover"
+                    alt={product.product_name}
+                    style={{ height: "10rem" }}
+                  />
+                )}
+                <div className="card-body no-spacing p-2">
+                  <h6 className="card-title">{product.product_name}</h6>
+                  <p className="">{product.description}</p>
+                  <p className="price">₱ {product.price}</p>
+                </div>
+              </Link>
+              <div className="p-2">
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={handleClick}
+              >
+                Add to Cart
+              </button>
               </div>
             </div>
           ))}

@@ -67,7 +67,6 @@ app.listen(5000, "0.0.0.0", () => {
   console.log("Server is running on port 5000");
 });
 
-
 app.post("/products", upload.single("image"), (req, res) => {
   const query =
     "INSERT INTO `products` (`product_name`, `description`, `price`, `stock_quantity`, `category_id`, `is_featured`, `image`) VALUES(?)";
@@ -90,10 +89,30 @@ app.post("/products", upload.single("image"), (req, res) => {
   });
 });
 
+app.post("/cart", upload.none(), (req, res) => {
+  console.log(req.body);
+  const query =
+    "INSERT INTO `cart` (`customer_id`, `product_id`, `quantity`, `total`) VALUES(?)";
+
+  const values = [
+    req.body.customer_id,
+    req.body.product_id,
+    req.body.quantity,
+    req.body.total,
+  ];
+
+  // Execute the SQL query
+  db.query(query, [values], (err, data) => {
+    if (err) return res.json(err);
+    res.json("Successful insertion.");
+  });
+});
 
 app.get("/products", (req, res) => {
   const sql =
-    "SELECT p.*, c.category_name FROM products p LEFT JOIN categories c ON p.category_id = c.category_id";
+    `SELECT * 
+    FROM products p 
+      LEFT JOIN categories c ON p.category_id = c.category_id`;
   db.query(sql, (err, results) => {
     if (err) {
       console.error(err);
@@ -103,6 +122,20 @@ app.get("/products", (req, res) => {
   });
 });
 
+app.get("/product/:product_id", (req, res) => {
+  const product_id = req.params.product_id;
+  const q = "SELECT * FROM products WHERE product_id = ?";
+  db.query(q, [product_id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const product = data[0];
+    return res.json(product);
+  });
+});
 
 app.get("/categories", (req, res) => {
   const query = "SELECT * FROM `categories`";
@@ -115,6 +148,21 @@ app.get("/categories", (req, res) => {
   });
 });
 
+app.get("/cart", (req, res) => {
+  const query = `
+    SELECT *
+    FROM cart c
+      JOIN products p ON c.product_id = p.product_id
+      JOIN customers cu ON c.customer_id = cu.customer_id`;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+    res.json(results);
+  });
+});
 
 app.put("/products/:product_id", upload.single("image"), (req, res) => {
   const product_id = req.params.product_id;
@@ -122,8 +170,8 @@ app.put("/products/:product_id", upload.single("image"), (req, res) => {
   const query =
     "UPDATE products SET `product_name`=?, `description`=?, `price`=?, `stock_quantity`=?, `category_id`=?, `is_featured`=?, `image`=? WHERE `product_id`=?";
 
-    // Using req.body for text formats; Using req.file for file formats
-    const values = [
+  // Using req.body for text formats; Using req.file for file formats
+  const values = [
     req.body.product_name,
     req.body.product_desc,
     req.body.product_price,
@@ -154,17 +202,13 @@ app.delete("/products/:product_id", (req, res) => {
   });
 });
 
-app.get("/product/:product_id", (req, res) => {
-  const product_id = req.params.product_id;
-  const q = "SELECT * FROM products WHERE product_id = ?";
-  db.query(q, [product_id], (err, data) => {
-    if (err) return res.status(500).json({ error: err.message });
+app.delete("/cart/:add_to_cart_id", (req, res) => {
+  const add_to_cart_id = req.params.add_to_cart_id;
+  const q = "DELETE FROM cart WHERE add_to_cart_id = ?";
 
-    if (data.length === 0) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-
-    const product = data[0];
-    return res.json(product);
+  db.query(q, [add_to_cart_id], (err, data) => {
+    if (err) return res.json(err);
+    return res.json("Successfully deleted");
   });
 });
+

@@ -12,6 +12,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminPanel from './pages/admin/AdminPanel';
 import EditProduct from './pages/admin/EditProduct';
 import AddProduct from './pages/admin/AddProduct';
+import Cart from './pages/Cart';
 
 import reportWebVitals from './reportWebVitals';
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/admin-panel" element={<AdminPanel />} />
           <Route path="/edit-product/:product_id" element={<EditProduct />} />
           <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </BrowserRouter>
       </div>

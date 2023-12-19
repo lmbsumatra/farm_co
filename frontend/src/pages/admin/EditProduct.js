@@ -74,10 +74,10 @@ const EditProduct = () => {
         const selectedCategoryObject = categories.find(
           (category) => category.category_id === fetchedProduct.category_id
         );
-
         if (selectedCategoryObject) {
           setSelectedCategory(selectedCategoryObject.category_name);
         }
+        
       } catch (error) {
         console.error("Error fetching product:", error);
       }
@@ -145,6 +145,7 @@ const EditProduct = () => {
 
       // Back to the admin panel page
       navigate("/admin-panel");
+
     } catch (error) {
       console.error("Error updating product:", error);
     }

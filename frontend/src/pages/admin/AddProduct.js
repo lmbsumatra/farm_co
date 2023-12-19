@@ -13,11 +13,13 @@ import NavBar from "../../components/navbar/NavBar";
 import Footer from "../../components/footer/Footer";
 
 const AddProduct = () => {
+  const [categories, setCategories] = useState([]);
   const [product, setProduct] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [categories, setCategories] = useState([]);
+  
   const navigate = useNavigate();
 
+  // Fetching categories, category_id and category_name
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -61,9 +63,10 @@ const AddProduct = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      const fileInput = document.getElementById("imageUpload");
-      const file = fileInput.files[0];
-
+      const imgInput = document.getElementById("imageUpload");
+      const file = imgInput.files[0];
+      
+      // Using formdata to pass data to server
       const formData = new FormData();
       formData.append("image", file);
 
@@ -76,7 +79,9 @@ const AddProduct = () => {
 
       await axios.post("http://localhost:5000/products", formData);
 
+      // Back to the admin panel page
       navigate("/admin-panel");
+      
     } catch (err) {
       console.log(err);
     }

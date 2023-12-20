@@ -14,6 +14,8 @@ CREATE TABLE products (
     FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
+ALTER TABLE products MODIFY COLUMN stock_quantity DECIMAL(10, 2);
+
 CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(255) NOT NULL
@@ -25,7 +27,7 @@ INSERT INTO categories (category_name) VALUES
 ('Dairy'),
 ('Grains');
 
-INSERT INTO products (product_name, description, price, stock_quantity, category_id, is_featured) VALUES
+INSERT INTO products (product_name, description, price, stock_quantity, category_id, is_featured, image) VALUES
 ('Carrots', 'Fresh and crunchy carrots', 1.99, 100, 1, 0, 'img_1.png'),
 ('Apples', 'Sweet and juicy apples', 2.49, 150, 2, 1, 'img_2.png'),
 ('Tomatoes', 'Ripe and flavorful tomatoes', 1.79, 120, 1, 0, 'img_3.png'),
@@ -42,4 +44,6 @@ INSERT INTO products (product_name, description, price, stock_quantity, category
 
 ALTER TABLE products
 ADD COLUMN image VARCHAR(255);
+
+
 

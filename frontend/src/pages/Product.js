@@ -9,9 +9,14 @@ const Product = () => {
   const [product, setProduct] = useState({});
   const location = useLocation();
   const product_id = location.pathname.split("/")[2];
+
+  const [kiloValue, setKiloValue] = useState(1);
+  const [totalValue, setTotalValue] = useState(0);
   const [addToCart, setAddToCart] = useState({
-    customer_id: 1 
+    cart_id: 2,
+    product_id: product_id
   });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,9 +33,6 @@ const Product = () => {
 
     fetchProduct();
   }, [product_id]);
-
-  const [kiloValue, setKiloValue] = useState(1);
-  const [totalValue, setTotalValue] = useState(0);
 
   useEffect(() => {
     // Update total when kiloValue changes
@@ -50,15 +52,16 @@ const Product = () => {
     e.preventDefault();
 
     try {
+
       const formData = new FormData();
-      formData.append("customer_id", addToCart.customer_id);
-      formData.append("product_id", product_id);
+      formData.append("cart_id", addToCart.cart_id);
+      formData.append("product_id", addToCart.product_id);
       formData.append("quantity", kiloValue);
-      formData.append("total", totalValue);
+      formData.append("total", totalValue.toFixed(2));
 
       await axios.post("http://localhost:5000/cart", formData);
 
-      navigate("/cart");
+      // navigate("/cart");
     } catch (err) {
       console.log(err);
     }

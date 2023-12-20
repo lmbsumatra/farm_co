@@ -92,18 +92,46 @@ app.post("/products", upload.single("image"), (req, res) => {
 app.post("/cart", upload.none(), (req, res) => {
   console.log(req.body);
   const query =
-    "INSERT INTO `cart` (`customer_id`, `product_id`, `quantity`, `total`) VALUES(?)";
+  "INSERT INTO `cart_items` (`cart_id`, `product_id`, `quantity`, `total`) VALUES (?, ?, ?, ?)";
 
   const values = [
-    req.body.customer_id,
+    req.body.cart_id,
     req.body.product_id,
     req.body.quantity,
     req.body.total,
   ];
+  console.log("Values:", values);
 
   // Execute the SQL query
-  db.query(query, [values], (err, data) => {
-    if (err) return res.json(err);
+  db.query(query, values, (err, data) => {
+    if (err) {
+      console.error("MySQL Error:", err.sqlMessage);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    res.json("Successful insertion.");
+  });
+});
+
+app.post("/customers", upload.none(), (req, res) => {
+  console.log(req.body);
+  const query =
+  "INSERT INTO `customers` (`customer_name`, `email`, `address`, `username`, `password`) VALUES (?, ?, ?, ?, ?)";
+
+  const values = [
+    req.body.customer_name,
+    req.body.email,
+    req.body.address,
+    req.body.username,
+    req.body.password,
+  ];
+  console.log("Values:", values);
+
+  // Execute the SQL query
+  db.query(query, values, (err, data) => {
+    if (err) {
+      console.error("MySQL Error:", err.sqlMessage);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
     res.json("Successful insertion.");
   });
 });
@@ -150,10 +178,17 @@ app.get("/categories", (req, res) => {
 
 app.get("/cart", (req, res) => {
   const query = `
-    SELECT *
-    FROM cart c
-      JOIN products p ON c.product_id = p.product_id
-      JOIN customers cu ON c.customer_id = cu.customer_id`;
+  SELECT
+    p.image,
+    cu.customer_name,
+    p.product_name,
+    c.quantity,
+    p.price,
+    c.total
+  FROM cart_items c
+    JOIN products p ON c.product_id = p.product_id
+    JOIN carts ca ON c.cart_id = ca.cart_id
+    JOIN customers cu ON ca.customer_id = cu.customer_id`;
 
   db.query(query, (err, results) => {
     if (err) {
@@ -163,6 +198,19 @@ app.get("/cart", (req, res) => {
     res.json(results);
   });
 });
+
+app.get("/customers", (req, res) => {
+  const query = `
+  SELECT * FROM customers`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+    res.json(results);
+  });
+});
+
 
 app.put("/products/:product_id", upload.single("image"), (req, res) => {
   const product_id = req.params.product_id;

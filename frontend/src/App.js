@@ -13,6 +13,8 @@ import AdminPanel from './pages/admin/AdminPanel';
 import EditProduct from './pages/admin/EditProduct';
 import AddProduct from './pages/admin/AddProduct';
 import Cart from './pages/Cart';
+import LogIn from './pages/Log-in';
+import SignUp from './pages/Sign-up';
 
 import reportWebVitals from './reportWebVitals';
 
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/edit-product/:product_id" element={<EditProduct />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/log-in" element={<LogIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </BrowserRouter>
       </div>

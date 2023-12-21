@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 // Ui imports
 import "../components/styles.css";
@@ -13,6 +14,13 @@ import Footer from "../components/footer/Footer";
 const Shop = () => {
   const [product, setProduct] = useState([]);
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const customer_id = searchParams.get("customer_id");
+
+  console.log("this", customer_id);
 
   useEffect(() => {
     const fetchAllProduct = async () => {
@@ -28,7 +36,7 @@ const Shop = () => {
   }, []);
 
   const handleAdd = (product_id) => {
-    navigate(`/product/${product_id}`);
+    navigate(`/product/${product_id}?customer_id=${customer_id}`);
   };
 
   return (
@@ -44,7 +52,7 @@ const Shop = () => {
                 key={product.product_id}
               >
                 <Link
-                  to={`/product/${product.product_id}`}
+                  to={customer_id ? `/product/${product.product_id}?customer_id=${customer_id}` : `/product/${product.product_id}`}
                   className="no-decor"
                 >
                   {product.image && (

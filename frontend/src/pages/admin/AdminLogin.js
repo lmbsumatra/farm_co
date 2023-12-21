@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/Authentication";
+// import { useAuth } from "../../context/Authentication";
 
 import NavBar from "../../components/navbar/NavBar";
 import Footer from "../../components/footer/Footer";
@@ -10,7 +10,7 @@ const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
+  // const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -23,7 +23,7 @@ const AdminLogin = () => {
 
       // Check if login is successful (you might need to customize this check based on your API response)
       if (response.data.success) {
-        login();
+        // login();
         console.log("Login successful");
         // Redirect to another page (e.g., '/adminPanel')
         navigate("/adminPanel");

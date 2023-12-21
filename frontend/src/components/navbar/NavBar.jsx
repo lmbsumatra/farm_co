@@ -1,76 +1,77 @@
-// NavBar.js
 import React from "react";
-// import { useAuth } from "../../context/Authentication";
+import { Navbar, Nav } from "react-bootstrap";
+import { useState } from "react";
+
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const NavBar = () => {
-  // const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const id = searchParams.get("customer_id");
+
+  const [customer_id, setCustomerId] = useState(id);
+
+  const handleLogout = () => {
+    setCustomerId(null);
+    navigate('/home')
+    window.location.reload()
+  };
 
   return (
-    // <section id="Navbar">
-    //   {/* ... your existing code ... */}
-    //   <li className="nav-item">
-    //     <a className="nav-link" aria-disabled="true">{isAuthenticated ? 'Logout' : 'Log in'}</a>
-    //   </li>
-    //   {/* ... rest of your code ... */}
-    // </section>
-
     <section id="Navbar">
-      <nav className="navbar navbar-expand-lg">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="/">
-            <h2>FarmCo</h2>
-          </a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
+      <Navbar expand="lg">
+        <Navbar.Brand href="/">
+          <h2>FarmCo</h2>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="navbar-nav" />
 
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a className="nav-link" aria-current="page" href="/">
-                  Home
-                </a>
-              </li>
+        <Navbar.Collapse id="navbar-nav">
+          <Nav className="mr-auto">
+            <Nav.Link
+              href={customer_id ? `/home?customer_id=${customer_id}` : "/home"}
+            >
+              Home
+            </Nav.Link>
 
-              <li className="nav-item">
-                <a className="nav-link" href="/#About-us">
-                  About us
-                </a>
-              </li>
+            <Nav.Link
+              href={
+                customer_id
+                  ? `/home#About-us?customer_id=${customer_id}`
+                  : "/home#About-us"
+              }
+            >
+              About us
+            </Nav.Link>
 
-              <li className="nav-item">
-                <a className="nav-link active" href="/shop">
-                  Shop
-                </a>
-              </li>
+            <Nav.Link
+              href={customer_id ? `/shop?customer_id=${customer_id}` : "/shop"}
+            >
+              Shop
+            </Nav.Link>
 
-              <li className="nav-item">
-                <a className="nav-link" href="/log-in">
-                  Log in
-                </a>
-              </li>
+            <Nav.Link
+              href={
+                customer_id ? `/cart?customer_id=${customer_id}` : "/log-in"
+              }
+            >
+              Cart
+            </Nav.Link>
+          </Nav>
 
-              <li className="nav-item">
-                <a className="nav-link" href="/sign-up">
-                  Sign up
-                </a>
-              </li>
+          <Nav>
+            {!customer_id ? (
+              <Nav.Link href="/log-in">Log in</Nav.Link>
+            ) : (
+              <Nav.Link onClick={handleLogout}>Log out</Nav.Link>
+            )}
 
-              <li className="nav-item">
-                <a className="nav-link" aria-disabled="true" href="/cart">
-                  Cart
-                </a>
-              </li>
-            </ul>
+            <Nav.Link href="/sign-up">Sign up</Nav.Link>
+          </Nav>
 
+          <Nav>
             <form className="d-flex" role="search">
               <input
                 className="form-control me-2"
@@ -82,9 +83,9 @@ const NavBar = () => {
                 Search
               </button>
             </form>
-          </div>
-        </div>
-      </nav>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
     </section>
   );
 };

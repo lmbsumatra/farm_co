@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [userList, setUserList] = useState([]);
 
   const [fullName, setFullName] = useState("");
@@ -245,6 +247,7 @@ const SignUp = () => {
 
         await axios.post("http://localhost:5000/customers", formData);
         alert("Welcome, " + username + "!");
+        navigate('/log-in')
         // window.location.href = "/sample-post";
       }
 

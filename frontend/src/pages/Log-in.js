@@ -6,6 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
+
   const [email, setEmail] = useState("");
   const [emailNotValid, setEmailNotValidMsg] = useState("");
   const [emailNotExist, setEmailNotExistMsg] = useState("");
@@ -114,7 +115,7 @@ const LogIn = () => {
       if (user.email === email && user.password === password) {
         setAcctDoNotExistMsg("");
         alert("Welcome, " + user.username + "!");
-        // window.location.href = "/sample-post";
+        navigate(`/cart?customer_id=${user.customer_id}`)
       } else if (password === "" && email === "") {
         setEmailIsRequiredMsg("Email is required.");
         setPasswordIsRequiredMsg("Password is required.");
@@ -135,20 +136,12 @@ const LogIn = () => {
             className="rounded row"
             style={{ backgroundColor: "rgb(255, 255, 255)" }}
           >
-            {/* <div className="col-md-6 g-0">
-              <img
-                src={LoginBanner}
-                className="img-fluid object-fit-cover h-100 rounded"
-                alt="Log in image banner."
-              />
-            </div> */}
 
             <div className="col-md-6 mx-auto my-3">
               <p>
                 Welcome back to Parisukat! We're thrilled to have you here
                 again.
               </p>
-              <form onSubmit={onSubmit}>
                 <div className="mb-3">
                   <p style={{ color: "red" }}>{acctDoNotExist}</p>
 
@@ -229,7 +222,6 @@ const LogIn = () => {
                     <i className="fa-brands fa-yahoo fs-1 p-3"></i>
                   </a>
                 </div>
-              </form>
             </div>
           </div>
         </div>

@@ -114,25 +114,61 @@ app.post("/cart", upload.none(), (req, res) => {
 
 app.post("/customers", upload.none(), (req, res) => {
   console.log(req.body);
-  const query =
-  "INSERT INTO `customers` (`customer_name`, `email`, `address`, `username`, `password`) VALUES (?, ?, ?, ?, ?)";
 
-  const values = [
-    req.body.customer_name,
-    req.body.email,
-    req.body.address,
-    req.body.username,
-    req.body.password,
-  ];
-  console.log("Values:", values);
-
-  // Execute the SQL query
-  db.query(query, values, (err, data) => {
+  // Start a transaction
+  db.beginTransaction((err) => {
     if (err) {
-      console.error("MySQL Error:", err.sqlMessage);
+      console.error("MySQL Transaction Begin Error:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
-    res.json("Successful insertion.");
+
+    // Insert customer data
+    const customerQuery =
+      "INSERT INTO `customers` (`customer_name`, `email`, `address`, `username`, `password`) VALUES (?, ?, ?, ?, ?)";
+    const customerValues = [
+      req.body.customer_name,
+      req.body.email,
+      req.body.address,
+      req.body.username,
+      req.body.password,
+    ];
+
+    db.query(customerQuery, customerValues, (err, customerResult) => {
+      if (err) {
+        // Rollback the transaction if an error occurs
+        return db.rollback(() => {
+          console.error("MySQL Customer Insertion Error:", err.sqlMessage);
+          res.status(500).json({ error: "Internal Server Error" });
+        });
+      }
+
+      // Get the auto-generated customer_id
+      const customerId = customerResult.insertId;
+
+      // Insert a corresponding cart for the customer
+      const cartQuery = "INSERT INTO `carts` (`customer_id`) VALUES (?)";
+      const cartValues = [customerId];
+
+      db.query(cartQuery, cartValues, (err, cartResult) => {
+        if (err) {
+          // Rollback the transaction if an error occurs
+          return db.rollback(() => {
+            console.error("MySQL Cart Insertion Error:", err.sqlMessage);
+            res.status(500).json({ error: "Internal Server Error" });
+          });
+        }
+
+        // Commit the transaction if both customer and cart insertions are successful
+        db.commit((err) => {
+          if (err) {
+            console.error("MySQL Transaction Commit Error:", err);
+            return res.status(500).json({ error: "Internal Server Error" });
+          }
+
+          res.json("Successful insertion.");
+        });
+      });
+    });
   });
 });
 
@@ -175,22 +211,19 @@ app.get("/categories", (req, res) => {
     res.json(results);
   });
 });
+app.get("/cart/:customer_id", (req, res) => {
+  const customerId = req.params.customer_id;
 
-app.get("/cart", (req, res) => {
   const query = `
-  SELECT
-    p.image,
-    cu.customer_name,
-    p.product_name,
-    c.quantity,
-    p.price,
-    c.total
-  FROM cart_items c
-    JOIN products p ON c.product_id = p.product_id
-    JOIN carts ca ON c.cart_id = ca.cart_id
-    JOIN customers cu ON ca.customer_id = cu.customer_id`;
+    SELECT
+      *
+    FROM cart_items c
+      JOIN products p ON c.product_id = p.product_id
+      JOIN carts ca ON c.cart_id = ca.cart_id
+      JOIN customers cu ON ca.customer_id = cu.customer_id
+    WHERE cu.customer_id = ?`;
 
-  db.query(query, (err, results) => {
+  db.query(query, [customerId], (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).send("Internal Server Error");
@@ -198,6 +231,7 @@ app.get("/cart", (req, res) => {
     res.json(results);
   });
 });
+
 
 app.get("/customers", (req, res) => {
   const query = `
@@ -250,13 +284,60 @@ app.delete("/products/:product_id", (req, res) => {
   });
 });
 
-app.delete("/cart/:add_to_cart_id", (req, res) => {
-  const add_to_cart_id = req.params.add_to_cart_id;
-  const q = "DELETE FROM cart WHERE add_to_cart_id = ?";
-
-  db.query(q, [add_to_cart_id], (err, data) => {
-    if (err) return res.json(err);
+app.delete("/cart/:cart_item_id", (req, res) => {
+  const cart_item_id = req.params.cart_item_id;
+  
+  const q = "DELETE FROM cart_items WHERE cart_item_id = ?";
+  db.query(q, [cart_item_id], (err, data) => {
+    if (err) {
+      console.error('Error deleting cart item:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    console.log('Deleted successfully');
     return res.json("Successfully deleted");
   });
 });
 
+// API endpoint to handle checkout and move items from cart to order_items
+app.post('/checkout', (req, res) => {
+  const { customer_id } = req.body;
+
+  // Create a new order
+  db.query('INSERT INTO orders (customer_id, total_amount) VALUES (?, 0)', [customer_id], (err, results) => {
+    if (err) {
+      console.error('Error creating order: ', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    const orderId = results.insertId;
+
+    // Transfer cart items to order items
+    db.query(
+      'INSERT INTO order_items (order_id, product_id, quantity, total) ' +
+        'SELECT ?, ci.product_id, ci.quantity, ci.total ' +
+        'FROM carts c ' +
+        'JOIN cart_items ci ON c.cart_id = ci.cart_id ' +
+        'WHERE c.customer_id = ?',
+      [orderId, customer_id],
+      (err) => {
+        if (err) {
+          console.error('Error transferring cart items: ', err);
+          res.status(500).send('Internal Server Error');
+          return;
+        }
+
+        // Optionally, delete cart items after moving them to order items
+        db.query('DELETE FROM cart_items WHERE cart_id IN (SELECT cart_id FROM carts WHERE customer_id = ?)', [customer_id], (err) => {
+          if (err) {
+            console.error('Error deleting cart items: ', err);
+            res.status(500).send('Internal Server Error');
+            return;
+          }
+
+          res.status(200).send('Checkout successful');
+        });
+      }
+    );
+  });
+});

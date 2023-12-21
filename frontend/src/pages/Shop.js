@@ -17,10 +17,6 @@ const Shop = () => {
 
   const location = useLocation();
 
-  const searchParams = new URLSearchParams(location.search);
-  const customer_id = searchParams.get("customer_id");
-
-  console.log("this", customer_id);
 
   useEffect(() => {
     const fetchAllProduct = async () => {
@@ -36,7 +32,7 @@ const Shop = () => {
   }, []);
 
   const handleAdd = (product_id) => {
-    navigate(`/product/${product_id}?customer_id=${customer_id}`);
+    navigate(`/product/${product_id}`);
   };
 
   return (
@@ -52,7 +48,7 @@ const Shop = () => {
                 key={product.product_id}
               >
                 <Link
-                  to={customer_id ? `/product/${product.product_id}?customer_id=${customer_id}` : `/product/${product.product_id}`}
+                  to={`/product/${product.product_id}`}
                   className="no-decor"
                 >
                   {product.image && (

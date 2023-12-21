@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "./context/useAuth";
 
 import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
@@ -10,15 +11,14 @@ const Product = () => {
   const location = useLocation();
   const product_id = location.pathname.split("/")[2];
 
-  const searchParams = new URLSearchParams(location.search);
-  const customer_id = searchParams.get("customer_id");
+  const auth = useAuth();
 
-  console.log("this", customer_id);
+  const customer_id = auth.user;
 
   const [kiloValue, setKiloValue] = useState(1);
   const [totalValue, setTotalValue] = useState(0);
   const [addToCart, setAddToCart] = useState({
-    cart_id: customer_id,
+    cart_id: null,
     product_id: product_id,
   });
 
@@ -35,9 +35,15 @@ const Product = () => {
         console.error("Error fetching product:", error);
       }
     };
-
     fetchProduct();
-  }, [product_id]);
+    
+    if (auth.user && auth.user.cart_id !== undefined) {
+      setAddToCart((prevAddToCart) => ({
+        ...prevAddToCart,
+        cart_id: auth.user.cart_id,
+      }));
+    }
+  }, [product_id, auth.user]);
 
   useEffect(() => {
     // Update total when kiloValue changes
@@ -58,9 +64,7 @@ const Product = () => {
     try {
       if (customer_id === null) {
         navigate("/log-in");
-
       } else {
-        console.log('check', customer_id)
         const formData = new FormData();
         formData.append("cart_id", addToCart.cart_id);
         formData.append("product_id", addToCart.product_id);
@@ -69,7 +73,7 @@ const Product = () => {
 
         await axios.post("http://localhost:5000/cart", formData);
 
-        navigate(`/cart?customer_id=${customer_id}`);
+        navigate(`/cart`);
       }
     } catch (err) {
       console.log(err);

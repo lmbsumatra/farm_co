@@ -4,6 +4,7 @@ import Footer from "../components/footer/Footer.jsx";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./context/useAuth.js";
 
 const LogIn = () => {
 
@@ -21,6 +22,7 @@ const LogIn = () => {
   const navigate = useNavigate();
 
   const [userList, setUserList] = useState([]);
+  const auth = useAuth();
 
   // fetching customers data for comparison
   useEffect(() => {
@@ -65,8 +67,6 @@ const LogIn = () => {
     // check email existance
     for (let i = 0; i < userList.length; i++) {
       const user = userList[i];
-      console.log(user.email);
-      console.log(email)
       if (user.email === email) {
         setEmailNotExistMsg("");
         break;
@@ -113,9 +113,10 @@ const LogIn = () => {
     for (let i = 0; i < userList.length; i++) {
       const user = userList[i];
       if (user.email === email && user.password === password) {
+        console.log(user)
+        auth.login(user)
         setAcctDoNotExistMsg("");
-        alert("Welcome, " + user.username + "!");
-        navigate(`/cart?customer_id=${user.customer_id}`)
+        navigate(`/`)
       } else if (password === "" && email === "") {
         setEmailIsRequiredMsg("Email is required.");
         setPasswordIsRequiredMsg("Password is required.");

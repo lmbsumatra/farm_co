@@ -1,12 +1,7 @@
 // App.js
 import React from "react";
 import ReactDOM from "react-dom";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  BrowserRouter,
-} from "react-router-dom";
+import { Router, Routes, Route, BrowserRouter } from "react-router-dom";
 // import { AuthProvider } from './context/Authentication';
 
 import Home from "./pages/Home";
@@ -21,13 +16,16 @@ import Cart from "./pages/customer/Cart";
 import LogIn from "./pages/Log-in";
 import SignUp from "./pages/Sign-up";
 import Checkout from "./pages/customer/Checkout";
+import { AuthProvider } from "./pages/context/useAuth";
+import RequireAuth from "./pages/context/requireAuth.js";
 
 const App = () => (
   <div className="App">
-    <BrowserRouter>
-      <Routes>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
           {/* public route */}
-          <Route path="/home/" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/product/:product_id" element={<Product />} />
           <Route path="/log-in" element={<LogIn />} />
@@ -39,11 +37,26 @@ const App = () => (
           <Route path="/edit-product/:product_id" element={<EditProduct />} />
           <Route path="/add-product" element={<AddProduct />} />
 
-          {/* public route for customers */}
-          <Route path="/cart/" element={<Cart />} />
-          <Route path="/checkout/" element={<Checkout />} />
-      </Routes>
-    </BrowserRouter>
+          {/* private route for customers */}
+          <Route
+            path="/cart/"
+            element={
+              <RequireAuth>
+                <Cart />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/checkout/"
+            element={
+              <RequireAuth>
+                <Checkout />
+              </RequireAuth>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   </div>
 );
 

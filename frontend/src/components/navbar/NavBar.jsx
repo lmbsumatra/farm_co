@@ -1,6 +1,7 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { useState } from "react";
+import { useAuth } from "../../pages/context/useAuth";
 
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -15,10 +16,11 @@ const NavBar = () => {
   const [customer_id, setCustomerId] = useState(id);
 
   const handleLogout = () => {
-    setCustomerId(null);
-    navigate('/home')
-    window.location.reload()
+    auth.logout();
+    navigate('/')
   };
+
+  const auth = useAuth();
 
   return (
     <section id="Navbar">
@@ -30,39 +32,19 @@ const NavBar = () => {
 
         <Navbar.Collapse id="navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link
-              href={customer_id ? `/home?customer_id=${customer_id}` : "/home"}
-            >
-              Home
-            </Nav.Link>
+            <Nav.Link href={"/"}>Home</Nav.Link>
 
-            <Nav.Link
-              href={
-                customer_id
-                  ? `/home#About-us?customer_id=${customer_id}`
-                  : "/home#About-us"
-              }
-            >
+            <Nav.Link href={"#About-us"}>
               About us
             </Nav.Link>
 
-            <Nav.Link
-              href={customer_id ? `/shop?customer_id=${customer_id}` : "/shop"}
-            >
-              Shop
-            </Nav.Link>
+            <Nav.Link href={"/shop"}>Shop</Nav.Link>
 
-            <Nav.Link
-              href={
-                customer_id ? `/cart?customer_id=${customer_id}` : "/log-in"
-              }
-            >
-              Cart
-            </Nav.Link>
+            <Nav.Link href={auth.user ? `/cart` : "/log-in"}>Cart</Nav.Link>
           </Nav>
 
           <Nav>
-            {!customer_id ? (
+            {!auth.user ? (
               <Nav.Link href="/log-in">Log in</Nav.Link>
             ) : (
               <Nav.Link onClick={handleLogout}>Log out</Nav.Link>

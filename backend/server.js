@@ -232,10 +232,12 @@ app.get("/cart/:customer_id", (req, res) => {
   });
 });
 
-
 app.get("/customers", (req, res) => {
   const query = `
-  SELECT * FROM customers`;
+    SELECT *
+    FROM customers
+    LEFT JOIN carts ON customers.customer_id = carts.customer_id`;
+  
   db.query(query, (err, results) => {
     if (err) {
       console.error(err);
@@ -244,7 +246,6 @@ app.get("/customers", (req, res) => {
     res.json(results);
   });
 });
-
 
 app.put("/products/:product_id", upload.single("image"), (req, res) => {
   const product_id = req.params.product_id;
@@ -300,44 +301,53 @@ app.delete("/cart/:cart_item_id", (req, res) => {
 
 // API endpoint to handle checkout and move items from cart to order_items
 app.post('/checkout', (req, res) => {
-  const { customer_id } = req.body;
+  const { customer_id, grandTotal, selectedItemsArray } = req.body;
+  console.log(req.body);
 
   // Create a new order
-  db.query('INSERT INTO orders (customer_id, total_amount) VALUES (?, 0)', [customer_id], (err, results) => {
-    if (err) {
-      console.error('Error creating order: ', err);
-      res.status(500).send('Internal Server Error');
-      return;
-    }
+  db.query(
+    'INSERT INTO orders (customer_id, grand_total) VALUES (?, ?)',
+    [customer_id, grandTotal],
+    (err, results) => {
+      if (err) {
+        console.error('Error creating order: ', err);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
 
-    const orderId = results.insertId;
+      const orderId = results.insertId;
 
-    // Transfer cart items to order items
-    db.query(
-      'INSERT INTO order_items (order_id, product_id, quantity, total) ' +
-        'SELECT ?, ci.product_id, ci.quantity, ci.total ' +
-        'FROM carts c ' +
-        'JOIN cart_items ci ON c.cart_id = ci.cart_id ' +
-        'WHERE c.customer_id = ?',
-      [orderId, customer_id],
-      (err) => {
-        if (err) {
-          console.error('Error transferring cart items: ', err);
-          res.status(500).send('Internal Server Error');
-          return;
-        }
-
-        // Optionally, delete cart items after moving them to order items
-        db.query('DELETE FROM cart_items WHERE cart_id IN (SELECT cart_id FROM carts WHERE customer_id = ?)', [customer_id], (err) => {
+      // Transfer selected cart items to order items
+      db.query(
+        'INSERT INTO order_items (order_id, product_id, quantity, total) ' +
+          'SELECT ?, ci.product_id, ci.quantity, ci.total ' +
+          'FROM carts c ' +
+          'JOIN cart_items ci ON c.cart_id = ci.cart_id ' +
+          'WHERE c.customer_id = ? AND ci.cart_item_id IN (?)', // Filter by selected items
+        [orderId, customer_id, selectedItemsArray],
+        (err) => {
           if (err) {
-            console.error('Error deleting cart items: ', err);
+            console.error('Error transferring cart items: ', err);
             res.status(500).send('Internal Server Error');
             return;
           }
 
-          res.status(200).send('Checkout successful');
-        });
-      }
-    );
-  });
+          // Optionally, delete selected cart items after moving them to order items
+          db.query(
+            'DELETE FROM cart_items WHERE cart_id IN (SELECT cart_id FROM carts WHERE customer_id = ? AND cart_item_id IN (?))',
+            [customer_id, selectedItemsArray],
+            (err) => {
+              if (err) {
+                console.error('Error deleting cart items: ', err);
+                res.status(500).send('Internal Server Error');
+                return;
+              }
+
+              res.status(200).send('Checkout successful');
+            }
+          );
+        }
+      );
+    }
+  );
 });

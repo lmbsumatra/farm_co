@@ -11,6 +11,7 @@ import "../../components/styles.css";
 // Components
 import NavBar from "../../components/navbar/NavBar";
 import Footer from "../../components/footer/Footer";
+import { useAuth } from "../context/useAuth";
 
 const Cart = () => {
   const [items, setItems] = useState([]);
@@ -18,16 +19,10 @@ const Cart = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const searchParams = new URLSearchParams(location.search);
-  const customer_id = searchParams.get("customer_id");
-
-  console.log("this", customer_id);
+  const auth = useAuth();
+  const customer_id = auth.user.customer_id;
 
   useEffect(() => {
-    if (!customer_id) {
-     navigate('/log-in')
-    }
-
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
@@ -64,11 +59,7 @@ const Cart = () => {
     const selectedItemsArray = Object.keys(selectedItems).filter(
       (itemId) => selectedItems[itemId]
     );
-    navigate(
-      `/checkout?customer_id=${customer_id}&selectedItems=${selectedItemsArray.join(
-        ","
-      )}`
-    );
+    navigate(`/checkout?selectedItems=${selectedItemsArray.join(",")}`);
   };
 
   return (

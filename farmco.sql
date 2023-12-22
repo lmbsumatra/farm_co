@@ -7,7 +7,7 @@ CREATE TABLE products (
     product_name VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(10, 2) NOT NULL,
-    stock_quantity INT NOT NULL,
+    stock_quantity DECIMAL(10, 2) NOT NULL,
     category_id INT,
     is_featured BOOLEAN DEFAULT 0, -- 0 for not featured, 1 for featured
     image VARCHAR(255),

@@ -62,7 +62,7 @@ const Checkout = () => {
       // Send a POST request to your backend server to handle checkout
       await axios.post("http://localhost:5000/checkout", { customer_id, grandTotal, selectedItemsArray });
 
-        navigate(`/`);
+        navigate(`/orders`);
       console.log("Checkout successful!");
     } catch (error) {
       console.error("Error during checkout:", error);
@@ -78,7 +78,6 @@ const Checkout = () => {
           <thead>
             <tr>
               <td>Image</td>
-              <td>Customer</td>
               <td>Product</td>
               <td>Quantity</td>
               <td>Price</td>
@@ -95,7 +94,6 @@ const Checkout = () => {
                     style={{ width: "50px" }}
                   />
                 </td>
-                <td>{item.customer_name}</td>
                 <td>{item.product_name}</td>
                 <td>{item.quantity}</td>
                 <td>₱ {item.price}</td>

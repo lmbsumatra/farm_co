@@ -1,9 +1,7 @@
 // Modules
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Ui imports
 import "../../components/styles.css";
@@ -17,7 +15,6 @@ const Cart = () => {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
   const navigate = useNavigate();
-  const location = useLocation();
 
   const auth = useUserAuth();
   const customer_id = auth.user.customer_id;
@@ -65,24 +62,29 @@ const Cart = () => {
   return (
     <div>
       <NavBar />
-      <section>
-        <h2>Cart</h2>
-        <table className="table table-striped">
+      <section className="body-bg mx-75 d-block">
+        <h4 className="text-black-50">My Cart</h4>
+        <table className="table">
           <thead>
             <tr>
+              <td>Select</td>
               <td>Image</td>
-              <td>Customer</td>
-              <td>Product Id</td>
               <td>Product</td>
               <td>Quantity</td>
               <td>Price</td>
               <td>Total</td>
-              <td>Select</td>
+              <td></td>
             </tr>
           </thead>
           <tbody>
             {items.map((item) => (
               <tr key={item.cart_item_id}>
+                <td>
+                  <input
+                    type="checkbox"
+                    onChange={() => handleCheckboxChange(item.cart_item_id)}
+                  />
+                </td>
                 <td>
                   <img
                     src={`http://localhost:5000/images/products/${item.image}`}
@@ -90,24 +92,11 @@ const Cart = () => {
                     style={{ width: "50px" }}
                   />
                 </td>
-                <td>{item.customer_name}</td>
-                <td>{item.product_id}</td>
                 <td>{item.product_name}</td>
                 <td>{item.quantity}</td>
                 <td>₱ {item.price}</td>
                 <td>₱ {item.total}</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    onChange={() => handleCheckboxChange(item.cart_item_id)}
-                  />
-                </td>
 
-                <td>
-                  <button type="button" className="btn btn-success">
-                    <Link to={`/edit-item/${item.product_id}`}>Update</Link>
-                  </button>
-                </td>
                 <td>
                   <button
                     type="button"

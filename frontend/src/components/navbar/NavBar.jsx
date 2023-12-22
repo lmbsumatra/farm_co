@@ -1,20 +1,12 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
-import { useState } from "react";
 import { useUserAuth } from "../../pages/context/useAuth";
 import { useAdminAuth } from "../../pages/context/useAuth";
 
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 
 const NavBar = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get("customer_id");
-
-  const [customer_id, setCustomerId] = useState(id);
 
   const handleLogout = () => {
     auth.logout();
@@ -42,6 +34,8 @@ const NavBar = () => {
             <Nav.Link href={"/shop"}>Shop</Nav.Link>
 
             <Nav.Link href={auth.user ? `/cart` : "/log-in"}>Cart</Nav.Link>
+
+            <Nav.Link href={auth.user ? `/orders` : "/log-in"}>Orders</Nav.Link>
           </Nav>
           <Nav>
             <form className="d-flex" role="search">

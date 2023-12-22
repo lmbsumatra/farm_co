@@ -1,8 +1,8 @@
 // App.js
 import React from "react";
-import ReactDOM from "react-dom";
-import { Router, Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 // import { AuthProvider } from './context/Authentication';
+import { createRoot } from 'react-dom/client';
 
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
@@ -16,6 +16,8 @@ import Cart from "./pages/customer/Cart";
 import LogIn from "./pages/Log-in";
 import SignUp from "./pages/Sign-up";
 import Checkout from "./pages/customer/Checkout";
+import OrderSummary from "./pages/customer/OrderSummary.js";
+import OrderSummaryId from "./pages/customer/OrderSummaryId.js";
 import { UserAuthProvider, AdminAuthProvider } from "./pages/context/useAuth";
 import RequireUserAuth from "./pages/context/requireUserAuth.js";
 import RequireAdminAuth from "./pages/context/requireAdminAuth.js";
@@ -35,9 +37,30 @@ const App = () => (
             <Route path="/admin-login" element={<AdminLogin />} />
 
             {/* private route for admins */}
-            <Route path="/admin-panel" element={<RequireAdminAuth><AdminPanel /></RequireAdminAuth>} />
-            <Route path="/edit-product/:product_id" element={<RequireAdminAuth><EditProduct /></RequireAdminAuth>} />
-            <Route path="/add-product" element={<RequireAdminAuth><AddProduct /></RequireAdminAuth>} />
+            <Route
+              path="/admin-panel"
+              element={
+                <RequireAdminAuth>
+                  <AdminPanel />
+                </RequireAdminAuth>
+              }
+            />
+            <Route
+              path="/edit-product/:product_id"
+              element={
+                <RequireAdminAuth>
+                  <EditProduct />
+                </RequireAdminAuth>
+              }
+            />
+            <Route
+              path="/add-product"
+              element={
+                <RequireAdminAuth>
+                  <AddProduct />
+                </RequireAdminAuth>
+              }
+            />
 
             {/* private route for customers */}
             <Route
@@ -56,6 +79,22 @@ const App = () => (
                 </RequireUserAuth>
               }
             />
+            <Route
+              path="/orders"
+              element={
+                <RequireUserAuth>
+                  <OrderSummary />
+                </RequireUserAuth>
+              }
+            />
+            <Route
+              path="/order-summary/:order_id"
+              element={
+                <RequireUserAuth>
+                  <OrderSummaryId />
+                </RequireUserAuth>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </UserAuthProvider>
@@ -63,7 +102,9 @@ const App = () => (
   </div>
 );
 
-export default App;
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+
+const root = createRoot(document.getElementById("root"));
+
+export { App, root };
 root.render(<App />);

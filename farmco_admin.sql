@@ -9,3 +9,5 @@ CREATE TABLE admins (
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
 );
+
+select * from admins;

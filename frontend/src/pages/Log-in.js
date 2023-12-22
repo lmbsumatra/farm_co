@@ -4,7 +4,7 @@ import Footer from "../components/footer/Footer.jsx";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./context/useAuth.js";
+import { useUserAuth } from "./context/useAuth.js";
 
 const LogIn = () => {
 
@@ -22,7 +22,7 @@ const LogIn = () => {
   const navigate = useNavigate();
 
   const [userList, setUserList] = useState([]);
-  const auth = useAuth();
+  const auth = useUserAuth();
 
   // fetching customers data for comparison
   useEffect(() => {

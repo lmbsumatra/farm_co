@@ -1,7 +1,8 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { useState } from "react";
-import { useAuth } from "../../pages/context/useAuth";
+import { useUserAuth } from "../../pages/context/useAuth";
+import { useAdminAuth } from "../../pages/context/useAuth";
 
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -17,10 +18,12 @@ const NavBar = () => {
 
   const handleLogout = () => {
     auth.logout();
-    navigate('/')
+    admin.logoutAdmin();
+    navigate("/");
   };
 
-  const auth = useAuth();
+  const auth = useUserAuth();
+  const admin = useAdminAuth();
 
   return (
     <section id="Navbar">
@@ -34,25 +37,12 @@ const NavBar = () => {
           <Nav className="mr-auto">
             <Nav.Link href={"/"}>Home</Nav.Link>
 
-            <Nav.Link href={"#About-us"}>
-              About us
-            </Nav.Link>
+            <Nav.Link href={"#About-us"}>About us</Nav.Link>
 
             <Nav.Link href={"/shop"}>Shop</Nav.Link>
 
             <Nav.Link href={auth.user ? `/cart` : "/log-in"}>Cart</Nav.Link>
           </Nav>
-
-          <Nav>
-            {!auth.user ? (
-              <Nav.Link href="/log-in">Log in</Nav.Link>
-            ) : (
-              <Nav.Link onClick={handleLogout}>Log out</Nav.Link>
-            )}
-
-            <Nav.Link href="/sign-up">Sign up</Nav.Link>
-          </Nav>
-
           <Nav>
             <form className="d-flex" role="search">
               <input
@@ -65,6 +55,15 @@ const NavBar = () => {
                 Search
               </button>
             </form>
+          </Nav>
+          <Nav>
+            {(!auth.user && !admin.admin)? (
+              <Nav.Link href="/log-in">Log in</Nav.Link>
+            ) : (
+              <Nav.Link onClick={handleLogout}>Log out</Nav.Link>
+            )}
+
+            <Nav.Link href="/sign-up">Sign up</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

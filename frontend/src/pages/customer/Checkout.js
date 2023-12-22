@@ -3,7 +3,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../context/useAuth";
+import { useUserAuth } from "../context/useAuth";
 
 
 // Components
@@ -16,7 +16,7 @@ const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const auth = useAuth();
+  const auth = useUserAuth();
   const customer_id = auth.user.customer_id;
 
   const searchParams = new URLSearchParams(location.search);
@@ -47,7 +47,7 @@ const Checkout = () => {
     };
 
     fetchProduct();
-  }, [selectedItemsArray, customer_id]);
+  }, [selectedItemsArray, customer_id, items]);
 
   
 

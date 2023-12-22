@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "./context/useAuth";
+import { useUserAuth } from "./context/useAuth";
 
 import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
@@ -11,7 +11,7 @@ const Product = () => {
   const location = useLocation();
   const product_id = location.pathname.split("/")[2];
 
-  const auth = useAuth();
+  const auth = useUserAuth();
 
   const customer_id = auth.user;
 

@@ -1,75 +1,229 @@
-import React, { useState } from "react";
+import NavBar from "../../components/navbar/NavBar.jsx";
+import Footer from "../../components/footer/Footer.jsx";
+// import LoginBanner from "./components/images/log-in.jpg";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import { useAuth } from "../../context/Authentication";
+import { useAdminAuth } from "../context/useAuth.js";
 
-import NavBar from "../../components/navbar/NavBar";
-import Footer from "../../components/footer/Footer";
+const LogIn = () => {
+  const [email, setEmail] = useState("");
+  const [emailNotValid, setEmailNotValidMsg] = useState("");
+  const [emailNotExist, setEmailNotExistMsg] = useState("");
+  const [emailIsRequired, setEmailIsRequiredMsg] = useState("");
+  const [emailTrigger, setEmailTrigger] = useState(false);
 
-const AdminLogin = () => {
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordIsRequired, setPasswordIsRequiredMsg] = useState("");
+  const [passwordNotValid, setPasswordNotValidMsg] = useState("");
+  const [passwordTrigger, setPasswordTrigger] = useState(false);
+
   const navigate = useNavigate();
-  // const { login } = useAuth();
 
-  const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+  const [adminList, setAdminList] = useState([]);
+  const auth = useAdminAuth();
 
-    try {
-      const response = await axios.post("http://localhost:5000/adminLogin", {
-        username,
-        password,
-      });
-
-      // Check if login is successful (you might need to customize this check based on your API response)
-      if (response.data.success) {
-        // login();
-        console.log("Login successful");
-        // Redirect to another page (e.g., '/adminPanel')
-        navigate("/adminPanel");
-      } else {
-        console.log("Login failed");
-        // Handle login failure (show an error message, etc.)
+  // fetching customers data for comparison
+  useEffect(() => {
+    if (auth.admin) {
+      navigate("/admin-panel");
+    }
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/admins`);
+        setAdminList(response.data);
+      } catch (error) {
+        console.error("Error fetching product:", error);
       }
-    } catch (error) {
-      console.error("Error during login:", error);
+    };
+
+    fetchProduct();
+  }, []);
+
+  const [acctDoNotExist, setAcctDoNotExistMsg] = useState("");
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  // log in email validation
+  useEffect(() => {
+    const validateLogEmail = () => {
+      // should be filled out
+      if (email === "") {
+        setEmailIsRequiredMsg("Email is required.");
+      } else {
+        setEmailIsRequiredMsg("");
+      }
+
+      // should have email formatting
+      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setEmailNotValidMsg("");
+      } else {
+        setEmailNotValidMsg("Email should be valid");
+      }
+
+      // check email existance
+      for (let i = 0; i < adminList.length; i++) {
+        const user = adminList[i];
+        if (user.email === email) {
+          setEmailNotExistMsg("");
+          break;
+        } else {
+          setEmailNotExistMsg("Email is not registered");
+        }
+      }
+    };
+    if (emailTrigger) {
+      validateLogEmail();
+    }
+  }, [email, emailTrigger, adminList]);
+
+  // log in password validation
+  useEffect(() => {
+    const validateLogPassword = () => {
+      // should be filled out
+      if (password === "") {
+        setPasswordIsRequiredMsg("Password is required.");
+      } else {
+        setPasswordIsRequiredMsg("");
+      }
+
+      // should count between 8 and 20
+      if (password.length < 8 || password.length > 20) {
+        setPasswordNotValidMsg(
+          "Password characters should only count between 8 and 20."
+        );
+      } else {
+        setPasswordNotValidMsg("");
+      }
+    };
+    if (passwordTrigger) {
+      validateLogPassword();
+    }
+  }, [password, passwordTrigger]);
+
+  // log in, email to user's password validation
+  const Login = () => {
+    for (let i = 0; i < adminList.length; i++) {
+      const user = adminList[i];
+      if (user.email === email && user.password === password) {
+        console.log(user);
+        auth.loginAdmin(user);
+        setAcctDoNotExistMsg("");
+        navigate(`/admin-panel`);
+      } else if (password === "" && email === "") {
+        setEmailIsRequiredMsg("Email is required.");
+        setPasswordIsRequiredMsg("Password is required.");
+      } else {
+        setAcctDoNotExistMsg("Your email or password is incorrect. Try again.");
+      }
     }
   };
 
   return (
-    <div>
+    <>
       <NavBar />
-      <div className="container">
-        <div className="row">
-          <div className="col-md-6 mx-auto">
-            <div className="card">
-              <h1>Admin Panel</h1>
-              <form>
-                <div>
-                  <label>Username:</label>
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
+      <section className="container my-5">
+        <h4 className="text-uppercase text-black-50">Admin Log in</h4>
+
+        <div className="container col-lg-10">
+          <div
+            className="rounded row"
+            style={{ backgroundColor: "rgb(255, 255, 255)" }}
+          >
+            <div className="col-md-6 mx-auto my-3">
+              <p>
+                Welcome back to Parisukat! We're thrilled to have you here
+                again.
+              </p>
+              <div className="mb-3">
+                <p style={{ color: "red" }}>{acctDoNotExist}</p>
+
+                <label htmlFor="inputLogEmail" className="form-label">
+                  Email address
+                </label>
+                <input
+                  className="form-control"
+                  type="email"
+                  id="inputLogEmail"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setEmailTrigger(true);
+                  }}
+                />
+
+                <p style={{ color: "red" }}>{emailIsRequired}</p>
+                <p style={{ color: "red" }}>{emailNotExist}</p>
+                <p style={{ color: "red" }}>{emailNotValid}</p>
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="inputLogPassword" className="form-label">
+                  Password
+                </label>
+                <input
+                  className="form-control"
+                  type="password"
+                  id="inputLogPassword"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setPasswordTrigger(true);
+                  }}
+                />
+
+                <p style={{ color: "red" }}>{passwordIsRequired}</p>
+                <p style={{ color: "red" }}>{passwordNotValid}</p>
+              </div>
+
+              <div className="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="checkBox"
+                  required
+                />
+                <label className="form-check-label" htmlFor="checkBox">
+                  Remember
+                </label>
+                <div className="form-text">
+                  Save information to automatically log in.
                 </div>
-                <div>
-                  <label>Password:</label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <button onClick={handleLogin}>Login</button>
-              </form>
+              </div>
+
+              <br />
+
+              <button className="btn btn-primary" onClick={Login}>
+                Log in
+              </button>
+
+              <div className="my-3">
+                <a href="/">Forgot your password?</a>
+                <br />
+                <a href="/sign-up">Doesn't have an account?</a>
+              </div>
+
+              <div className="text-center">
+                <br />
+                <p>or</p>
+                <a href="/">
+                  <i className="fa-brands fa-google fs-1 p-3"></i>
+                </a>
+                <a href="/">
+                  <i className="fa-brands fa-yahoo fs-1 p-3"></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
       <Footer />
-    </div>
+    </>
   );
 };
 
-export default AdminLogin;
+export default LogIn;

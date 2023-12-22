@@ -11,7 +11,7 @@ import "../../components/styles.css";
 // Components
 import NavBar from "../../components/navbar/NavBar";
 import Footer from "../../components/footer/Footer";
-import { useAuth } from "../context/useAuth";
+import { useUserAuth } from "../context/useAuth";
 
 const Cart = () => {
   const [items, setItems] = useState([]);
@@ -19,7 +19,7 @@ const Cart = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const auth = useAuth();
+  const auth = useUserAuth();
   const customer_id = auth.user.customer_id;
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const Cart = () => {
     };
 
     fetchProduct();
-  }, []);
+  }, [customer_id]);
 
   const handleDelete = async (cart_item_id) => {
     console.log(cart_item_id);

@@ -18,6 +18,7 @@ import SignUp from "./pages/Sign-up";
 import Checkout from "./pages/customer/Checkout";
 import OrderSummary from "./pages/customer/OrderSummary.js";
 import OrderSummaryId from "./pages/customer/OrderSummaryId.js";
+import AdminOrderSummaryId from "./pages/admin/AdminOrderSummaryId.js";
 import { UserAuthProvider, AdminAuthProvider } from "./pages/context/useAuth";
 import RequireUserAuth from "./pages/context/requireUserAuth.js";
 import RequireAdminAuth from "./pages/context/requireAdminAuth.js";
@@ -58,6 +59,14 @@ const App = () => (
               element={
                 <RequireAdminAuth>
                   <AddProduct />
+                </RequireAdminAuth>
+              }
+            />
+            <Route
+              path="/admin-order-summary/:order_id"
+              element={
+                <RequireAdminAuth>
+                  <AdminOrderSummaryId />
                 </RequireAdminAuth>
               }
             />

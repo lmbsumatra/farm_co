@@ -207,6 +207,17 @@ app.get("/categories", (req, res) => {
   });
 });
 
+app.get("/status", (req, res) => {
+  const query = "SELECT * FROM `status`";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+    res.json(results);
+  });
+});
+
 app.get("/cart/:customer_id", (req, res) => {
   const customerId = req.params.customer_id;
 
@@ -305,15 +316,13 @@ app.get("/order-items/:order_id", (req, res) => {
       // Combine the results and send to the frontend
       const responseData = {
         orderItems: resultsOrderItems,
-        status: status,
+        currentStatus: status,
       };
 
       res.json(responseData);
     });
   });
 });
-
-
 
 app.get("/admins", (req, res) => {
   const query = `

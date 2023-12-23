@@ -1,4 +1,4 @@
-import NavBar from "../../components/navbar/NavBar.jsx";
+import NavBarAdmin from "../../components/navbar/NavBarAdmin.jsx";
 import Footer from "../../components/footer/Footer.jsx";
 // import LoginBanner from "./components/images/log-in.jpg";
 import React, { useState, useEffect } from "react";
@@ -123,7 +123,7 @@ const LogIn = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBarAdmin />
       <section className="container my-5">
         <h4 className="text-uppercase text-black-50">Admin Log in</h4>
 

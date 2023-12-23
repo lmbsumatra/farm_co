@@ -9,7 +9,7 @@ import "../../components/styles.css";
 import { Dropdown } from "react-bootstrap";
 
 // Components
-import NavBar from "../../components/navbar/NavBar";
+import NavBarAdmin from "../../components/navbar/NavBarAdmin";
 import Footer from "../../components/footer/Footer";
 
 const AddProduct = () => {
@@ -89,7 +89,7 @@ const AddProduct = () => {
 
   return (
     <div>
-      <NavBar />
+      <NavBarAdmin />
       <section className="form" key={product.product_id}>
         <h4>Add New Item</h4>
 

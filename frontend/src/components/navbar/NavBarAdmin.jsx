@@ -1,18 +1,18 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
-import { useUserAuth } from "../../pages/context/useAuth";
 import { useAdminAuth } from "../../pages/context/useAuth";
 
 import { useNavigate } from "react-router-dom";
 
-const NavBar = () => {
+const NavBarAdmin = () => {
   const navigate = useNavigate();
-  const auth = useUserAuth();
 
   const handleLogout = () => {
-    auth.logout();
-    navigate("/");
+    auth.logoutAdmin();
+    navigate("/admin-login");
   };
+
+  const auth = useAdminAuth();
 
   return (
     <section id="Navbar">
@@ -28,11 +28,13 @@ const NavBar = () => {
 
             <Nav.Link href={"#About-us"}>About us</Nav.Link>
 
-            <Nav.Link href={"/shop"}>Shop</Nav.Link>
+            <Nav.Link href={auth.admin ? `/admin-panel` : "/log-in"}>
+              Orders
+            </Nav.Link>
 
-            <Nav.Link href={auth.user ? `/cart` : "/log-in"}>Cart</Nav.Link>
-
-            <Nav.Link href={auth.user ? `/orders` : "/log-in"}>Orders</Nav.Link>
+            <Nav.Link href={auth.admin ? `/admin-panel` : "/log-in"}>
+              Admin Panel
+            </Nav.Link>
           </Nav>
           <Nav>
             <form className="d-flex" role="search">
@@ -48,18 +50,18 @@ const NavBar = () => {
             </form>
           </Nav>
           <Nav>
-            {!auth.user ? (
-              <Nav.Link href="/log-in">Log in</Nav.Link>
+            {!auth.admin ? (
+              <Nav.Link href="/admin-login">Log in Admin</Nav.Link>
             ) : (
-              <Nav.Link onClick={handleLogout}>Log out</Nav.Link>
+              <Nav.Link onClick={handleLogout}>Log out Admin</Nav.Link>
             )}
 
-            {!auth.user ? (
+            {!auth.admin ? (
               <Nav.Link href="/sign-up">Sign up</Nav.Link>
             ) : (
               <p></p>
             )}
-            
+
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -67,4 +69,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default NavBarAdmin;

@@ -62,6 +62,7 @@ const Product = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
+      
       if (customer_id === null) {
         navigate("/log-in");
       } else {

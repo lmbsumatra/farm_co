@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "./context/useAuth.js";
 
 const LogIn = () => {
-
   const [email, setEmail] = useState("");
   const [emailNotValid, setEmailNotValidMsg] = useState("");
   const [emailNotExist, setEmailNotExistMsg] = useState("");
@@ -28,9 +27,7 @@ const LogIn = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/customers`
-        );
+        const response = await axios.get(`http://localhost:5000/customers`);
         setUserList(response.data);
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -48,75 +45,70 @@ const LogIn = () => {
 
   // log in email validation
   useEffect(() => {
-
     const validateLogEmail = () => {
-    // should be filled out
-    if (email === "") {
-      setEmailIsRequiredMsg("Email is required.");
-    } else {
-      setEmailIsRequiredMsg("");
-    }
-
-    // should have email formatting
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setEmailNotValidMsg("");
-    } else {
-      setEmailNotValidMsg("Email should be valid");
-    }
-
-    // check email existance
-    for (let i = 0; i < userList.length; i++) {
-      const user = userList[i];
-      if (user.email === email) {
-        setEmailNotExistMsg("");
-        break;
+      // should be filled out
+      if (email === "") {
+        setEmailIsRequiredMsg("Email is required.");
       } else {
-        setEmailNotExistMsg("Email is not registered");
+        setEmailIsRequiredMsg("");
       }
+
+      // should have email formatting
+      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setEmailNotValidMsg("");
+      } else {
+        setEmailNotValidMsg("Email should be valid");
+      }
+
+      // check email existance
+      for (let i = 0; i < userList.length; i++) {
+        const user = userList[i];
+        if (user.email === email) {
+          setEmailNotExistMsg("");
+          break;
+        } else {
+          setEmailNotExistMsg("Email is not registered");
+        }
+      }
+    };
+    if (emailTrigger) {
+      validateLogEmail();
     }
-  };
-      if (emailTrigger) {
-        validateLogEmail();
-      }
-    },
-    [email, emailTrigger, userList]
-  );
+  }, [email, emailTrigger, userList]);
 
   // log in password validation
   useEffect(() => {
     const validateLogPassword = () => {
-    // should be filled out
-    if (password === "") {
-      setPasswordIsRequiredMsg("Password is required.");
-    } else {
-      setPasswordIsRequiredMsg("");
-    }
-
-    // should count between 8 and 20
-    if (password.length < 8 || password.length > 20) {
-      setPasswordNotValidMsg(
-        "Password characters should only count between 8 and 20."
-      );
-    } else {
-      setPasswordNotValidMsg("");
-    }
-  };
-      if (passwordTrigger) {
-        validateLogPassword();
+      // should be filled out
+      if (password === "") {
+        setPasswordIsRequiredMsg("Password is required.");
+      } else {
+        setPasswordIsRequiredMsg("");
       }
-    },
-    [password, passwordTrigger]
-  );
+
+      // should count between 8 and 20
+      if (password.length < 8 || password.length > 20) {
+        setPasswordNotValidMsg(
+          "Password characters should only count between 8 and 20."
+        );
+      } else {
+        setPasswordNotValidMsg("");
+      }
+    };
+    if (passwordTrigger) {
+      validateLogPassword();
+    }
+  }, [password, passwordTrigger]);
 
   // log in, email to user's password validation
   const Login = () => {
     for (let i = 0; i < userList.length; i++) {
       const user = userList[i];
       if (user.email === email && user.password === password) {
-        console.log(user)
-        auth.login(user)
+        console.log(user);
+        auth.login(user);
         setAcctDoNotExistMsg("");
-        navigate(`/`)
+        navigate(`/`);
       } else if (password === "" && email === "") {
         setEmailIsRequiredMsg("Email is required.");
         setPasswordIsRequiredMsg("Password is required.");
@@ -129,20 +121,20 @@ const LogIn = () => {
   return (
     <>
       <NavBar />
-      <section className="container my-5">
-        <h4 className="text-uppercase text-black-50">Log in</h4>
+      <section className="body-bg">
+        <div className="container my-5">
+          <h4 className="text-uppercase text-black-50">Log in</h4>
 
-        <div className="container col-lg-10">
-          <div
-            className="rounded row"
-            style={{ backgroundColor: "rgb(255, 255, 255)" }}
-          >
-
-            <div className="col-md-6 mx-auto my-3">
-              <p>
-                Welcome back to Parisukat! We're thrilled to have you here
-                again.
-              </p>
+          <div className="container col-lg-6">
+            <div
+              className="rounded row"
+              style={{ backgroundColor: "rgb(255, 255, 255)" }}
+            >
+              <div className="mx-auto my-5 px-5">
+                <p>
+                  Welcome back to Parisukat! We're thrilled to have you here
+                  again.
+                </p>
                 <div className="mb-3">
                   <p style={{ color: "red" }}>{acctDoNotExist}</p>
 
@@ -223,6 +215,7 @@ const LogIn = () => {
                     <i className="fa-brands fa-yahoo fs-1 p-3"></i>
                   </a>
                 </div>
+              </div>
             </div>
           </div>
         </div>

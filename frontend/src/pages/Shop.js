@@ -38,7 +38,7 @@ const Shop = () => {
   return (
     <div>
       <NavBar />
-      <section>
+      <section className="body-bg">
         <h4 className="section-title">Products</h4>
         <div className="container-fluid">
           <div className="row justify-content-evenly">

@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useUserAuth } from "../context/useAuth";
 
+// Ui imports
+import "../../components/styles.css";
 
 // Components
 import NavBar from "../../components/navbar/NavBar";
@@ -40,7 +42,7 @@ const Checkout = () => {
         );
 
         setItems(selectedItemsInCart);
-        console.log('here',items)
+        console.log("here", items);
       } catch (error) {
         console.error("Error fetching product:", error);
       }
@@ -48,8 +50,6 @@ const Checkout = () => {
 
     fetchProduct();
   }, [selectedItemsArray, customer_id, items]);
-
-  
 
   useEffect(() => {
     // Calculate the grand total when items change
@@ -60,9 +60,13 @@ const Checkout = () => {
   const handleCheckout = async () => {
     try {
       // Send a POST request to your backend server to handle checkout
-      await axios.post("http://localhost:5000/checkout", { customer_id, grandTotal, selectedItemsArray });
+      await axios.post("http://localhost:5000/checkout", {
+        customer_id,
+        grandTotal,
+        selectedItemsArray,
+      });
 
-        navigate(`/orders`);
+      navigate(`/orders`);
       console.log("Checkout successful!");
     } catch (error) {
       console.error("Error during checkout:", error);
@@ -72,52 +76,56 @@ const Checkout = () => {
   return (
     <>
       <NavBar />
-      <section>
-        <h2>Checkout</h2>
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <td>Image</td>
-              <td>Product</td>
-              <td>Quantity</td>
-              <td>Price</td>
-              <td>Total</td>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.cart_item_id}>
-                <td>
-                  <img
-                    src={`http://localhost:5000/images/products/${item.image}`}
-                    alt={item.name}
-                    style={{ width: "50px" }}
-                  />
-                </td>
-                <td>{item.product_name}</td>
-                <td>{item.quantity}</td>
-                <td>₱ {item.price}</td>
-                <td>₱ {item.total}</td>
-              </tr>
-            ))}
-            <tr>
-              <td colSpan="5" className="text-end">
-                  {grandTotal}
-              </td>
-            </tr>
-            <tr>
-              <td colSpan="7">
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  onClick={handleCheckout}
-                >
-                  Order
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <section className="body-bg">
+        <div>
+          <h2 className="section-title">Checkout</h2>
+          <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
+            <table className="table">
+              <thead>
+                <tr>
+                  <td>Image</td>
+                  <td>Product</td>
+                  <td>Quantity</td>
+                  <td>Price</td>
+                  <td>Total</td>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item) => (
+                  <tr key={item.cart_item_id}>
+                    <td>
+                      <img
+                        src={`http://localhost:5000/images/products/${item.image}`}
+                        alt={item.name}
+                        style={{ width: "50px" }}
+                      />
+                    </td>
+                    <td>{item.product_name}</td>
+                    <td>{item.quantity}</td>
+                    <td>₱ {item.price}</td>
+                    <td>₱ {item.total}</td>
+                  </tr>
+                ))}
+                <tr>
+                  <td colSpan="5" className="text-end">
+                    {grandTotal}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="7">
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={handleCheckout}
+                    >
+                      Order
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
       <Footer />
     </>

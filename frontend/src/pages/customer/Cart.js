@@ -60,73 +60,78 @@ const Cart = () => {
   };
 
   return (
-    <div>
+    <>
       <NavBar />
-      <section className="body-bg mx-75 d-block">
-        <h4 className="text-black-50">My Cart</h4>
-        <table className="table">
-          <thead>
-            <tr>
-              <td>Select</td>
-              <td>Image</td>
-              <td>Product</td>
-              <td>Quantity</td>
-              <td>Price</td>
-              <td>Total</td>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.cart_item_id}>
-                <td>
-                  <input
-                    type="checkbox"
-                    onChange={() => handleCheckboxChange(item.cart_item_id)}
-                  />
-                </td>
-                <td>
-                  <img
-                    src={`http://localhost:5000/images/products/${item.image}`}
-                    alt={item.name}
-                    style={{ width: "50px" }}
-                  />
-                </td>
-                <td>{item.product_name}</td>
-                <td>{item.quantity}</td>
-                <td>₱ {item.price}</td>
-                <td>₱ {item.total}</td>
+      <section className="body-bg">
+        <div>
+          <h4 className="section-title">My Cart</h4>
+          <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
+            <table className="table">
+              <thead>
+                <tr>
+                  <td>Select</td>
+                  <td>Image</td>
+                  <td>Product</td>
+                  <td>Quantity</td>
+                  <td>Price</td>
+                  <td>Total</td>
+                  <td></td>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item) => (
+                  <tr key={item.cart_item_id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        onChange={() => handleCheckboxChange(item.cart_item_id)}
+                      />
+                    </td>
+                    <td>
+                      <img
+                        src={`http://localhost:5000/images/products/${item.image}`}
+                        alt={item.name}
+                        style={{ width: "50px" }}
+                      />
+                    </td>
+                    <td>{item.product_name}</td>
+                    <td>{item.quantity}</td>
+                    <td>₱ {item.price}</td>
+                    <td>₱ {item.total}</td>
 
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger"
-                    onClick={() => handleDelete(item.cart_item_id)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            <tr>
-              <td colSpan="7">
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  onClick={handleCheckout}
-                  disabled={
-                    Object.values(selectedItems).filter(Boolean).length === 0
-                  }
-                >
-                  Checkout
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                    <td>
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger"
+                        onClick={() => handleDelete(item.cart_item_id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                <tr>
+                  <td colSpan="7">
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={handleCheckout}
+                      disabled={
+                        Object.values(selectedItems).filter(Boolean).length ===
+                        0
+                      }
+                    >
+                      Checkout
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
       <Footer />
-    </div>
+    </>
   );
 };
 

@@ -8,8 +8,7 @@ const Testimonials = () => {
       <div className="container-fluid">
         <div className="row justify-content-around">
           <div
-            className="card col-3"
-            style={{ width: "18rem", height: "15rem" }}
+            className="card col-3 card-hw m-2"
           >
             <div className="card-body d-flex flex-column align-items-center">
               <p className="card-text">
@@ -19,23 +18,21 @@ const Testimonials = () => {
               <div className="d-flex align-items-center">
                 <img
                   src={''}
-                  className="col-1 object-fit-cover rounded-circle"
+                  className="col-1 object-fit-cover rounded-circle img-profile"
                   alt="Customer profile"
-                  style={{ height: "100px", width: "100px" }}
                 />
                 <div className="ml-2">
                   <p>Angela York</p>
                   <i
-                    className="fa-solid fa-star"
-                    style={{ color: "#e1aa14" }}
+                    className="fa-solid fa-star star-filled"
                   ></i>
                 </div>
               </div>
             </div>
           </div>
+
           <div
-            className="card col-3"
-            style={{ width: "18rem", height: "15rem" }}
+            className="card col-3 card-hw m-2"
           >
             <div className="card-body d-flex flex-column align-items-center">
               <p className="card-text">
@@ -45,23 +42,21 @@ const Testimonials = () => {
               <div className="d-flex align-items-center">
                 <img
                   src={''}
-                  className="col-1 object-fit-cover rounded-circle"
+                  className="col-1 object-fit-cover rounded-circle img-profile"
                   alt="Customer profile"
-                  style={{ height: "100px", width: "100px" }}
                 />
                 <div className="ml-2">
                   <p>Angela York</p>
                   <i
-                    className="fa-solid fa-star"
-                    style={{ color: "#e1aa14" }}
+                    className="fa-solid fa-star star-filled"
                   ></i>
                 </div>
               </div>
             </div>
           </div>
+
           <div
-            className="card col-3"
-            style={{ width: "18rem", height: "15rem" }}
+            className="card col-3 card-hw m-2"
           >
             <div className="card-body d-flex flex-column align-items-center">
               <p className="card-text">
@@ -71,15 +66,13 @@ const Testimonials = () => {
               <div className="d-flex align-items-center">
                 <img
                   src={''}
-                  className="col-1 object-fit-cover rounded-circle"
+                  className="col-1 object-fit-cover rounded-circle img-profile"
                   alt="Customer profile"
-                  style={{ height: "100px", width: "100px" }}
                 />
                 <div className="ml-2">
                   <p>Angela York</p>
                   <i
-                    className="fa-solid fa-star"
-                    style={{ color: "#e1aa14" }}
+                    className="fa-solid fa-star star-filled"
                   ></i>
                 </div>
               </div>

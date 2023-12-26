@@ -1,26 +1,41 @@
+/* Nav bar */
+#Navbar,
+.navbar {
+  background-color: #ffffff;
+}
+
+#Navbar p, #Navbar h2 {
+  color: rgb(16, 75, 31);
+}
+
+/* Hero Section */
+#Hero {
+  background-image: url("../images/hero/hero_.jpg");
+  background-size: cover;
+  background-color: rgb(180, 180, 180);
+}
+
+/* General */
 section {
-  padding: 40px;
+  padding: 20px;
 }
 
 .section-title {
-  color: rgb(185, 185, 185);
+  color: rgb(160, 160, 160);
   text-transform: uppercase;
   padding: 20px;
 }
 
-#Hero {
-  background-color: rgb(180, 180, 180);
-}
-#Navbar,
-.navbar {
-  background-color: rgb(146, 146, 146);
+.width-80vw {
+  width: 80vw;
 }
 
 .body-bg {
   background-color: rgb(245, 245, 245);
 }
-
-
+.bg-white {
+  background-color: rgb(255, 255, 255);
+}
 
 .socials-logo {
   width: 50px;
@@ -37,6 +52,11 @@ section {
   overflow: hidden;
 }
 
+.card-hw {
+  width: 18rem;
+  height: 15rem;
+}
+
 .product-card {
   width: 15rem;
   height: 20rem;
@@ -45,7 +65,6 @@ section {
 }
 
 .product-card:hover {
-  /* background-color: #f8eaea; */
   filter: brightness(.95); 
   border-color: #138844;
   
@@ -64,4 +83,13 @@ section {
   font-size: 1rem;
   color: #138844;
   font-weight: 600;
+}
+
+.img-profile {
+  width: 100px;
+  height: 100px;
+}
+
+.star-filled {
+  color: #e1aa14;
 }

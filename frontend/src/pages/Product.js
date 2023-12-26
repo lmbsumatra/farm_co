@@ -84,13 +84,12 @@ const Product = () => {
   return (
     <div key={product.product_id}>
       <NavBar />
-      <section id="About-us">
-        <h4 className="section-title">About us</h4>
+      <section id="About-us" className="body-bg">
+        <h4 className="section-title">Product</h4>
         <div className="container-fluid">
           <div
-            className="card mx-auto overflow-hidden"
-            style={{ maxWidth: "100%" }}
-          >
+            className="card mx-auto overflow-hidden width-80vw"
+          > 
             <div className="row g-0">
               <div className="col-md-6">
                 <img
@@ -103,7 +102,7 @@ const Product = () => {
               <div className="col-md-6">
                 <div className="card-body">
                   <h5 className="card-title">{product.product_name}</h5>
-                  <h5 className="card-title">{product.price} per kilo</h5>
+                  <h5 className="card-title price">{product.price} per kilo</h5>
 
                   <button
                     type="button"

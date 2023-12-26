@@ -1,7 +1,15 @@
 import React from "react";
 import "../styles.css";
 
+import { useNavigate } from "react-router-dom";
+
 const Hero = () => {
+
+  const navigate = useNavigate();
+
+  const handleBuyNow = () => {
+    navigate("/shop")
+  }
   return (
     <section id="Hero">
       <div className="container-fluid">
@@ -13,10 +21,10 @@ const Hero = () => {
             Your Community's Farm: Bringing Freshness to <br /> Your Doorstep
           </p>
           <div className="mt-3">
-            <button type="button" className="btn btn-primary">
+            <button type="button" className="btn btn-success m-2" onClick={handleBuyNow}>
               Buy now!
             </button>
-            <button type="button" className="btn btn-outline-secondary">
+            <button type="button" className="btn btn-outline-success m-2">
               I want to sell
             </button>
           </div>

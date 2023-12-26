@@ -8,18 +8,17 @@ const About = () => {
       <h4 className="section-title">About us</h4>
       <div className="container-fluid">
         <div
-          className="card mx-auto overflow-hidden"
-          style={{ maxWidth: "100%" }}
+          className="card mx-auto overflow-hidden width-80vw"
         >
           <div className="row g-0">
             <div className="col-md-6">
               <img src={img_1} className="img-fluid" alt="Farmco farmland" />
             </div>
+            
             <div className="col-md-6">
               <div className="card-body">
-                <h5 className="card-title">Card title</h5>
+                <h5 className="card-title">Our Story</h5>
                 <p className="card-text">
-                  Our Story <br />
                   "At [Farm Name], our journey began [X years ago/ in a small
                   rural town/ with a family tradition]. Founded by [Founder's
                   Name], our farm has grown into a thriving hub for fresh,

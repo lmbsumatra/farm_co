@@ -9,22 +9,17 @@ import phone from "../../assets/images/contacts/messages-chat-1557-svgrepo-com.s
 const Footer = () => {
   return (
     <div>
-      <div className="container">
-        <footer className="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5 border-top">
+      <div className="container border-top">
+        <footer className="row row-cols-1 row-cols-sm-2 row-cols-md-5 my-5">
           <div className="col mb-3">
-            <a
-              href="https://getbootstrap.com/"
-              className="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none"
-            >
-              {/* <svg className="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg> */}
-            </a>
+            
             <p className="text-body-secondary"> FarmCo © 2023</p>
           </div>
 
           <div className="col mb-3"></div>
 
           <div className="col mb-3">
-            <h5>Section</h5>
+            <h5>Menu</h5>
             <ul className="nav flex-column">
               <li className="nav-item mb-2">
                 <a href="/" className="nav-link p-0 text-body-secondary">
@@ -50,7 +45,7 @@ const Footer = () => {
           </div>
 
           <div className="col mb-3">
-            <h5>Section</h5>
+            <h5>Socials</h5>
             <ul className="nav flex-column">
               <li className="nav-item mb-2">
                 <a href="/" className="nav-link p-0 text-body-secondary">
@@ -71,7 +66,7 @@ const Footer = () => {
           </div>
 
           <div className="col mb-3">
-            <h5>Section</h5>
+            <h5>Contacts</h5>
             <ul className="nav flex-column">
               <li className="nav-item mb-2">
                 <a href="/" className="nav-link p-0 text-body-secondary">

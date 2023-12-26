@@ -26,8 +26,23 @@ section {
   padding: 20px;
 }
 
+.section-title-dark {
+  color: rgb(29, 29, 29);
+  text-transform: uppercase;
+  padding: 20px;
+}
+
 .width-80vw {
   width: 80vw;
+}
+
+.height-100vw {
+  height: 30vw;
+}
+
+.image-hw {
+  height: 30vw;
+  width: auto;
 }
 
 .body-bg {

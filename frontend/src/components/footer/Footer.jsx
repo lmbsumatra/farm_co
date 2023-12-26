@@ -27,17 +27,17 @@ const Footer = () => {
                 </a>
               </li>
               <li className="nav-item mb-2">
-                <a href="/" className="nav-link p-0 text-body-secondary">
+                <a href="/#About-us" className="nav-link p-0 text-body-secondary">
                   About us
                 </a>
               </li>
               <li className="nav-item mb-2">
-                <a href="/" className="nav-link p-0 text-body-secondary">
+                <a href="/shop" className="nav-link p-0 text-body-secondary">
                   Shop
                 </a>
               </li>
               <li className="nav-item mb-2">
-                <a href="/" className="nav-link p-0 text-body-secondary">
+                <a href="/sign-up" className="nav-link p-0 text-body-secondary">
                   Sign up
                 </a>
               </li>

@@ -47,12 +47,12 @@ const OrderSummary = () => {
     <>
       <NavBar />
       <section className="body-bg">
-        <h2 className="section-title">Orders</h2>
+        <h4 className="section-title">Orders</h4>
         <div className="container">
           {orders.map((order) => (
             <div
               key={order.order_id}
-              className="card mx-auto overflow-hidden width-80vw"
+              className="card mx-auto overflow-hidden width-80vw my-3"
             >
               <div className="row d-flex justify-content-between">
 

@@ -10,6 +10,7 @@ import Product from "./pages/Product";
 
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminPanel from "./pages/admin/AdminPanel";
+
 import EditProduct from "./pages/admin/EditProduct";
 import AddProduct from "./pages/admin/AddProduct";
 import Cart from "./pages/customer/Cart";

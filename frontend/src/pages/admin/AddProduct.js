@@ -16,7 +16,7 @@ const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [product, setProduct] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(null);
-  
+
   const navigate = useNavigate();
 
   // Fetching categories, category_id and category_name
@@ -65,7 +65,7 @@ const AddProduct = () => {
     try {
       const imgInput = document.getElementById("imageUpload");
       const file = imgInput.files[0];
-      
+
       // Using formdata to pass data to server
       const formData = new FormData();
       formData.append("image", file);
@@ -81,131 +81,139 @@ const AddProduct = () => {
 
       // Back to the admin panel page
       navigate("/admin-panel");
-      
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <div>
+    <>
       <NavBarAdmin />
-      <section className="form" key={product.product_id}>
-        <h4>Add New Item</h4>
+      <section className="form body-bg" key={product.product_id}>
+        <div>
+          <h4 className="section-title">Add New Item</h4>
+          <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
+            <div className="row py-3">
+              <div className="col-md-3">
+                {/* Name input */}
+                <label>Name</label>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  name="product_name"
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
 
-        <div className="row py-3">
-          <div className="col-md-3">
-            {/* Name input */}
-            <label>Name</label>
-            <input
-              type="text"
-              placeholder="Name"
-              name="product_name"
-              onChange={handleChange}
-              className="form-control"
-            />
-          </div>
-
-          <div className="col-md-4">
-            {/* Description input */}
-            <label>Description</label>
-            <input
-              type="text"
-              placeholder="Description"
-              name="product_desc"
-              onChange={handleChange}
-              className="form-control"
-            />
-          </div>
-        </div>
-
-        <div className="row py-3">
-          <div className="col-md-3">
-            {/* Image upload */}
-            <label>Image</label>
-            <div className="custom-file">
-              <input
-                type="file"
-                className="custom-file-input"
-                id="imageUpload"
-                accept="image/*"
-                onChange={handleChange}
-              />
+              <div className="col-md-4">
+                {/* Description input */}
+                <label>Description</label>
+                <input
+                  type="text"
+                  placeholder="Description"
+                  name="product_desc"
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="col-md-4">
-            {/* Price input */}
-            <label>Price</label>
-            <input
-              type="number"
-              placeholder="Price"
-              name="product_price"
-              onChange={handleChange}
-              className="form-control"
-            />
-          </div>
-        </div>
+            <div className="row py-3">
+              <div className="col-md-3">
+                {/* Image upload */}
+                <label>Image</label>
+                <div className="custom-file">
+                  <input
+                    type="file"
+                    className="custom-file-input"
+                    id="imageUpload"
+                    accept="image/*"
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
 
-        <div className="row py-3">
-          <div className="col-md-3">
-            {/* Categoy dropdown */}
-            <label>Category</label>
-            <Dropdown onSelect={handleCategorySelect}>
-              <Dropdown.Toggle variant="success" id="category-dropdown">
-                {selectedCategory ? `${selectedCategory}` : "Select a category"}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                {categories.map((category) => (
-                  <Dropdown.Item
-                    key={category.category_id}
-                    eventKey={category.category_name}
-                  >
-                    {category.category_name}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-
-          <div className="col-md-3">
-            {/* Is featured checkbox */}
-            <div className="form-check  py-4">
-              <input
-                className="form-check-input"
-                name="product_isfeatured"
-                type="checkbox"
-                id="gridCheck"
-                onChange={handleChange}
-                // If checked, product_isfeatured = 1
-                checked={product.product_isfeatured === 1}
-              />
-              <label className="form-check-label" htmlFor="gridCheck">
-                Is featured
-              </label>
+              <div className="col-md-4">
+                {/* Price input */}
+                <label>Price</label>
+                <input
+                  type="number"
+                  placeholder="Price"
+                  name="product_price"
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="col-md-3">
-            {/* Quantity input */}
-            <label>Quantity</label>
-            <input
-              type="number"
-              placeholder="Quantity"
-              name="product_qty"
-              onChange={handleChange}
-              className="form-control"
-            />
+            <div className="row py-3">
+              <div className="col-md-3">
+                {/* Categoy dropdown */}
+                <label>Category</label>
+                <Dropdown onSelect={handleCategorySelect}>
+                  <Dropdown.Toggle variant="success" id="category-dropdown">
+                    {selectedCategory
+                      ? `${selectedCategory}`
+                      : "Select a category"}
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    {categories.map((category) => (
+                      <Dropdown.Item
+                        key={category.category_id}
+                        eventKey={category.category_name}
+                      >
+                        {category.category_name}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+
+              <div className="col-md-3">
+                {/* Is featured checkbox */}
+                <div className="form-check  py-4">
+                  <input
+                    className="form-check-input"
+                    name="product_isfeatured"
+                    type="checkbox"
+                    id="gridCheck"
+                    onChange={handleChange}
+                    // If checked, product_isfeatured = 1
+                    checked={product.product_isfeatured === 1}
+                  />
+                  <label className="form-check-label" htmlFor="gridCheck">
+                    Is featured
+                  </label>
+                </div>
+              </div>
+
+              <div className="col-md-3">
+                {/* Quantity input */}
+                <label>Quantity</label>
+                <input
+                  type="number"
+                  placeholder="Quantity"
+                  name="product_qty"
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={handleClick}
+            >
+              Add Item
+            </button>
           </div>
         </div>
-
-        <button type="button" className="btn btn-success" onClick={handleClick}>
-          Add Item
-        </button>
       </section>
       <Footer />
-    </div>
+    </>
   );
 };
 

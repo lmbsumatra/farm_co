@@ -78,17 +78,17 @@ const NavBar = () => {
             <div className="col-lg-4 col-md-12 mx-auto">
               <Nav>
                 {!auth.user ? (
-                  <button type="button" class="btn btn-success me-2" onClick={handleLogin}>
+                  <button type="button" className="btn btn-success me-2" onClick={handleLogin}>
                     Log in
                   </button>
                 ) : (
-                  <button type="button" class="btn btn-outline-success me-2" onClick={handleLogout}>
+                  <button type="button" className="btn btn-outline-success me-2" onClick={handleLogout}>
                     Log out
                   </button>
                 )}
 
                 {!auth.user ? (
-                  <button type="button" class="btn btn-outline-success me-2" onClick={handleSignup}>
+                  <button type="button" className="btn btn-outline-success me-2" onClick={handleSignup}>
                     Sign up
                   </button>
                 ) : (

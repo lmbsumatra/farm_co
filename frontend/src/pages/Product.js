@@ -88,13 +88,13 @@ const Product = () => {
         <h4 className="section-title">Product</h4>
         <div className="container-fluid">
           <div
-            className="card mx-auto overflow-hidden width-80vw"
+            className="card mx-auto overflow-hidden width-80vw height-100vw"
           > 
             <div className="row g-0">
               <div className="col-md-6">
                 <img
                   src={`http://localhost:5000/images/products/${product.image}`}
-                  className="img-fluid"
+                  className="img-fluid image-hw"
                   alt={product.description}
                 />
               </div>

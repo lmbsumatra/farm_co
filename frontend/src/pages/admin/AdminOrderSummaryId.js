@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 const AdminOrderSummaryId = () => {
   const [orderItems, setOrderItems] = useState([]);
   const [status, setStatus] = useState([]);
+  const [currentStatus, setCurrentStatus] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
 
   const location = useLocation();
@@ -28,6 +29,7 @@ const AdminOrderSummaryId = () => {
 
         const { orderItems, currentStatus } = orderResponse.data;
         setOrderItems(orderItems);
+        setCurrentStatus(currentStatus);
 
         // Set the selected status based on the fetched value
         const selectedStatusObject = status.find(
@@ -45,75 +47,93 @@ const AdminOrderSummaryId = () => {
     fetchData();
   }, [order_id, status]);
 
-  const handleStatusSelect = (eventKey) => {
+  const handleStatusSelect = async (eventKey) => {
     const selectedStatusObject = status.find(
       (status) => status.status_name === eventKey
     );
 
-    if (selectedStatusObject) {
-      setSelectedStatus(eventKey);
-      // You can perform additional actions if needed
+    try {
+      if (selectedStatusObject) {
+        setSelectedStatus(eventKey);
 
-      // Update the status state to reflect the change
-      setStatus((prevStatus) =>
-        prevStatus.map((stat) =>
-          stat.status_name === eventKey
-            ? { ...stat, selected: true } // You can add a "selected" property to the status object
-            : { ...stat, selected: false }
-        )
-      );
+        const formData = new FormData();
+        formData.append("status_id", selectedStatusObject.status_id);
+        formData.append("order_id", order_id);
+
+        await axios.put(
+          `http://localhost:5000/order-items/${order_id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      }
+    } catch (error) {
+      console.error("Error updating order status:", error);
     }
   };
 
   return (
     <>
       <NavBar />
-      <section>
-        <h2>
-          Order {order_id} Summary : Status :{" "}
-          <Dropdown onSelect={handleStatusSelect}>
-            <Dropdown.Toggle variant="success" id="category-dropdown">
-              {selectedStatus ? `${selectedStatus}` : "Select a status"}
-            </Dropdown.Toggle>
+      <section className="body-bg">
+        <div>
+          <h4 className="section-title-dark d-flex">
+            Order {order_id} Summary : Status :
+            <Dropdown onSelect={handleStatusSelect}>
+              <Dropdown.Toggle
+                variant="success"
+                id="category-dropdown"
+                className="mx-3"
+              >
+                {selectedStatus ? `${selectedStatus}` : "Select a status"}
+              </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-              {status.map((stat) => (
-                <Dropdown.Item key={stat.status_id} eventKey={stat.status_name}>
-                  {stat.status_name}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-        </h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <td>Image</td>
-              <td>Product</td>
-              <td>Quantity</td>
-              <td>Price</td>
-              <td>Total</td>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody>
-            {orderItems.map((orderItem) => (
-              <tr key={orderItem.order_item_id}>
-                <td>
-                  <img
-                    src={`http://localhost:5000/images/products/${orderItem.image}`}
-                    alt={orderItem.name}
-                    style={{ width: "50px" }}
-                  />
-                </td>
-                <td>{orderItem.product_name}</td>
-                <td>{orderItem.quantity}</td>
-                <td>₱ {orderItem.price}</td>
-                <td>₱ {orderItem.total}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              <Dropdown.Menu>
+                {status.map((stat) => (
+                  <Dropdown.Item
+                    key={stat.status_id}
+                    eventKey={stat.status_name}
+                  >
+                    {stat.status_name}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </h4>
+          <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
+            <table className="table">
+              <thead>
+                <tr>
+                  <td>Image</td>
+                  <td>Product</td>
+                  <td>Quantity</td>
+                  <td>Price</td>
+                  <td>Total</td>
+                </tr>
+              </thead>
+              <tbody>
+                {orderItems.map((orderItem) => (
+                  <tr key={orderItem.order_item_id}>
+                    <td>
+                      <img
+                        src={`http://localhost:5000/images/products/${orderItem.image}`}
+                        alt={orderItem.name}
+                        style={{ width: "50px" }}
+                      />
+                    </td>
+                    <td>{orderItem.product_name}</td>
+                    <td>{orderItem.quantity}</td>
+                    <td>₱ {orderItem.price}</td>
+                    <td>₱ {orderItem.total}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
       <Footer />
     </>

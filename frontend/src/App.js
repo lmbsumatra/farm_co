@@ -10,7 +10,8 @@ import Product from "./pages/Product";
 
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminPanel from "./pages/admin/AdminPanel";
-
+import AdminPanelOrders from "./pages/admin/AdminPanelOrders.js";
+import AdminPanelProducts from "./pages/admin/AdminPanelProducts.js";
 import EditProduct from "./pages/admin/EditProduct";
 import AddProduct from "./pages/admin/AddProduct";
 import Cart from "./pages/customer/Cart";
@@ -44,6 +45,22 @@ const App = () => (
               element={
                 <RequireAdminAuth>
                   <AdminPanel />
+                </RequireAdminAuth>
+              }
+            />
+            <Route
+              path="/admin-panel-orders"
+              element={
+                <RequireAdminAuth>
+                  <AdminPanelOrders />
+                </RequireAdminAuth>
+              }
+            />
+            <Route
+              path="/admin-panel-products"
+              element={
+                <RequireAdminAuth>
+                  <AdminPanelProducts />
                 </RequireAdminAuth>
               }
             />

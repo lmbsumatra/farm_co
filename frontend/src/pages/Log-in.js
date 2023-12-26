@@ -39,10 +39,6 @@ const LogIn = () => {
 
   const [acctDoNotExist, setAcctDoNotExistMsg] = useState("");
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-  };
-
   // log in email validation
   useEffect(() => {
     const validateLogEmail = () => {
@@ -123,7 +119,7 @@ const LogIn = () => {
       <NavBar />
       <section className="body-bg">
         <div className="container my-5">
-          <h4 className="text-uppercase text-black-50">Log in</h4>
+          <h4 className="text-uppercase section-title">Log in</h4>
 
           <div className="container col-lg-6">
             <div

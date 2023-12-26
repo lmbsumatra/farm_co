@@ -63,8 +63,10 @@ section {
   margin-right: 10px;
 }
 
-.overflow-hidden {
-  overflow: hidden;
+.table-container {
+  width: 80vw;
+  overflow-x: auto;
+  margin: auto;
 }
 
 .card-hw {

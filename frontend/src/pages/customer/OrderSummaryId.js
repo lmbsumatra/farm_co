@@ -44,35 +44,37 @@ const OrderSummaryId = () => {
             Order {order_id} Summary : Status : {status}
           </h4>
           <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
-            <table className="table">
-              <thead>
-                <tr>
-                  <td>Image</td>
-                  <td>Product</td>
-                  <td>Quantity</td>
-                  <td>Price</td>
-                  <td>Total</td>
-                  <td></td>
-                </tr>
-              </thead>
-              <tbody>
-                {orderItems.map((orderItem) => (
-                  <tr key={orderItem.order_item_id}>
-                    <td>
-                      <img
-                        src={`http://localhost:5000/images/products/${orderItem.image}`}
-                        alt={orderItem.name}
-                        style={{ width: "50px" }}
-                      />
-                    </td>
-                    <td>{orderItem.product_name}</td>
-                    <td>{orderItem.quantity}</td>
-                    <td>₱ {orderItem.price}</td>
-                    <td>₱ {orderItem.total}</td>
+            <div className="table-responsive">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <td>Image</td>
+                    <td>Product</td>
+                    <td>Quantity</td>
+                    <td>Price</td>
+                    <td>Total</td>
+                    <td></td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {orderItems.map((orderItem) => (
+                    <tr key={orderItem.order_item_id}>
+                      <td>
+                        <img
+                          src={`http://localhost:5000/images/products/${orderItem.image}`}
+                          alt={orderItem.name}
+                          style={{ width: "50px" }}
+                        />
+                      </td>
+                      <td>{orderItem.product_name}</td>
+                      <td>{orderItem.quantity}</td>
+                      <td>₱ {orderItem.price}</td>
+                      <td>₱ {orderItem.total}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>

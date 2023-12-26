@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Dropdown } from "react-bootstrap";
 
-import NavBar from "../../components/navbar/NavBar";
+import NavBarAdmin from "../../components/navbar/NavBarAdmin";
 import Footer from "../../components/footer/Footer";
 import { useLocation } from "react-router-dom";
 
@@ -77,7 +77,7 @@ const AdminOrderSummaryId = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBarAdmin />
       <section className="body-bg">
         <div>
           <h4 className="section-title-dark d-flex">
@@ -104,34 +104,36 @@ const AdminOrderSummaryId = () => {
             </Dropdown>
           </h4>
           <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
-            <table className="table">
-              <thead>
-                <tr>
-                  <td>Image</td>
-                  <td>Product</td>
-                  <td>Quantity</td>
-                  <td>Price</td>
-                  <td>Total</td>
-                </tr>
-              </thead>
-              <tbody>
-                {orderItems.map((orderItem) => (
-                  <tr key={orderItem.order_item_id}>
-                    <td>
-                      <img
-                        src={`http://localhost:5000/images/products/${orderItem.image}`}
-                        alt={orderItem.name}
-                        style={{ width: "50px" }}
-                      />
-                    </td>
-                    <td>{orderItem.product_name}</td>
-                    <td>{orderItem.quantity}</td>
-                    <td>₱ {orderItem.price}</td>
-                    <td>₱ {orderItem.total}</td>
+            <div className="table-responsive">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <td>Image</td>
+                    <td>Product</td>
+                    <td>Quantity</td>
+                    <td>Price</td>
+                    <td>Total</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {orderItems.map((orderItem) => (
+                    <tr key={orderItem.order_item_id}>
+                      <td>
+                        <img
+                          src={`http://localhost:5000/images/products/${orderItem.image}`}
+                          alt={orderItem.name}
+                          style={{ width: "50px" }}
+                        />
+                      </td>
+                      <td>{orderItem.product_name}</td>
+                      <td>{orderItem.quantity}</td>
+                      <td>₱ {orderItem.price}</td>
+                      <td>₱ {orderItem.total}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>

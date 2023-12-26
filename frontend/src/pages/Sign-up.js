@@ -248,10 +248,8 @@ const SignUp = () => {
         await axios.post("http://localhost:5000/customers", formData);
         alert("Welcome, " + username + "!");
         navigate('/log-in')
-        // window.location.href = "/sample-post";
       }
 
-      // navigate("/cart");
     } catch (err) {
       console.log(err);
     }
@@ -260,24 +258,18 @@ const SignUp = () => {
   return (
     <>
       <NavBar />
-      <section className="container my-5">
-        <h4 className="text-uppercase text-black-50">Sign up</h4>
+      <section className="body-bg">
+      <div className="container my-5">
+        <h4 className="text-uppercase section-title">Sign up</h4>
 
-        <div className="container col-lg-10">
+        <div className="container col-lg-6">
           <div
             className="rounded row"
             style={{ backgroundColor: "rgb(255, 255, 255)" }}
           >
-            {/* <div className="col-md-6 g-0">
-              <img
-                src={signUpBanner}
-                className="img-fluid object-fit-cover h-100 rounded"
-                alt="Sign up image banner."
-              />
-            </div> */}
 
-            <div className="col-md-6 mx-auto my-3">
-              <form className="p-1" onSubmit={onSubmit}>
+            <div className="mx-auto my-5 px-5">
+              <form className="" onSubmit={onSubmit}>
                 <p>
                   Joining our photography community is a breeze! Here, you'll
                   unlock a vibrant world of visual storytelling and connect with
@@ -419,6 +411,7 @@ const SignUp = () => {
               </form>
             </div>
           </div>
+        </div>
         </div>
       </section>
 

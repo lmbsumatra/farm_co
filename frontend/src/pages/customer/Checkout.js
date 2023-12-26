@@ -80,50 +80,52 @@ const Checkout = () => {
         <div>
           <h2 className="section-title">Checkout</h2>
           <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
-            <table className="table">
-              <thead>
-                <tr>
-                  <td>Image</td>
-                  <td>Product</td>
-                  <td>Quantity</td>
-                  <td>Price</td>
-                  <td>Total</td>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => (
-                  <tr key={item.cart_item_id}>
-                    <td>
-                      <img
-                        src={`http://localhost:5000/images/products/${item.image}`}
-                        alt={item.name}
-                        style={{ width: "50px" }}
-                      />
-                    </td>
-                    <td>{item.product_name}</td>
-                    <td>{item.quantity}</td>
-                    <td>₱ {item.price}</td>
-                    <td>₱ {item.total}</td>
+            <div className="table-responsive">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <td>Image</td>
+                    <td>Product</td>
+                    <td>Quantity</td>
+                    <td>Price</td>
+                    <td>Total</td>
                   </tr>
-                ))}
-                <tr>
-                  <td colSpan="5" className="text-end">
-                    {grandTotal}
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan="7">
-                    <button
-                      type="button"
-                      className="btn btn-success"
-                      onClick={handleCheckout}
-                    >
-                      Order
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {items.map((item) => (
+                    <tr key={item.cart_item_id}>
+                      <td>
+                        <img
+                          src={`http://localhost:5000/images/products/${item.image}`}
+                          alt={item.name}
+                          style={{ width: "50px" }}
+                        />
+                      </td>
+                      <td>{item.product_name}</td>
+                      <td>{item.quantity}</td>
+                      <td>₱ {item.price}</td>
+                      <td>₱ {item.total}</td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td colSpan="5" className="text-end">
+                      {grandTotal}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan="7">
+                      <button
+                        type="button"
+                        className="btn btn-success"
+                        onClick={handleCheckout}
+                      >
+                        Order
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>

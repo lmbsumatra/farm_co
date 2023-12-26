@@ -6,33 +6,35 @@ import { useNavigate } from "react-router-dom";
 
 const NavBarAdmin = () => {
   const navigate = useNavigate();
-  const auth = useAdminAuth;
-  
+  const auth = useAdminAuth();
+
   const handleLogout = () => {
     auth.logoutAdmin();
-    navigate("/");
+    navigate("/admin-login");
   };
   const handleLogin = () => {
     navigate("/admin-login");
   };
 
   const handleSignup = () => {
-    auth.logout();
     navigate("/sign-up");
   };
 
   return (
     <section id="Navbar" className="container ">
-      <div className="row">
+      <div className="row m-2">
         <Navbar expand="lg">
           <Navbar.Brand href="/">
             <h2>FarmCo</h2>
           </Navbar.Brand>
-          
+
           {/* Search Bar */}
-          <div className="col-lg-4 col-md-8">
+          <div className="col-lg-4 col-md-8 col-6">
             <Nav>
-              <form className="d-flex mx-auto col-lg-11  col-md-10" role="search">
+              <form
+                className="d-flex mx-auto col-lg-11 col-md-10 col-sm-6"
+                role="search"
+              >
                 <input
                   className="form-control me-2 d-flex"
                   type="search"
@@ -63,12 +65,15 @@ const NavBarAdmin = () => {
                 Shop
               </Nav.Link>
 
-              <Nav.Link href={auth.admin ? `/cart` : "/log-in"} className="me-2">
-                Cart
+              <Nav.Link
+                href={auth.admin ? `/admin-panel-products` : "/admin-login"}
+                className="me-2"
+              >
+                Products
               </Nav.Link>
 
               <Nav.Link
-                href={auth.admin ? `/orders` : "/log-in"}
+                href={auth.admin ? `/admin-panel-orders` : "/admin-login"}
                 className="me-2"
               >
                 Orders
@@ -78,15 +83,29 @@ const NavBarAdmin = () => {
             <div className="col-lg-4 col-md-12 mx-auto">
               <Nav>
                 {!auth.admin ? (
-                  <button type="button" class="btn btn-success me-2" onClick={handleLogin}>
+                  <button
+                    type="button"
+                    className="btn btn-success me-2"
+                    onClick={handleLogin}
+                  >
                     Log in Admin
                   </button>
                 ) : (
-                  <Nav.Link onClick={handleLogout}>Log out Admin</Nav.Link>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary me-2"
+                    onClick={handleLogout}
+                  >
+                    Log out Admin
+                  </button>
                 )}
 
                 {!auth.admin ? (
-                  <button type="button" class="btn btn-outline-success me-2" onClick={handleSignup}>
+                  <button
+                    type="button"
+                    className="btn btn-outline-success me-2"
+                    onClick={handleSignup}
+                  >
                     Sign up
                   </button>
                 ) : (

@@ -4,23 +4,27 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 // import { AuthProvider } from './context/Authentication';
 import { createRoot } from 'react-dom/client';
 
+// Public pages
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import Product from "./pages/Product";
-
+import NotAvailable from "./pages/FunctionNotAvailable.js";
+// Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminPanel from "./pages/admin/AdminPanel";
 import AdminPanelOrders from "./pages/admin/AdminPanelOrders.js";
 import AdminPanelProducts from "./pages/admin/AdminPanelProducts.js";
 import EditProduct from "./pages/admin/EditProduct";
 import AddProduct from "./pages/admin/AddProduct";
+import AdminOrderSummaryId from "./pages/admin/AdminOrderSummaryId.js";
+// Customer pages
 import Cart from "./pages/customer/Cart";
 import LogIn from "./pages/Log-in";
 import SignUp from "./pages/Sign-up";
 import Checkout from "./pages/customer/Checkout";
 import OrderSummary from "./pages/customer/OrderSummary.js";
 import OrderSummaryId from "./pages/customer/OrderSummaryId.js";
-import AdminOrderSummaryId from "./pages/admin/AdminOrderSummaryId.js";
+
 import { UserAuthProvider, AdminAuthProvider } from "./pages/context/useAuth";
 import RequireUserAuth from "./pages/context/requireUserAuth.js";
 import RequireAdminAuth from "./pages/context/requireAdminAuth.js";
@@ -120,6 +124,14 @@ const App = () => (
                 <RequireUserAuth>
                   <OrderSummaryId />
                 </RequireUserAuth>
+              }
+            />
+
+            {/* tama na bhie, d q na keriiiiii getgetawwwwwww */}
+            <Route
+              path="/not-available"
+              element={
+                  <NotAvailable />
               }
             />
           </Routes>

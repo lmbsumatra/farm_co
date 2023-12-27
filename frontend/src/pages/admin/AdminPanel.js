@@ -8,7 +8,11 @@ const AdminPanel = () => {
   return (
     <div>
       <NavBarAdmin />
-      Admin Panel
+      <section className="body-bg">
+        <h4 className="section-title">
+          Admin Panel
+        </h4>
+      </section>
       <Footer />
     </div>
   );

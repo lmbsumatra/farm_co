@@ -124,98 +124,100 @@ const LogIn = () => {
   return (
     <>
       <NavBarAdmin />
-      <section className="container my-5">
-        <h4 className="text-uppercase text-black-50">Admin Log in</h4>
+      <section className="body-bg-img">
+        <div className="container my-5">
+          <h4 className="text-uppercase section-title">Admin Log in</h4>
 
-        <div className="container col-lg-10">
-          <div
-            className="rounded row"
-            style={{ backgroundColor: "rgb(255, 255, 255)" }}
-          >
-            <div className="col-md-6 mx-auto my-3">
-              <p>
-                Welcome back to Parisukat! We're thrilled to have you here
-                again.
-              </p>
-              <div className="mb-3">
-                <p style={{ color: "red" }}>{acctDoNotExist}</p>
+          <div className="container col-lg-6">
+            <div
+              className="rounded row"
+              style={{ backgroundColor: "rgb(255, 255, 255)" }}
+            >
+              <div className="mx-auto my-5 px-5">
+                <p>
+                  Welcome back to Farmco! We're thrilled to have you here
+                  again.
+                </p>
+                <div className="mb-3">
+                  <p style={{ color: "red" }}>{acctDoNotExist}</p>
 
-                <label htmlFor="inputLogEmail" className="form-label">
-                  Email address
-                </label>
-                <input
-                  className="form-control"
-                  type="email"
-                  id="inputLogEmail"
-                  placeholder="Email address"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    setEmailTrigger(true);
-                  }}
-                />
+                  <label htmlFor="inputLogEmail" className="form-label">
+                    Email address
+                  </label>
+                  <input
+                    className="form-control"
+                    type="email"
+                    id="inputLogEmail"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setEmailTrigger(true);
+                    }}
+                  />
 
-                <p style={{ color: "red" }}>{emailIsRequired}</p>
-                <p style={{ color: "red" }}>{emailNotExist}</p>
-                <p style={{ color: "red" }}>{emailNotValid}</p>
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="inputLogPassword" className="form-label">
-                  Password
-                </label>
-                <input
-                  className="form-control"
-                  type="password"
-                  id="inputLogPassword"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setPasswordTrigger(true);
-                  }}
-                />
-
-                <p style={{ color: "red" }}>{passwordIsRequired}</p>
-                <p style={{ color: "red" }}>{passwordNotValid}</p>
-              </div>
-
-              <div className="mb-3 form-check">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  id="checkBox"
-                  required
-                />
-                <label className="form-check-label" htmlFor="checkBox">
-                  Remember
-                </label>
-                <div className="form-text">
-                  Save information to automatically log in.
+                  <p style={{ color: "red" }}>{emailIsRequired}</p>
+                  <p style={{ color: "red" }}>{emailNotExist}</p>
+                  <p style={{ color: "red" }}>{emailNotValid}</p>
                 </div>
-              </div>
 
-              <br />
+                <div className="mb-3">
+                  <label htmlFor="inputLogPassword" className="form-label">
+                    Password
+                  </label>
+                  <input
+                    className="form-control"
+                    type="password"
+                    id="inputLogPassword"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setPasswordTrigger(true);
+                    }}
+                  />
 
-              <button className="btn btn-primary" onClick={Login}>
-                Log in
-              </button>
+                  <p style={{ color: "red" }}>{passwordIsRequired}</p>
+                  <p style={{ color: "red" }}>{passwordNotValid}</p>
+                </div>
 
-              <div className="my-3">
-                <a href="/">Forgot your password?</a>
+                <div className="mb-3 form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="checkBox"
+                    required
+                  />
+                  <label className="form-check-label" htmlFor="checkBox">
+                    Remember
+                  </label>
+                  <div className="form-text">
+                    Save information to automatically log in.
+                  </div>
+                </div>
+
                 <br />
-                <a href="/sign-up">Doesn't have an account?</a>
-              </div>
 
-              <div className="text-center">
-                <br />
-                <p>or</p>
-                <a href="/">
-                  <i className="fa-brands fa-google fs-1 p-3"></i>
-                </a>
-                <a href="/">
-                  <i className="fa-brands fa-yahoo fs-1 p-3"></i>
-                </a>
+                <button className="btn btn-primary" onClick={Login}>
+                  Log in
+                </button>
+
+                <div className="my-3">
+                  <a href="/">Forgot your password?</a>
+                  <br />
+                  <a href="/sign-up">Doesn't have an account?</a>
+                </div>
+
+                <div className="text-center">
+                  <br />
+                  <p>or</p>
+                  <a href="/">
+                    <i className="fa-brands fa-google fs-1 p-3"></i>
+                  </a>
+                  <a href="/">
+                    <i className="fa-brands fa-yahoo fs-1 p-3"></i>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

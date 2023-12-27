@@ -10,6 +10,10 @@ const Hero = () => {
   const handleBuyNow = () => {
     navigate("/shop")
   }
+
+  const handleButton = () => {
+    navigate("/not-available")
+  }
   return (
     <section id="Hero">
       <div className="container-fluid">
@@ -24,7 +28,7 @@ const Hero = () => {
             <button type="button" className="btn btn-success m-2" onClick={handleBuyNow}>
               Buy now!
             </button>
-            <button type="button" className="btn btn-outline-success m-2">
+            <button type="button" className="btn btn-outline-success m-2" onClick={handleButton}>
               I want to sell
             </button>
           </div>

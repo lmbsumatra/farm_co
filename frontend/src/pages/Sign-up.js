@@ -247,9 +247,8 @@ const SignUp = () => {
 
         await axios.post("http://localhost:5000/customers", formData);
         alert("Welcome, " + username + "!");
-        navigate('/log-in')
+        navigate("/log-in");
       }
-
     } catch (err) {
       console.log(err);
     }
@@ -258,160 +257,159 @@ const SignUp = () => {
   return (
     <>
       <NavBar />
-      <section className="body-bg">
-      <div className="container my-5">
-        <h4 className="text-uppercase section-title">Sign up</h4>
+      <section className="body-bg-img">
+        <div className="container my-5">
+          <h4 className="section-title">Sign up</h4>
 
-        <div className="container col-lg-6">
-          <div
-            className="rounded row"
-            style={{ backgroundColor: "rgb(255, 255, 255)" }}
-          >
+          <div className="container col-lg-6">
+            <div
+              className="rounded row"
+              style={{ backgroundColor: "rgb(255, 255, 255)" }}
+            >
+              <div className="mx-auto my-5 px-5">
+                <form className="" onSubmit={onSubmit}>
+                  <p>
+                    Welcome to FarmCo, where fresh and wholesome
+                    agricultural products meet convenience – sign up
+                    to explore a bountiful world of farm-fresh goodness at your
+                    fingertips!
+                  </p>
 
-            <div className="mx-auto my-5 px-5">
-              <form className="" onSubmit={onSubmit}>
-                <p>
-                  Joining our photography community is a breeze! Here, you'll
-                  unlock a vibrant world of visual storytelling and connect with
-                  kindred spirits who are as passionate as you are about
-                  capturing those precious moments.
-                </p>
+                  <p style={{ color: "red" }}>{validNotMsg}</p>
 
-                <p style={{ color: "red" }}>{validNotMsg}</p>
+                  <div className="mb-3">
+                    <label htmlFor="nameInput" className="form-label">
+                      Full name
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="nameInput"
+                      value={fullName}
+                      onChange={(e) => {
+                        setFullName(e.target.value);
+                        setFullNameTrigger(true);
+                      }}
+                    />
 
-                <div className="mb-3">
-                  <label htmlFor="nameInput" className="form-label">
-                    Full name
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="nameInput"
-                    value={fullName}
-                    onChange={(e) => {
-                      setFullName(e.target.value);
-                      setFullNameTrigger(true);
-                    }}
-                  />
-
-                  <p style={{ color: "red" }}>{fullNameIsRequired}</p>
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="emailInput" className="form-label">
-                    Email address
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="emailInput"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      setEmailTrigger(true);
-                    }}
-                  />
-
-                  <p style={{ color: "red" }}>{emailIsRequired}</p>
-                  <p style={{ color: "red" }}>{emailIsNotValid}</p>
-                  <p style={{ color: "red" }}>{emailWhiteSpace}</p>
-                  <p style={{ color: "red" }}>{emailExist}</p>
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="usernameInput" className="form-label">
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="usernameInput"
-                    onChange={(e) => {
-                      setUsername(e.target.value);
-                      setUserNameTrigger(true);
-                    }}
-                  />
-
-                  <p style={{ color: "red" }}>{usernameIsRequired}</p>
-                  <p style={{ color: "red" }}>{userNameNotValid}</p>
-                  <p style={{ color: "red" }}>{userNameAlreadyExist}</p>
-                  <p style={{ color: "red" }}>{userNameWhiteSpace}</p>
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="passwordInput" className="form-label">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="passwordInput"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setPasswordTrigger(true);
-                    }}
-                  />
-
-                  <p style={{ color: "red" }}>{passwordIsRequired}</p>
-                  <p style={{ color: "red" }}>{passwordNotValid}</p>
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="passwordConfirm" className="form-label">
-                    {" "}
-                    Confirm password
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="passwordConfirm"
-                    onChange={(e) => {
-                      setConfirmPassword(e.target.value);
-                      setConfirmPasswordTrigger(true);
-                    }}
-                  />
-
-                  <p style={{ color: "red" }}>{confirmPasswordIncorrect}</p>
-                </div>
-
-                <div className="mb-3 form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="checkBox"
-                    required
-                  />
-                  <label className="form-check-label" htmlFor="checkBox">
-                    Remember
-                  </label>
-                  <div className="form-text">
-                    Check if you agree to our terms and policy.
+                    <p style={{ color: "red" }}>{fullNameIsRequired}</p>
                   </div>
-                </div>
 
-                <button onClick={Signup} className="btn btn-primary">
-                  Sign up
-                </button>
+                  <div className="mb-3">
+                    <label htmlFor="emailInput" className="form-label">
+                      Email address
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="emailInput"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        setEmailTrigger(true);
+                      }}
+                    />
 
-                <div className="my-3">
-                  <a href="/log-in">Already have an account?</a>
-                </div>
+                    <p style={{ color: "red" }}>{emailIsRequired}</p>
+                    <p style={{ color: "red" }}>{emailIsNotValid}</p>
+                    <p style={{ color: "red" }}>{emailWhiteSpace}</p>
+                    <p style={{ color: "red" }}>{emailExist}</p>
+                  </div>
 
-                <div className="text-center">
-                  <br />
-                  <p>or</p>
-                  <a href="/">
-                    <i className="fa-brands fa-google fs-1 p-3"></i>
-                  </a>
-                  <a href="/">
-                    <i className="fa-brands fa-yahoo fs-1 p-3"></i>
-                  </a>
-                </div>
-              </form>
+                  <div className="mb-3">
+                    <label htmlFor="usernameInput" className="form-label">
+                      Username
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="usernameInput"
+                      onChange={(e) => {
+                        setUsername(e.target.value);
+                        setUserNameTrigger(true);
+                      }}
+                    />
+
+                    <p style={{ color: "red" }}>{usernameIsRequired}</p>
+                    <p style={{ color: "red" }}>{userNameNotValid}</p>
+                    <p style={{ color: "red" }}>{userNameAlreadyExist}</p>
+                    <p style={{ color: "red" }}>{userNameWhiteSpace}</p>
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="passwordInput" className="form-label">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="passwordInput"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setPasswordTrigger(true);
+                      }}
+                    />
+
+                    <p style={{ color: "red" }}>{passwordIsRequired}</p>
+                    <p style={{ color: "red" }}>{passwordNotValid}</p>
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="passwordConfirm" className="form-label">
+                      {" "}
+                      Confirm password
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="passwordConfirm"
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        setConfirmPasswordTrigger(true);
+                      }}
+                    />
+
+                    <p style={{ color: "red" }}>{confirmPasswordIncorrect}</p>
+                  </div>
+
+                  <div className="mb-3 form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="checkBox"
+                      required
+                    />
+                    <label className="form-check-label" htmlFor="checkBox">
+                      Remember
+                    </label>
+                    <div className="form-text">
+                      Check if you agree to our terms and policy.
+                    </div>
+                  </div>
+
+                  <button onClick={Signup} className="btn btn-primary">
+                    Sign up
+                  </button>
+
+                  <div className="my-3">
+                    <a href="/log-in">Already have an account?</a>
+                  </div>
+
+                  <div className="text-center">
+                    <br />
+                    <p>or</p>
+                    <a href="/">
+                      <i className="fa-brands fa-google fs-1 p-3"></i>
+                    </a>
+                    <a href="/">
+                      <i className="fa-brands fa-yahoo fs-1 p-3"></i>
+                    </a>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </section>
 

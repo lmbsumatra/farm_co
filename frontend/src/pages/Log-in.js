@@ -117,7 +117,7 @@ const LogIn = () => {
   return (
     <>
       <NavBar />
-      <section className="body-bg">
+      <section className="body-bg-img">
         <div className="container my-5">
           <h4 className="text-uppercase section-title">Log in</h4>
 
@@ -128,7 +128,7 @@ const LogIn = () => {
             >
               <div className="mx-auto my-5 px-5">
                 <p>
-                  Welcome back to Parisukat! We're thrilled to have you here
+                  Welcome back to Farmco! We're thrilled to have you here
                   again.
                 </p>
                 <div className="mb-3">

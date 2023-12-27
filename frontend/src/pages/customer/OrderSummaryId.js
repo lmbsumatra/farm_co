@@ -12,6 +12,7 @@ import Footer from "../../components/footer/Footer";
 const OrderSummaryId = () => {
   const [orderItems, setOrderItems] = useState([]);
   const [status, setStatus] = useState([]);
+  const [grandTotal, setGrandTotal] = useState([]);
   const location = useLocation();
 
   const order_id = location.pathname.split("/")[2];
@@ -22,11 +23,11 @@ const OrderSummaryId = () => {
         const response = await axios.get(
           `http://localhost:5000/order-items/${order_id}`
         );
-        const { orderItems, currentStatus } = response.data;
+        const { orderItems, currentStatus, grandTotal } = response.data;
 
         setOrderItems(orderItems);
         setStatus(currentStatus);
-        console.log(response.data);
+        setGrandTotal(grandTotal)
       } catch (error) {
         console.error("Error fetching product:", error);
       }
@@ -72,6 +73,13 @@ const OrderSummaryId = () => {
                       <td>₱ {orderItem.total}</td>
                     </tr>
                   ))}
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Grand Total:</td>
+                    <td>₱  {grandTotal}</td>
+                  </tr>
                 </tbody>
               </table>
             </div>

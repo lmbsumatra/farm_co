@@ -11,6 +11,7 @@ const AdminOrderSummaryId = () => {
   const [status, setStatus] = useState([]);
   const [currentStatus, setCurrentStatus] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [grandTotal, setGrandTotal] = useState([]);
 
   const location = useLocation();
   const order_id = location.pathname.split("/")[2];
@@ -23,13 +24,14 @@ const AdminOrderSummaryId = () => {
         setStatus(statusResponse.data);
 
         // Fetch order items and current status
-        const orderResponse = await axios.get(
+        const response = await axios.get(
           `http://localhost:5000/order-items/${order_id}`
         );
 
-        const { orderItems, currentStatus } = orderResponse.data;
+        const { orderItems, currentStatus, grandTotal } = response.data;
         setOrderItems(orderItems);
         setCurrentStatus(currentStatus);
+        setGrandTotal(grandTotal);
 
         // Set the selected status based on the fetched value
         const selectedStatusObject = status.find(
@@ -131,6 +133,13 @@ const AdminOrderSummaryId = () => {
                       <td>₱ {orderItem.total}</td>
                     </tr>
                   ))}
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Grand Total:</td>
+                    <td>₱ {grandTotal}</td>
+                  </tr>
                 </tbody>
               </table>
             </div>

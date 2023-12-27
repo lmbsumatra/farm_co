@@ -68,7 +68,7 @@ const AdminPanelProducts = () => {
                     <td>{getFeaturedStatus(product.is_featured)}</td>
                     <td>
                       <button type="button" className="btn btn-success">
-                        <Link to={`/edit-product/${product.product_id}`}>
+                        <Link to={`/edit-product/${product.product_id}`} className="no-decor-white">
                           Update
                         </Link>
                       </button>
@@ -87,7 +87,7 @@ const AdminPanelProducts = () => {
                 <tr key="add-product-row">
                   <td colSpan="4">
                     <button type="button" className="btn btn-success">
-                      <Link to={`/add-product/`}>Add</Link>
+                      <Link to={`/add-product/`} className="no-decor-white">Add</Link>
                     </button>
                   </td>
                 </tr>

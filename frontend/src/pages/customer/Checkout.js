@@ -108,9 +108,11 @@ const Checkout = () => {
                     </tr>
                   ))}
                   <tr>
-                    <td colSpan="5" className="text-end">
-                      {grandTotal}
-                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Grand Total:</td>
+                    <td>₱ {grandTotal}</td>
                   </tr>
                   <tr>
                     <td colSpan="7">

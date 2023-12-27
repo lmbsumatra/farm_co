@@ -336,7 +336,6 @@ app.get("/cart/:customer_id", (req, res) => {
 });
 
 app.get("/orders", (req, res) => {
-
   const query = `SELECT * 
   FROM orders o
   JOIN status s ON o.status_id = s.status_id
@@ -385,38 +384,40 @@ app.get("/order-items/:order_id", (req, res) => {
   `;
 
   // Query to get status based on order_id
-  const statusQuery = `
-    SELECT
-      *
-    FROM orders o
-    JOIN status s ON o.status_id = s.status_id
-    WHERE o.order_id = ?;
-  `;
+  const statusAndTotalQuery = `
+  SELECT
+    o.status_id,
+    s.status_name,
+    o.grand_total
+  FROM orders o
+  JOIN status s ON o.status_id = s.status_id
+  WHERE o.order_id = ?;
+`;
 
-  // Execute both queries in parallel
   db.query(orderItemsQuery, [orderId], (errOrderItems, resultsOrderItems) => {
     if (errOrderItems) {
       console.error(errOrderItems);
       return res.status(500).send("Internal Server Error");
     }
 
-    db.query(statusQuery, [orderId], (errStatus, resultsStatus) => {
-      if (errStatus) {
-        console.error(errStatus);
-        return res.status(500).send("Internal Server Error");
+    db.query(
+      statusAndTotalQuery,
+      [orderId],
+      (errStatus, resultsStatusAndTotalQuery) => {
+        if (errStatus) {
+          console.error(errStatus);
+          return res.status(500).send("Internal Server Error");
+        }
+
+        const responseData = {
+          orderItems: resultsOrderItems,
+          currentStatus: resultsStatusAndTotalQuery[0].status_name,
+          grandTotal: resultsStatusAndTotalQuery[0].grand_total,
+        };
+
+        res.json(responseData);
       }
-
-      // Extract the status name from the results
-      const status = resultsStatus.length > 0 ? resultsStatus[0].status_name : null;
-
-      // Combine the results and send to the frontend
-      const responseData = {
-        orderItems: resultsOrderItems,
-        currentStatus: status,
-      };
-
-      res.json(responseData);
-    });
+    );
   });
 });
 
@@ -483,9 +484,9 @@ app.put("/order-items/:order_id", upload.none(), async (req, res) => {
     const { order_id } = req.params;
 
     const query = "UPDATE `orders` SET `status_id` = ? WHERE `order_id` = ?";
-    
+
     await db.query(query, [status_id, order_id]);
-    
+
     res.status(200).json({ success: true });
   } catch (error) {
     console.error("Error updating order status:", error);
@@ -516,5 +517,3 @@ app.delete("/cart/:cart_item_id", (req, res) => {
     return res.json("Successfully deleted");
   });
 });
-
-

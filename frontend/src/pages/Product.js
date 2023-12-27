@@ -36,7 +36,7 @@ const Product = () => {
       }
     };
     fetchProduct();
-    
+
     if (auth.user && auth.user.cart_id !== undefined) {
       setAddToCart((prevAddToCart) => ({
         ...prevAddToCart,
@@ -62,7 +62,6 @@ const Product = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      
       if (customer_id === null) {
         navigate("/log-in");
       } else {
@@ -87,14 +86,12 @@ const Product = () => {
       <section id="About-us" className="body-bg">
         <h4 className="section-title">Product</h4>
         <div className="container-fluid">
-          <div
-            className="card mx-auto overflow-hidden width-80vw height-100vw"
-          > 
+          <div className="card mx-auto overflow-hidden width-80vw height-30vw">
             <div className="row g-0">
               <div className="col-md-6">
                 <img
                   src={`http://localhost:5000/images/products/${product.image}`}
-                  className="img-fluid image-hw"
+                  className="img-fluid"
                   alt={product.description}
                 />
               </div>
@@ -102,39 +99,56 @@ const Product = () => {
               <div className="col-md-6">
                 <div className="card-body">
                   <h5 className="card-title">{product.product_name}</h5>
-                  <h5 className="card-title price">{product.price} per kilo</h5>
+                  <h3 className="price">₱ {product.price} per kilo</h3>
 
-                  <button
-                    type="button"
-                    className="btn btn-outline-success"
-                    onClick={handleClick}
-                  >
-                    Add to Cart
-                  </button>
-                  <button type="button" className="btn btn-success">
-                    Buy Now
-                  </button>
-
-                  <div className="card p-2" style={{ width: "200px" }}>
-                    <div className="d-flex justify-content-between align-items-center">
-                      <button
-                        type="button"
-                        className="btn btn-outline-secondary"
-                        onClick={decreaseKilo}
-                      >
-                        -
-                      </button>
-                      <span>{kiloValue} kg</span>
-                      <button
-                        type="button"
-                        className="btn btn-outline-secondary"
-                        onClick={increaseKilo}
-                      >
-                        +
-                      </button>
-                    </div>
+                  <div>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Aliquam et cursus justo. Sed purus eros, consectetur quis
+                      erat vitae, consectetur.
+                    </p>
                   </div>
-                  <span>Total {totalValue.toFixed(2)}</span>
+
+                  <div className="card p-1 my-3">
+                    <div className="d-flex justify-content-between">
+                      <span className="my-4 mx-2">
+                        Total {totalValue.toFixed(2)}
+                      </span>
+                      <div
+                        className="card p-1 my-3"
+                        style={{ width: "200px"}}
+                      >
+                        <div className="d-flex justify-content-between align-items-center">
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            onClick={decreaseKilo}
+                          >
+                            -
+                          </button>
+                          <span>{kiloValue} kg</span>
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            onClick={increaseKilo}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="btn btn-outline-success my-2"
+                      onClick={handleClick}
+                    >
+                      Add to Cart
+                    </button>
+                    <button type="button m-2" className="btn btn-success">
+                      Buy Now
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

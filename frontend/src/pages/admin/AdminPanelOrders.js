@@ -36,7 +36,7 @@ const AdminPanelOrders = () => {
     <div>
       <NavBarAdmin />
       <section className="body-bg">
-        <h4 className="section-title">Orders</h4>
+        <h4 className="section-title">Customers Orders</h4>
         <div className="card-deck">
           {orders.map((order) => (
             <div

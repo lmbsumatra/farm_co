@@ -21,10 +21,8 @@ const EditProduct = () => {
     product_isfeatured: 0,
     product_qty: null,
   });
-
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
   const [currentImage, setCurrentImage] = useState("");
   const navigate = useNavigate();
 
@@ -46,6 +44,7 @@ const EditProduct = () => {
     fetchCategories();
   }, []);
 
+  // Fetching product based on product_id
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -138,12 +137,11 @@ const EditProduct = () => {
       formData.append("product_category", product.product_category);
       formData.append("product_isfeatured", product.product_isfeatured ? 1 : 0);
 
-      // formData.append("product_id", product_id);
-
       await axios.put(`http://localhost:5000/products/${product_id}`, formData);
 
-      // Back to the admin panel page
-      navigate("/admin-panel");
+      // Back to the admin products page
+      navigate("/admin-panel-products");
+
     } catch (error) {
       console.error("Error updating product:", error);
     }

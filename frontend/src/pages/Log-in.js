@@ -101,7 +101,6 @@ const LogIn = () => {
     for (let i = 0; i < userList.length; i++) {
       const user = userList[i];
       if (user.email === email && user.password === password) {
-        console.log(user);
         auth.login(user);
         setAcctDoNotExistMsg("");
         navigate(`/`);

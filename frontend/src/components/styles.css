@@ -115,10 +115,15 @@ section {
 }
 
 .img-profile {
-  width: 100px;
-  height: 100px;
+  width: 5vw;
+  height: 5vw;
+  border: #138844 5px solid;
 }
 
 .star-filled {
   color: #e1aa14;
+}
+
+.hover-link:hover {
+  background-color:#46f890;
 }

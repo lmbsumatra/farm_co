@@ -10,12 +10,25 @@ const port = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
+// Create a MySQL connection
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "password",
+  database: "farmco",
+});
+
+app.listen(5000, "0.0.0.0", () => {
+  console.log("Server is running on port 5000");
+});
+
 // For accessing images
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-const storage = multer.diskStorage({
+// Image path for upload: for products
+const storage1 = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "/Users/DELL/farm_co/backend/images/products");
+    cb(null, "/Users/DELL/Documents/GitHub/farm_co/backend/images/products");
   },
   filename: function (req, file, cb) {
     cb(
@@ -25,15 +38,21 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
-
-// Create a MySQL connection
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "password",
-  database: "farmco",
+// Image path for upload: for customers image
+const storage2 = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "/Users/DELL/Documents/GitHub/farm_co/backend/images/customers");
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
 });
+
+const uploadProductImage = multer({ storage: storage1 });
+const uploadCustomerProfile = multer({ storage: storage2 });
 
 db.connect((err) => {
   if (err) {
@@ -43,31 +62,11 @@ db.connect((err) => {
   }
 });
 
-// app.post("/adminLogin", (req, res) => {
-//   const { username, password } = req.body;
+//////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 
-//   const query = "SELECT * FROM `admin` WHERE `admin_un` = ? AND `admin_pw` = ?";
-
-//   db.query(query, [username, password], (err, results) => {
-//     if (err) {
-//       console.error(err);
-//       res.status(500).send("Internal Server Error");
-//       return;
-//     }
-
-//     if (results.length > 0) {
-//       res.json({ success: true, message: "Login successful" });
-//     } else {
-//       res.json({ success: false, message: "Invalid credentials" });
-//     }
-//   });
-// });
-
-app.listen(5000, "0.0.0.0", () => {
-  console.log("Server is running on port 5000");
-});
-
-app.post("/products", upload.single("image"), (req, res) => {
+// ** For adding product, [admin]
+app.post("/products", uploadProductImage.single("image"), (req, res) => {
   const query =
     "INSERT INTO `products` (`product_name`, `description`, `price`, `stock_quantity`, `category_id`, `is_featured`, `image`) VALUES(?)";
 
@@ -81,15 +80,206 @@ app.post("/products", upload.single("image"), (req, res) => {
     req.file.filename,
   ];
 
-  // Execute the SQL query
   db.query(query, [values], (err, data) => {
     if (err) return res.json(err);
-    // Return a response with the filename of the uploaded image
-    res.json({ filename: req.file.filename, message: "Successful insertion." });
+    res.json({
+      filename: req.file.filename,
+      message: "Successful: Adding product",
+    });
   });
 });
 
-app.post("/cart", upload.none(), (req, res) => {
+// ** Displaying products, [admin]
+app.get("/products", (req, res) => {
+  const sql = `
+    SELECT * 
+    FROM products p 
+      LEFT JOIN categories c ON p.category_id = c.category_id`;
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+    res.json(results);
+  });
+});
+
+// ** Displaying product with [product_id], [admin]
+app.get("/product/:product_id", (req, res) => {
+  const product_id = req.params.product_id;
+  const q = "SELECT * FROM products WHERE product_id = ?";
+  db.query(q, [product_id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const product = data[0];
+    return res.json(product);
+  });
+});
+
+// ** Displaying all categories, [admin: add product, edit product]
+app.get("/categories", (req, res) => {
+  const query = "SELECT * FROM `categories`";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+    res.json(results);
+  });
+});
+
+// ** Displaying all orders, [admin]
+app.get("/orders", (req, res) => {
+  const query = `SELECT * 
+  FROM orders o
+  JOIN status s ON o.status_id = s.status_id
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+    res.json(results);
+  });
+});
+
+// ** Displaying order summary, [admin]
+app.get("/order-items/:order_id", (req, res) => {
+  const orderId = req.params.order_id;
+
+  // Query to get order items
+  const orderItemsQuery = `
+    SELECT
+      *
+    FROM order_items oi
+    JOIN products p ON p.product_id = oi.product_id
+    WHERE oi.order_id = ?;
+  `;
+
+  // Query to get customer details
+  const customerDetailsQuery = `
+    SELECT * 
+    FROM customers c 
+    JOIN orders o ON o.customer_id = c.customer_id
+    WHERE o.order_id = ?;
+  `;
+
+  // Query to get order status and grand total based on order_id
+  const statusAndTotalQuery = `
+    SELECT
+      o.status_id,
+      s.status_name,
+      o.grand_total
+    FROM orders o
+    JOIN status s ON o.status_id = s.status_id
+    WHERE o.order_id = ?;
+  `;
+
+  db.query(orderItemsQuery, [orderId], (errOrderItems, resultsOrderItems) => {
+    if (errOrderItems) {
+      console.error(errOrderItems);
+      return res.status(500).send("Internal Server Error");
+    }
+
+    db.query(
+      customerDetailsQuery,
+      [orderId],
+      (errCustomerDetails, resultsCustomerDetails) => {
+        if (errCustomerDetails) {
+          console.error(errCustomerDetails);
+          return res.status(500).send("Internal Server Error");
+        }
+
+        db.query(
+          statusAndTotalQuery,
+          [orderId],
+          (errStatus, resultsStatusAndTotal) => {
+            if (errStatus) {
+              console.error(errStatus);
+              return res.status(500).send("Internal Server Error");
+            }
+
+            const responseData = {
+              orderItems: resultsOrderItems,
+              currentStatus: resultsStatusAndTotal[0].status_name,
+              grandTotal: resultsStatusAndTotal[0].grand_total,
+              customerDetails: resultsCustomerDetails,
+            };
+
+            res.json(responseData);
+          }
+        );
+      }
+    );
+  });
+});
+
+// ** Displaying all status [admin]
+app.get("/status", (req, res) => {
+  const query = "SELECT * FROM `status`";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+    res.json(results);
+  });
+});
+
+// ** Displaying all admins, [admin login]
+app.get("/admins", (req, res) => {
+  const query = `
+    SELECT *
+    FROM admins`;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+    res.json(results);
+  });
+});
+
+// ** Updating order status, [admin]
+app.put("/order-items/:order_id", uploadProductImage.none(), async (req, res) => {
+    try {
+      const { status_id } = req.body;
+      const { order_id } = req.params;
+
+      const query = "UPDATE `orders` SET `status_id` = ? WHERE `order_id` = ?";
+
+      await db.query(query, [status_id, order_id]);
+
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
+
+// ** Deleting product, [admin]
+app.delete("/products/:product_id", (req, res) => {
+  const product_id = req.params.product_id;
+  const q = "DELETE FROM products WHERE product_id = ?";
+
+  db.query(q, [product_id], (err, data) => {
+    if (err) return res.json(err);
+    return res.json("Successfully deleted");
+  });
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+
+// For adding items to cart, [customer]
+app.post("/cart", uploadProductImage.none(), (req, res) => {
   const query =
     "INSERT INTO `cart_items` (`cart_id`, `product_id`, `quantity`, `total`) VALUES (?, ?, ?, ?)";
 
@@ -100,78 +290,58 @@ app.post("/cart", upload.none(), (req, res) => {
     req.body.total,
   ];
 
-  // Execute the SQL query
   db.query(query, values, (err, data) => {
-    if (err) {
-      console.error("MySQL Error:", err.sqlMessage);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
-    res.json("Successful insertion.");
+    if (err) return res.json(err);
+    res.json("Successful: Adding cart items");
   });
 });
 
-app.post("/customers", upload.none(), (req, res) => {
-  // Start a transaction
-  db.beginTransaction((err) => {
+// For adding customer = cart, [customer]
+app.post("/customers", uploadProductImage.none(), (req, res) => {
+  const customerQuery =
+    "INSERT INTO `customers` (`customer_name`, `email`, `address`, `username`, `password`) VALUES (?, ?, ?, ?, ?)";
+  const customerValues = [
+    req.body.customer_name,
+    req.body.email,
+    req.body.address,
+    req.body.username,
+    req.body.password,
+  ];
+
+  db.query(customerQuery, customerValues, (err, customerResult) => {
     if (err) {
-      console.error("MySQL Transaction Begin Error:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
+      // Rollback the transaction if an error occurs
+      return db.rollback(() => {
+        console.error("MySQL Customer Insertion Error:", err.sqlMessage);
+        res.status(500).json({ error: "Internal Server Error" });
+      });
     }
 
-    // Insert customer data
-    const customerQuery =
-      "INSERT INTO `customers` (`customer_name`, `email`, `address`, `username`, `password`) VALUES (?, ?, ?, ?, ?)";
-    const customerValues = [
-      req.body.customer_name,
-      req.body.email,
-      req.body.address,
-      req.body.username,
-      req.body.password,
-    ];
+    const customerId = customerResult.insertId;
 
-    db.query(customerQuery, customerValues, (err, customerResult) => {
+    const cartQuery = "INSERT INTO `carts` (`customer_id`) VALUES (?)";
+    const cartValues = [customerId];
+
+    db.query(cartQuery, cartValues, (err, cartResult) => {
       if (err) {
-        // Rollback the transaction if an error occurs
         return db.rollback(() => {
-          console.error("MySQL Customer Insertion Error:", err.sqlMessage);
+          console.error("MySQL Cart Insertion Error:", err.sqlMessage);
           res.status(500).json({ error: "Internal Server Error" });
         });
       }
 
-      // Get the auto-generated customer_id
-      const customerId = customerResult.insertId;
-
-      // Insert a corresponding cart for the customer
-      const cartQuery = "INSERT INTO `carts` (`customer_id`) VALUES (?)";
-      const cartValues = [customerId];
-
-      db.query(cartQuery, cartValues, (err, cartResult) => {
-        if (err) {
-          // Rollback the transaction if an error occurs
-          return db.rollback(() => {
-            console.error("MySQL Cart Insertion Error:", err.sqlMessage);
-            res.status(500).json({ error: "Internal Server Error" });
-          });
-        }
-
-        // Commit the transaction if both customer and cart insertions are successful
-        db.commit((err) => {
-          if (err) {
-            console.error("MySQL Transaction Commit Error:", err);
-            return res.status(500).json({ error: "Internal Server Error" });
-          }
-
-          res.json("Successful insertion.");
-        });
+      db.commit((err) => {
+        if (err) return res.json(err);
+        res.json("Successful: Adding customer");
       });
     });
   });
 });
 
+// Create order: transfer cart item to order items, update product stock quantities, delete selected cart items, [customer]
 app.post("/checkout", (req, res) => {
   const { customer_id, grandTotal, selectedItemsArray } = req.body;
 
-  // Begin transaction to ensure atomicity
   db.beginTransaction((err) => {
     if (err) {
       console.error("Error starting transaction: ", err);
@@ -200,7 +370,7 @@ app.post("/checkout", (req, res) => {
             "SELECT ?, ci.product_id, ci.quantity, ci.total " +
             "FROM carts c " +
             "JOIN cart_items ci ON c.cart_id = ci.cart_id " +
-            "WHERE c.customer_id = ? AND ci.cart_item_id IN (?)", // Filter by selected items
+            "WHERE c.customer_id = ? AND ci.cart_item_id IN (?)",
           [orderId, customer_id, selectedItemsArray],
           (err) => {
             if (err) {
@@ -230,7 +400,7 @@ app.post("/checkout", (req, res) => {
                   return;
                 }
 
-                // Optionally, delete selected cart items after moving them to order items
+                // Delete selected cart items after moving them to order items
                 db.query(
                   "DELETE FROM cart_items WHERE cart_id IN (SELECT cart_id FROM carts WHERE customer_id = ? AND cart_item_id IN (?))",
                   [customer_id, selectedItemsArray],
@@ -264,56 +434,8 @@ app.post("/checkout", (req, res) => {
     );
   });
 });
-app.get("/products", (req, res) => {
-  const sql = `SELECT * 
-    FROM products p 
-      LEFT JOIN categories c ON p.category_id = c.category_id`;
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
-  });
-});
 
-app.get("/product/:product_id", (req, res) => {
-  const product_id = req.params.product_id;
-  const q = "SELECT * FROM products WHERE product_id = ?";
-  db.query(q, [product_id], (err, data) => {
-    if (err) return res.status(500).json({ error: err.message });
-
-    if (data.length === 0) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-
-    const product = data[0];
-    return res.json(product);
-  });
-});
-
-app.get("/categories", (req, res) => {
-  const query = "SELECT * FROM `categories`";
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
-  });
-});
-
-app.get("/status", (req, res) => {
-  const query = "SELECT * FROM `status`";
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
-  });
-});
-
+// Displaying cart items, [customer]
 app.get("/cart/:customer_id", (req, res) => {
   const customerId = req.params.customer_id;
 
@@ -335,21 +457,7 @@ app.get("/cart/:customer_id", (req, res) => {
   });
 });
 
-app.get("/orders", (req, res) => {
-  const query = `SELECT * 
-  FROM orders o
-  JOIN status s ON o.status_id = s.status_id
-  `;
-
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
-  });
-});
-
+// Displaying all orders, [customer]
 app.get("/orders/:customer_id", (req, res) => {
   const customerId = req.params.customer_id;
 
@@ -371,62 +479,15 @@ app.get("/orders/:customer_id", (req, res) => {
   });
 });
 
-app.get("/order-items/:order_id", (req, res) => {
-  const orderId = req.params.order_id;
-
-  // Query to get order items
-  const orderItemsQuery = `
-    SELECT
-      *
-    FROM order_items oi
-    JOIN products p ON p.product_id = oi.product_id
-    WHERE oi.order_id = ?;
-  `;
-
-  // Query to get status based on order_id
-  const statusAndTotalQuery = `
-  SELECT
-    o.status_id,
-    s.status_name,
-    o.grand_total
-  FROM orders o
-  JOIN status s ON o.status_id = s.status_id
-  WHERE o.order_id = ?;
-`;
-
-  db.query(orderItemsQuery, [orderId], (errOrderItems, resultsOrderItems) => {
-    if (errOrderItems) {
-      console.error(errOrderItems);
-      return res.status(500).send("Internal Server Error");
-    }
-
-    db.query(
-      statusAndTotalQuery,
-      [orderId],
-      (errStatus, resultsStatusAndTotalQuery) => {
-        if (errStatus) {
-          console.error(errStatus);
-          return res.status(500).send("Internal Server Error");
-        }
-
-        const responseData = {
-          orderItems: resultsOrderItems,
-          currentStatus: resultsStatusAndTotalQuery[0].status_name,
-          grandTotal: resultsStatusAndTotalQuery[0].grand_total,
-        };
-
-        res.json(responseData);
-      }
-    );
-  });
-});
-
-app.get("/admins", (req, res) => {
+// Displaying customer image, [customer]
+app.get("/customers/:customer_id", (req, res) => {
+  const customer_id = req.params.customer_id;
   const query = `
-    SELECT *
-    FROM admins`;
+    SELECT customer_image
+    FROM customers
+    WHERE customer_id = ?`;
 
-  db.query(query, (err, results) => {
+  db.query(query, [customer_id], (err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).send("Internal Server Error");
@@ -435,6 +496,7 @@ app.get("/admins", (req, res) => {
   });
 });
 
+// Displaying all customers, [customer login]
 app.get("/customers", (req, res) => {
   const query = `
     SELECT *
@@ -450,60 +512,62 @@ app.get("/customers", (req, res) => {
   });
 });
 
-app.put("/products/:product_id", upload.single("image"), (req, res) => {
-  const product_id = req.params.product_id;
-  // Handle product update logic
-  const query =
-    "UPDATE products SET `product_name`=?, `description`=?, `price`=?, `stock_quantity`=?, `category_id`=?, `is_featured`=?, `image`=? WHERE `product_id`=?";
+// Updating product, [admin]
+app.put("/products/:product_id", uploadProductImage.single("image"), (req, res) => {
+    const product_id = req.params.product_id;
+    const query =
+      "UPDATE products SET `product_name`=?, `description`=?, `price`=?, `stock_quantity`=?, `category_id`=?, `is_featured`=?, `image`=? WHERE `product_id`=?";
 
-  // Using req.body for text formats; Using req.file for file formats
-  const values = [
-    req.body.product_name,
-    req.body.product_desc,
-    req.body.product_price,
-    req.body.product_qty,
-    req.body.product_category,
-    req.body.product_isfeatured,
-    req.file ? req.file.filename : req.body.product_img,
-    product_id,
-  ];
+    const values = [
+      req.body.product_name,
+      req.body.product_desc,
+      req.body.product_price,
+      req.body.product_qty,
+      req.body.product_category,
+      req.body.product_isfeatured,
+      req.file ? req.file.filename : req.body.product_img,
+      product_id,
+    ];
 
-  // SQL query execution
-  db.query(query, values, (err, data) => {
-    if (err) {
-      console.error("Error updating item:", err);
-      return res.json(err);
-    }
-    return res.json("Successfully updated");
-  });
-});
-
-app.put("/order-items/:order_id", upload.none(), async (req, res) => {
-  try {
-    const { status_id } = req.body;
-    const { order_id } = req.params;
-
-    const query = "UPDATE `orders` SET `status_id` = ? WHERE `order_id` = ?";
-
-    await db.query(query, [status_id, order_id]);
-
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error("Error updating order status:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    db.query(query, values, (err, data) => {
+      if (err) {
+        console.error("Error updating item:", err);
+        return res.json(err);
+      }
+      return res.json("Successfully updated");
+    });
   }
-});
+);
 
-app.delete("/products/:product_id", (req, res) => {
-  const product_id = req.params.product_id;
-  const q = "DELETE FROM products WHERE product_id = ?";
+// Updating customer, [customer]
+app.put("/customer/:customer_id", uploadCustomerProfile.single("image"), (req, res) => {
+    // Handle product update logic
+    const query =
+      "UPDATE customers SET `customer_name`=?, `email`=?, `address`=?, `username`=?, `password`=?, `customer_image`=? WHERE `customer_id`=?";
 
-  db.query(q, [product_id], (err, data) => {
-    if (err) return res.json(err);
-    return res.json("Successfully deleted");
-  });
-});
+    // Using req.body for text formats; Using req.file for file formats
+    const values = [
+      req.body.customer_name,
+      req.body.email,
+      req.body.address,
+      req.body.username,
+      req.body.password,
+      req.file ? req.file.filename : req.body.customer_image,
+      req.body.customer_id,
+    ];
 
+    // SQL query execution
+    db.query(query, values, (err, data) => {
+      if (err) {
+        console.error("Error updating item:", err);
+        return res.json(err);
+      }
+      return res.json("Successfully updated");
+    });
+  }
+);
+
+// Deleting cart item, [customer]
 app.delete("/cart/:cart_item_id", (req, res) => {
   const cart_item_id = req.params.cart_item_id;
 

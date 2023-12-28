@@ -10,6 +10,7 @@ export const UserAuthProvider = ({ children }) => {
   const [user, setUser] = useState(initialUser);
 
   useEffect(() => {
+  
     if (user) {
       localStorage.setItem("userData", JSON.stringify(user));
     } else {

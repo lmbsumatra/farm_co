@@ -173,3 +173,25 @@ app.get('/products', (req, res) => {
     
   });
 });
+
+// app.post("/adminLogin", (req, res) => {
+//   const { username, password } = req.body;
+
+//   const query = "SELECT * FROM `admin` WHERE `admin_un` = ? AND `admin_pw` = ?";
+
+//   db.query(query, [username, password], (err, results) => {
+//     if (err) {
+//       console.error(err);
+//       res.status(500).send("Internal Server Error");
+//       return;
+//     }
+
+//     if (results.length > 0) {
+//       res.json({ success: true, message: "Login successful" });
+//     } else {
+//       res.json({ success: false, message: "Invalid credentials" });
+//     }
+//   });
+// });
+
+"Successful: Adding product"

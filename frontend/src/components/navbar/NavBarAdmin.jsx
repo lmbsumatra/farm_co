@@ -1,7 +1,7 @@
+// Modules
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { useAdminAuth } from "../../pages/context/useAuth";
-
 import { useNavigate } from "react-router-dom";
 
 const NavBarAdmin = () => {
@@ -29,10 +29,10 @@ const NavBarAdmin = () => {
           </Navbar.Brand>
 
           {/* Search Bar */}
-          <div className="col-lg-4 col-md-8 col-6">
+          <div className="col-lg-4 col-md-8 col-sm-6">
             <Nav>
               <form
-                className="d-flex mx-auto col-lg-10 col-md-10 col-sm-6"
+                className="d-flex mx-auto col-lg-10 col-md-10 col-sm-10"
                 role="search"
               >
                 <input

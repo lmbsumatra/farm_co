@@ -1,10 +1,12 @@
-import NavBarAdmin from "../../components/navbar/NavBarAdmin.jsx";
-import Footer from "../../components/footer/Footer.jsx";
-// import LoginBanner from "./components/images/log-in.jpg";
+// Modules
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../context/useAuth.js";
+
+// Components
+import NavBarAdmin from "../../components/navbar/NavBarAdmin.jsx";
+import Footer from "../../components/footer/Footer.jsx";
 
 const LogIn = () => {
   const [email, setEmail] = useState("");
@@ -18,52 +20,50 @@ const LogIn = () => {
   const [passwordNotValid, setPasswordNotValidMsg] = useState("");
   const [passwordTrigger, setPasswordTrigger] = useState(false);
 
+  const [acctDoNotExist, setAcctDoNotExistMsg] = useState("");
+
   const navigate = useNavigate();
 
   const [adminList, setAdminList] = useState([]);
   const auth = useAdminAuth();
 
-  // fetching customers data for comparison
+  // Fetching data data for comparison
   useEffect(() => {
+    // Check if admin has logged in, if so, redirect to admin panel
     if (auth.admin) {
       navigate("/admin-panel");
     }
-    const fetchProduct = async () => {
+
+    const fetchAdmins = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/admins`);
         setAdminList(response.data);
       } catch (error) {
-        console.error("Error fetching product:", error);
+        console.error("Error fetching admin:", error);
       }
     };
 
-    fetchProduct();
-  }, []);
+    fetchAdmins();
+  }, [auth.admin, navigate]);
 
-  const [acctDoNotExist, setAcctDoNotExistMsg] = useState("");
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-  };
-
-  // log in email validation
+  // Log in email validation
   useEffect(() => {
     const validateLogEmail = () => {
-      // should be filled out
+      // Should be filled out
       if (email === "") {
         setEmailIsRequiredMsg("Email is required.");
       } else {
         setEmailIsRequiredMsg("");
       }
 
-      // should have email formatting
+      // Should have email formatting
       if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         setEmailNotValidMsg("");
       } else {
         setEmailNotValidMsg("Email should be valid");
       }
 
-      // check email existance
+      // Check email existance
       for (let i = 0; i < adminList.length; i++) {
         const user = adminList[i];
         if (user.email === email) {
@@ -74,22 +74,23 @@ const LogIn = () => {
         }
       }
     };
+
     if (emailTrigger) {
       validateLogEmail();
     }
   }, [email, emailTrigger, adminList]);
 
-  // log in password validation
+  // Log in password validation
   useEffect(() => {
     const validateLogPassword = () => {
-      // should be filled out
+      // Should be filled out
       if (password === "") {
         setPasswordIsRequiredMsg("Password is required.");
       } else {
         setPasswordIsRequiredMsg("");
       }
 
-      // should count between 8 and 20
+      // Should count between 8 and 20
       if (password.length < 8 || password.length > 20) {
         setPasswordNotValidMsg(
           "Password characters should only count between 8 and 20."
@@ -103,7 +104,7 @@ const LogIn = () => {
     }
   }, [password, passwordTrigger]);
 
-  // log in, email to user's password validation
+  // Log in, email to user's password validation
   const Login = () => {
     for (let i = 0; i < adminList.length; i++) {
       const user = adminList[i];
@@ -135,8 +136,7 @@ const LogIn = () => {
             >
               <div className="mx-auto my-5 px-5">
                 <p>
-                  Welcome back to Farmco! We're thrilled to have you here
-                  again.
+                  Welcome back to Farmco! We're thrilled to have you here again.
                 </p>
                 <div className="mb-3">
                   <p style={{ color: "red" }}>{acctDoNotExist}</p>

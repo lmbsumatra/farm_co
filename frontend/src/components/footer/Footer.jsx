@@ -1,4 +1,7 @@
+// Modules
 import React from "react";
+
+// UI import
 import gmail from "../../assets/images/socials/google-svgrepo-com.svg";
 import twitter from "../../assets/images/socials/twitter-svgrepo-com.svg";
 import youtube from "../../assets/images/socials/youtube-svgrepo-com.svg";

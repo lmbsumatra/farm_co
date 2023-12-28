@@ -3,7 +3,6 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-// import { useUserAuth } from "../context/useAuth";
 
 // Components
 import NavBar from "../../components/navbar/NavBar";
@@ -13,6 +12,8 @@ const OrderSummaryId = () => {
   const [orderItems, setOrderItems] = useState([]);
   const [status, setStatus] = useState([]);
   const [grandTotal, setGrandTotal] = useState([]);
+  const [customerDetails, setCustomerDetails] = useState([]);
+
   const location = useLocation();
 
   const order_id = location.pathname.split("/")[2];
@@ -23,18 +24,20 @@ const OrderSummaryId = () => {
         const response = await axios.get(
           `http://localhost:5000/order-items/${order_id}`
         );
-        const { orderItems, currentStatus, grandTotal } = response.data;
+        const { orderItems, currentStatus, grandTotal, customerDetails } =
+          response.data;
 
         setOrderItems(orderItems);
         setStatus(currentStatus);
-        setGrandTotal(grandTotal)
+        setGrandTotal(grandTotal);
+        setCustomerDetails(customerDetails);
       } catch (error) {
         console.error("Error fetching product:", error);
       }
     };
 
     fetchProduct();
-  }, [order_id, orderItems, status]);
+  }, [order_id, orderItems, status, customerDetails]);
 
   return (
     <>
@@ -44,7 +47,18 @@ const OrderSummaryId = () => {
           <h4 className="section-title-dark">
             Order {order_id} Summary : Status : {status}
           </h4>
+
           <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
+            <h5>Order Details</h5>
+            {customerDetails.length > 0 && (
+              <div className="card">
+                <div className="m-2">
+                  <p>Name: {customerDetails[0].customer_name}</p>
+                  <p>Address: {customerDetails[0].address}</p>
+                  <p>Email: {customerDetails[0].email}</p>
+                </div>
+              </div>
+            )}
             <div className="table-responsive">
               <table className="table">
                 <thead>
@@ -78,7 +92,7 @@ const OrderSummaryId = () => {
                     <td></td>
                     <td></td>
                     <td>Grand Total:</td>
-                    <td>₱  {grandTotal}</td>
+                    <td>₱ {grandTotal}</td>
                   </tr>
                 </tbody>
               </table>

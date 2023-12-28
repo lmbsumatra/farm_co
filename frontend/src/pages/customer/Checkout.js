@@ -11,6 +11,7 @@ import "../../components/styles.css";
 // Components
 import NavBar from "../../components/navbar/NavBar";
 import Footer from "../../components/footer/Footer";
+import EditProfile from "./EditCustomerProfile";
 
 const Checkout = () => {
   const [items, setItems] = useState([]);
@@ -20,6 +21,7 @@ const Checkout = () => {
 
   const auth = useUserAuth();
   const customer_id = auth.user.customer_id;
+  const [customerDetails, setCustomerDetails] = useState([]);
 
   const searchParams = new URLSearchParams(location.search);
   const selectedItemsParam = searchParams.get("selectedItems");
@@ -29,7 +31,7 @@ const Checkout = () => {
     : [];
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchData = async () => {
       try {
         const response = await axios.get(
           `http://localhost:5000/cart/${customer_id}`
@@ -40,16 +42,15 @@ const Checkout = () => {
         const selectedItemsInCart = cartItems.filter((cartItem) =>
           selectedItemsArray.includes(cartItem.cart_item_id.toString())
         );
-
+        setCustomerDetails(response.data);
         setItems(selectedItemsInCart);
-        console.log("here", items);
       } catch (error) {
         console.error("Error fetching product:", error);
       }
     };
 
-    fetchProduct();
-  }, [selectedItemsArray, customer_id, items]);
+    fetchData();
+  }, [selectedItemsArray, customer_id, items, customerDetails]);
 
   useEffect(() => {
     // Calculate the grand total when items change
@@ -73,6 +74,10 @@ const Checkout = () => {
     }
   };
 
+  const handleEditProfile = () => {
+    navigate("/edit-profile");
+  }
+
   return (
     <>
       <NavBar />
@@ -80,6 +85,18 @@ const Checkout = () => {
         <div>
           <h2 className="section-title">Checkout</h2>
           <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
+            <h5>Order Details</h5>
+            {customerDetails.length > 0 && (
+              <div className="card">
+                <div className="m-2">
+                  <p>Name: {customerDetails[0].customer_name}</p>
+                  <p>Address: {customerDetails[0].address}</p>
+                  <p>Email: {customerDetails[0].email}</p>
+                  <button className="btn btn-outline-secondary" onClick={handleEditProfile}>Edit Details</button>
+                </div>
+              </div>
+            )}
+
             <div className="table-responsive">
               <table className="table">
                 <thead>

@@ -12,10 +12,12 @@ const AdminOrderSummaryId = () => {
   const [currentStatus, setCurrentStatus] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [grandTotal, setGrandTotal] = useState([]);
+  const [customerDetails, setCustomerDetails] = useState([]);
 
   const location = useLocation();
   const order_id = location.pathname.split("/")[2];
 
+  // Fetching data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -23,15 +25,18 @@ const AdminOrderSummaryId = () => {
         const statusResponse = await axios.get("http://localhost:5000/status");
         setStatus(statusResponse.data);
 
-        // Fetch order items and current status
+        // Fetch order items current status, grand total, customer details
         const response = await axios.get(
           `http://localhost:5000/order-items/${order_id}`
         );
 
-        const { orderItems, currentStatus, grandTotal } = response.data;
+        const { orderItems, currentStatus, grandTotal, customerDetails } =
+          response.data;
+
         setOrderItems(orderItems);
         setCurrentStatus(currentStatus);
         setGrandTotal(grandTotal);
+        setCustomerDetails(customerDetails);
 
         // Set the selected status based on the fetched value
         const selectedStatusObject = status.find(
@@ -49,6 +54,7 @@ const AdminOrderSummaryId = () => {
     fetchData();
   }, [order_id, status]);
 
+  // For updating status from admin side that will reflect to customer's side
   const handleStatusSelect = async (eventKey) => {
     const selectedStatusObject = status.find(
       (status) => status.status_name === eventKey
@@ -80,6 +86,7 @@ const AdminOrderSummaryId = () => {
   return (
     <>
       <NavBarAdmin />
+      
       <section className="body-bg">
         <div>
           <h4 className="section-title-dark d-flex">
@@ -106,6 +113,15 @@ const AdminOrderSummaryId = () => {
             </Dropdown>
           </h4>
           <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
+            {customerDetails.length > 0 && (
+              <div className="card">
+                <div className="m-2">
+                  <p>Name: {customerDetails[0].customer_name}</p>
+                  <p>Address: {customerDetails[0].address}</p>
+                  <p>Email: {customerDetails[0].email}</p>
+                </div>
+              </div>
+            )}
             <div className="table-responsive">
               <table className="table">
                 <thead>

@@ -1,10 +1,11 @@
+// Modules
 import React from "react";
-import "../styles.css";
-
 import { useNavigate } from "react-router-dom";
 
-const Hero = () => {
+// UI imports
+import "../styles.css";
 
+const Hero = () => {
   const navigate = useNavigate();
 
   const handleBuyNow = () => {

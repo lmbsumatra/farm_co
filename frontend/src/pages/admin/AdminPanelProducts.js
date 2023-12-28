@@ -1,14 +1,19 @@
+// Modules
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+// UI imports
+import "../../components/styles.css";
+
+// Components
 import NavBarAdmin from "../../components/navbar/NavBarAdmin";
 import Footer from "../../components/footer/Footer";
-import "../../components/styles.css";
 
 const AdminPanelProducts = () => {
   const [products, setProducts] = useState([]);
 
+  // Fetching products
   useEffect(() => {
     axios
       .get("http://localhost:5000/products")
@@ -16,6 +21,7 @@ const AdminPanelProducts = () => {
       .catch((error) => console.error("Error fetching products: ", error));
   }, []);
 
+  // Handles delete products
   const handleDelete = async (product_id) => {
     try {
       await axios.delete("http://localhost:5000/products/" + product_id);
@@ -25,6 +31,7 @@ const AdminPanelProducts = () => {
     }
   };
 
+  // Sets is_featured: 1=yes, 0=no
   const getFeaturedStatus = (isFeatured) => {
     return isFeatured ? "Yes" : "No";
   };
@@ -32,9 +39,11 @@ const AdminPanelProducts = () => {
   return (
     <>
       <NavBarAdmin />
+      
       <section className="body-bg">
         <h4 className="section-title">Products</h4>
         <div className="card mx-auto overflow-hidden width-80vw my-3 overflow-x">
+
           <div className="table-responsive">
             <table className="table">
               <thead>
@@ -49,6 +58,7 @@ const AdminPanelProducts = () => {
                   <td>Featured</td>
                 </tr>
               </thead>
+
               <tbody>
                 {products.map((product) => (
                   <tr key={product.product_id}>
@@ -84,6 +94,7 @@ const AdminPanelProducts = () => {
                     </td>
                   </tr>
                 ))}
+
                 <tr key="add-product-row">
                   <td colSpan="4">
                     <button type="button" className="btn btn-success">
@@ -96,6 +107,7 @@ const AdminPanelProducts = () => {
           </div>
         </div>
       </section>
+
       <Footer />
     </>
   );

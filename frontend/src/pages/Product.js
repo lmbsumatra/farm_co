@@ -37,10 +37,10 @@ const Product = () => {
     };
     fetchProduct();
 
-    if (auth.user && auth.user.cart_id !== undefined) {
+    if (auth.user !== undefined) {
       setAddToCart((prevAddToCart) => ({
         ...prevAddToCart,
-        cart_id: auth.user.cart_id,
+        cart_id: auth.user.customer_id,
       }));
     }
   }, [product_id, auth.user]);

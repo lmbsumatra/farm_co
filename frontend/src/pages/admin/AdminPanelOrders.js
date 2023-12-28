@@ -1,18 +1,23 @@
+// Modules
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
+// UI imports
+import "../../components/styles.css";
+
+// Components
 import NavBarAdmin from "../../components/navbar/NavBarAdmin";
 import Footer from "../../components/footer/Footer";
-import "../../components/styles.css";
-import { useNavigate } from "react-router-dom";
 
 const AdminPanelOrders = () => {
   const [orders, setOrders] = useState([]);
 
   const navigate = useNavigate();
 
+  // Fetching orders summaries
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchOrders = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/orders`);
         setOrders(response.data);
@@ -21,7 +26,7 @@ const AdminPanelOrders = () => {
       }
     };
 
-    fetchProduct();
+    fetchOrders();
   }, [orders]);
 
   const handleClick = async (order_id) => {

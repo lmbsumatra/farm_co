@@ -14,12 +14,20 @@ import Footer from "../../components/footer/Footer";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
-  const [product, setProduct] = useState({});
+  const [product, setProduct] = useState({
+    image: "",
+    product_category: "",
+    product_desc: "",
+    product_name: "",
+    product_price: "",
+    product_qty: "",
+    product_isfeatured: 0
+  });
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+  const [requireMsg, setRequireMsg] = useState();
   const navigate = useNavigate();
 
-  // Fetching categories, category_id and category_name
+  // Fetching categories: category_id and category_name, for setting product category
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -35,10 +43,12 @@ const AddProduct = () => {
 
   // Handles category selection
   const handleCategorySelect = (eventKey, event) => {
+    // Setting category_id, category_name to selectedCategoryObject
     const selectedCategoryObject = categories.find(
       (category) => category.category_name === eventKey
     );
 
+    // If selectedCategoryObject(not null), set product.product_category
     if (selectedCategoryObject) {
       setSelectedCategory(eventKey);
       setProduct((prevProduct) => ({
@@ -62,25 +72,39 @@ const AddProduct = () => {
   // Handles button for adding product
   const handleClick = async (e) => {
     e.preventDefault();
+
     try {
-      const imgInput = document.getElementById("imageUpload");
-      const file = imgInput.files[0];
+      if (
+        product.image === "" ||
+        product.product_category === "" ||
+        product.image === "" ||
+        product.product_desc === "" ||
+        product.name === "" ||
+        product.price === "" ||
+        product.qty === ""
+      ) {
+        console.log(product);
+        setRequireMsg("Fill out completely");
+      } else {
+        const imgInput = document.getElementById("imageUpload");
+        const file = imgInput.files[0];
 
-      // Using formdata to pass data to server
-      const formData = new FormData();
-      formData.append("image", file);
+        // Using formdata to pass data to backend
+        const formData = new FormData();
+        formData.append("image", file);
 
-      formData.append("product_name", product.product_name);
-      formData.append("product_desc", product.product_desc);
-      formData.append("product_price", product.product_price);
-      formData.append("product_qty", product.product_qty);
-      formData.append("product_category", product.product_category);
-      formData.append("product_isfeatured", product.product_isfeatured);
+        formData.append("product_name", product.product_name);
+        formData.append("product_desc", product.product_desc);
+        formData.append("product_price", product.product_price);
+        formData.append("product_qty", product.product_qty);
+        formData.append("product_category", product.product_category);
+        formData.append("product_isfeatured", product.product_isfeatured);
 
-      await axios.post("http://localhost:5000/products", formData);
+        await axios.post("http://localhost:5000/products", formData);
 
-      // Back to the admin panel page
-      navigate("/admin-panel");
+        // Back to the admin product page
+        navigate("/admin-panel-products");
+      }
     } catch (err) {
       console.log(err);
     }
@@ -89,11 +113,13 @@ const AddProduct = () => {
   return (
     <>
       <NavBarAdmin />
+
       <section className="form body-bg" key={product.product_id}>
         <div>
           <h4 className="section-title">Add New Item</h4>
           <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
             <div className="row py-3">
+              <p style={{ color: "red" }}>{requireMsg}</p>
               <div className="col-md-3">
                 {/* Name input */}
                 <label>Name</label>
@@ -125,6 +151,7 @@ const AddProduct = () => {
                 <label>Image</label>
                 <div className="custom-file">
                   <input
+                    name="image"
                     type="file"
                     className="custom-file-input"
                     id="imageUpload"
@@ -212,6 +239,7 @@ const AddProduct = () => {
           </div>
         </div>
       </section>
+
       <Footer />
     </>
   );

@@ -13,11 +13,13 @@ ALTER TABLE customers
 ADD COLUMN username VARCHAR(255) NOT NULL,
 ADD COLUMN password VARCHAR(255) NOT NULL;
 
+ALTER TABLE customers ADD COLUMN customer_image VARCHAR(255);
+
 ALTER TABLE customers
 ADD COLUMN cart_id INT NOT NULL;
 
 ALTER TABLE customers
-DROP COLUMN cart_id;
+DROP COLUMN image;
 
 
 

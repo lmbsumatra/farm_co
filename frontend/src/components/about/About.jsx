@@ -1,4 +1,7 @@
+// Modules
 import React from "react";
+
+// UI import
 import img_1 from "../../assets/images/about/img_1.jpg";
 import "../styles.css";
 

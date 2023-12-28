@@ -24,6 +24,7 @@ import SignUp from "./pages/Sign-up";
 import Checkout from "./pages/customer/Checkout";
 import OrderSummary from "./pages/customer/OrderSummary.js";
 import OrderSummaryId from "./pages/customer/OrderSummaryId.js";
+import EditProfile from "./pages/customer/EditCustomerProfile.js";
 
 import { UserAuthProvider, AdminAuthProvider } from "./pages/context/useAuth";
 import RequireUserAuth from "./pages/context/requireUserAuth.js";
@@ -123,6 +124,14 @@ const App = () => (
               element={
                 <RequireUserAuth>
                   <OrderSummaryId />
+                </RequireUserAuth>
+              }
+            />
+            <Route
+              path="/edit-profile"
+              element={
+                <RequireUserAuth>
+                  <EditProfile />
                 </RequireUserAuth>
               }
             />

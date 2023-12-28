@@ -1,4 +1,7 @@
+// Modules
 import React from "react";
+
+// UI import
 import "../styles.css";
 
 const Testimonials = () => {

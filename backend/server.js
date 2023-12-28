@@ -31,10 +31,7 @@ const storage1 = multer.diskStorage({
     cb(null, "/Users/DELL/Documents/GitHub/farm_co/backend/images/products");
   },
   filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
+    cb(null, file.originalname);
   },
 });
 
@@ -44,10 +41,7 @@ const storage2 = multer.diskStorage({
     cb(null, "/Users/DELL/Documents/GitHub/farm_co/backend/images/customers");
   },
   filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
+    cb(null, file.originalname);
   },
 });
 
@@ -247,7 +241,10 @@ app.get("/admins", (req, res) => {
 });
 
 // ** Updating order status, [admin]
-app.put("/order-items/:order_id", uploadProductImage.none(), async (req, res) => {
+app.put(
+  "/order-items/:order_id",
+  uploadProductImage.none(),
+  async (req, res) => {
     try {
       const { status_id } = req.body;
       const { order_id } = req.params;
@@ -274,6 +271,35 @@ app.delete("/products/:product_id", (req, res) => {
     return res.json("Successfully deleted");
   });
 });
+
+// ** Deleting customer, [admin]
+app.delete("/customers/:customer_id", (req, res) => {
+  const customer_id = req.params.customer_id;
+  const cart_id = req.params.customer_id;
+
+  const deleteCart = "DELETE FROM carts WHERE cart_id = ?";
+  const deleteCustomer = "DELETE FROM customers WHERE customer_id = ?";
+
+  // Delete from cart table
+  db.query(deleteCart, [cart_id], (err, cartData) => {
+    if (err) {
+      console.error("Error deleting from cart:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    // Delete from customers table
+    db.query(deleteCustomer, [customer_id], (err, customerData) => {
+      if (err) {
+        console.error("Error deleting from customers:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      // Assuming both queries were successful
+      return res.json("Successfully deleted");
+    });
+  });
+});
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -307,6 +333,8 @@ app.post("/customers", uploadProductImage.none(), (req, res) => {
     req.body.username,
     req.body.password,
   ];
+
+  console.log(req.body);
 
   db.query(customerQuery, customerValues, (err, customerResult) => {
     if (err) {
@@ -513,7 +541,10 @@ app.get("/customers", (req, res) => {
 });
 
 // Updating product, [admin]
-app.put("/products/:product_id", uploadProductImage.single("image"), (req, res) => {
+app.put(
+  "/products/:product_id",
+  uploadProductImage.single("image"),
+  (req, res) => {
     const product_id = req.params.product_id;
     const query =
       "UPDATE products SET `product_name`=?, `description`=?, `price`=?, `stock_quantity`=?, `category_id`=?, `is_featured`=?, `image`=? WHERE `product_id`=?";
@@ -540,7 +571,10 @@ app.put("/products/:product_id", uploadProductImage.single("image"), (req, res) 
 );
 
 // Updating customer, [customer]
-app.put("/customer/:customer_id", uploadCustomerProfile.single("image"), (req, res) => {
+app.put(
+  "/customer/:customer_id",
+  uploadCustomerProfile.single("image"),
+  (req, res) => {
     // Handle product update logic
     const query =
       "UPDATE customers SET `customer_name`=?, `email`=?, `address`=?, `username`=?, `password`=?, `customer_image`=? WHERE `customer_id`=?";
@@ -555,6 +589,8 @@ app.put("/customer/:customer_id", uploadCustomerProfile.single("image"), (req, r
       req.file ? req.file.filename : req.body.customer_image,
       req.body.customer_id,
     ];
+
+    console.log(values);
 
     // SQL query execution
     db.query(query, values, (err, data) => {

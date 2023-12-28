@@ -70,6 +70,13 @@ const NavBarAdmin = () => {
               >
                 Orders
               </Nav.Link>
+
+              <Nav.Link
+                href={auth.admin ? `/admin-panel-customers` : "/admin-login"}
+                className="me-2"
+              >
+                Customers
+              </Nav.Link>
             </Nav>
 
             <div className="col-lg-6 col-md-12 mx-auto">

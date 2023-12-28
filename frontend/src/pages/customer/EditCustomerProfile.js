@@ -1,7 +1,6 @@
 // Modules
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../context/useAuth";
 import { useEffect } from "react";
 
@@ -25,12 +24,17 @@ const EditProfile = () => {
     customer_id: auth.user.customer_id,
   });
 
-
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/customers/${auth.user.customer_id}`);
+        const response = await axios.get(
+          `http://localhost:5000/customers/${auth.user.customer_id}`
+        );
         setUserImage(response.data[0].customer_image);
+        setCustomerDetails((prevCustomerDetails) => ({
+          ...prevCustomerDetails,
+          customer_image: response.data[0].customer_image,
+        }));
       } catch (error) {
         console.error("Error fetching product:", error);
       }
@@ -39,16 +43,20 @@ const EditProfile = () => {
     fetchProduct();
   }, [userImage, auth.user.customer_id]);
 
-  const navigate = useNavigate();
-
   // Handles input changes and setting value to product variable
   const handleChange = ({ target }) => {
-    const { name, value, type, checked } = target;
+    const { name, value, type, checked, files } = target;
 
     if (type === "checkbox") {
       setCustomerDetails((prevCustomerDetails) => ({
         ...prevCustomerDetails,
         [name]: type === "checkbox" ? (checked ? 1 : 0) : value,
+      }));
+    } else if (type === "file") {
+      setCustomerDetails((prevCustomerDetails) => ({
+        ...prevCustomerDetails,
+        customer_image:
+          type === "file" ? files[0] : prevCustomerDetails.customer_image,
       }));
     } else {
       setCustomerDetails((prevCustomerDetails) => ({
@@ -74,6 +82,7 @@ const EditProfile = () => {
       } else {
         formData.append("customer_image", customerDetails.customer_image);
       }
+      console.log(customerDetails);
 
       formData.append("customer_name", customerDetails.customer_name);
       formData.append("email", customerDetails.email);
@@ -90,9 +99,6 @@ const EditProfile = () => {
       // Back to the admin panel page
       auth.login(customerDetails);
       window.location.reload();
-      
-      navigate("/checkout");
-      
     } catch (error) {
       console.error("Error updating product:", error);
     }

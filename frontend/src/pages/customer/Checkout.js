@@ -11,7 +11,6 @@ import "../../components/styles.css";
 // Components
 import NavBar from "../../components/navbar/NavBar";
 import Footer from "../../components/footer/Footer";
-import EditProfile from "./EditCustomerProfile";
 
 const Checkout = () => {
   const [items, setItems] = useState([]);

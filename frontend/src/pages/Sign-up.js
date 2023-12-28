@@ -13,6 +13,11 @@ const SignUp = () => {
   const [fullNameTrigger, setFullNameTrigger] = useState(false);
   const [fnValid, setFnValid] = useState(false);
 
+  const [address, setAddress] = useState("");
+  const [addressIsRequired, setAddressIsRequiredMsg] = useState("");
+  const [addressTrigger, setAddressTrigger] = useState(false);
+  const [addressValid, setAddressValid] = useState(false);
+
   const [email, setEmail] = useState("");
   const [emailIsRequired, setEmailIsRequiredMsg] = useState("");
   const [emailIsNotValid, setEmailIsNotValidMsg] = useState("");
@@ -76,6 +81,23 @@ const SignUp = () => {
       validateFullName();
     }
   }, [fullName, fullNameTrigger]);
+
+  // validation for address
+  useEffect(() => {
+    const validateAddress = () => {
+      // should be filled out
+      if (address === "") {
+        setAddressIsRequiredMsg("Address is required.");
+        setAddressValid(false);
+      } else {
+        setAddressIsRequiredMsg("");
+        setAddressValid(true);
+      }
+    };
+    if (addressTrigger) {
+      validateAddress();
+    }
+  }, [address, addressTrigger]);
 
   // validation for email
   useEffect(() => {
@@ -227,21 +249,23 @@ const SignUp = () => {
         password === "" &&
         email === "" &&
         fullName === "" &&
-        username === ""
+        username === "" &&
+        address ===""
       ) {
         setfullNameIsRequiredMsg("Fullname is required.");
+        setAddressIsRequiredMsg("Address is required.");
         setEmailIsRequiredMsg("Email is required.");
         setUserNameIsRequiredMsg("Username is required.");
         setPasswordIsRequiredMsg("Password is required.");
         setValidNotMsg("Please fill out correctly to proceed.");
-      } else if (!fnValid || !unValid || !emailValid || !pwValid || !cpwValid) {
+      } else if (!fnValid || !unValid || !emailValid || !pwValid || !cpwValid || !address) {
         setValidNotMsg("Please fill out correctly to proceed.");
       } else {
         setValidNotMsg("");
         const formData = new FormData();
         formData.append("customer_name", fullName);
+        formData.append("address", address);
         formData.append("email", email);
-        formData.append("address", "address");
         formData.append("username", username);
         formData.append("password", password);
 
@@ -293,6 +317,24 @@ const SignUp = () => {
                     />
 
                     <p style={{ color: "red" }}>{fullNameIsRequired}</p>
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="nameInput" className="form-label">
+                      Address
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="addressInput"
+                      value={address}
+                      onChange={(e) => {
+                        setAddress(e.target.value);
+                        setAddressTrigger(true);
+                      }}
+                    />
+
+                    <p style={{ color: "red" }}>{addressIsRequired}</p>
                   </div>
 
                   <div className="mb-3">

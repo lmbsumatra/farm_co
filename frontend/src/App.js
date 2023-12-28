@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import Product from "./pages/Product";
 import NotAvailable from "./pages/FunctionNotAvailable.js";
+
 // Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminPanel from "./pages/admin/AdminPanel";
@@ -17,6 +18,8 @@ import AdminPanelProducts from "./pages/admin/AdminPanelProducts.js";
 import EditProduct from "./pages/admin/EditProduct";
 import AddProduct from "./pages/admin/AddProduct";
 import AdminOrderSummaryId from "./pages/admin/AdminOrderSummaryId.js";
+import AdminPanelCustomers from "./pages/admin/AdminPanelCustomers.js";
+
 // Customer pages
 import Cart from "./pages/customer/Cart";
 import LogIn from "./pages/Log-in";
@@ -66,6 +69,14 @@ const App = () => (
               element={
                 <RequireAdminAuth>
                   <AdminPanelProducts />
+                </RequireAdminAuth>
+              }
+            />
+            <Route
+              path="/admin-panel-customers"
+              element={
+                <RequireAdminAuth>
+                  <AdminPanelCustomers />
                 </RequireAdminAuth>
               }
             />

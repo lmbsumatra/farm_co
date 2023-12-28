@@ -8,7 +8,7 @@ import "../../components/styles.css";
 import { Dropdown } from "react-bootstrap";
 
 // Components
-import NavBar from "../../components/navbar/NavBar";
+import NavBarAdmin from "../../components/navbar/NavBarAdmin";
 import Footer from "../../components/footer/Footer";
 
 const EditProduct = () => {
@@ -149,7 +149,7 @@ const EditProduct = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBarAdmin />
       <section className="form body-bg" key={product.product_id}>
         <div>
           <h4 className="section-title">Update Item</h4>

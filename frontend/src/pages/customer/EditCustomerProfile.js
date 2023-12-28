@@ -14,17 +14,17 @@ import Footer from "../../components/footer/Footer";
 
 const EditProfile = () => {
   const auth = useUserAuth();
+  const [userImage, setUserImage] = useState(null);
   const [customerDetails, setCustomerDetails] = useState({
-    customer_name: "",
-    email: "",
-    customer_image: "",
-    address: "",
-    username: "",
-    password: "",
-    customer_id: null,
+    customer_name: auth.user.customer_name,
+    email: auth.user.email,
+    customer_image: auth.user.image,
+    address: auth.user.address,
+    username: auth.user.username,
+    password: auth.user.password,
+    customer_id: auth.user.customer_id,
   });
 
-  const [userImage, setUserImage] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {

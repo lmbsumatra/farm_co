@@ -27,15 +27,19 @@ const NavBar = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/customers/${auth.user.customer_id}`);
-        setUserImage(response.data[0].customer_image);
+        if (auth.user && auth.user.customer_id) {
+          const response = await axios.get(
+            `http://localhost:5000/customers/${auth.user.customer_id}`
+          );
+          setUserImage(response.data[0].customer_image);
+        }
       } catch (error) {
         console.error("Error fetching product:", error);
       }
     };
 
     fetchProduct();
-  }, [userImage, auth.user.customer_id]);
+  }, [userImage]);
 
   return (
     <section id="Navbar" className="container">

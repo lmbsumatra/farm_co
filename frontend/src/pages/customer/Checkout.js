@@ -129,7 +129,7 @@ const Checkout = () => {
                     <td></td>
                     <td></td>
                     <td>Grand Total:</td>
-                    <td>₱ {grandTotal}</td>
+                    <td>₱ {grandTotal.toFixed(2)}</td>
                   </tr>
                   <tr>
                     <td colSpan="7">

@@ -67,7 +67,7 @@ const Checkout = () => {
       });
 
       navigate(`/orders`);
-      console.log("Checkout successful!");
+      
     } catch (error) {
       console.error("Error during checkout:", error);
     }

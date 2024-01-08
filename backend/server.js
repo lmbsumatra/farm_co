@@ -590,8 +590,6 @@ app.put(
       req.body.customer_id,
     ];
 
-    console.log(values);
-
     // SQL query execution
     db.query(query, values, (err, data) => {
       if (err) {

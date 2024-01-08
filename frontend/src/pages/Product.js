@@ -36,14 +36,17 @@ const Product = () => {
       }
     };
     fetchProduct();
-
-    if (auth.user !== undefined) {
+  
+    if (auth.user && auth.user.customer_id !== undefined) {
       setAddToCart((prevAddToCart) => ({
         ...prevAddToCart,
         cart_id: auth.user.customer_id,
       }));
+    } else {
+      console.log("not logged in");
     }
   }, [product_id, auth.user]);
+  
 
   useEffect(() => {
     // Update total when kiloValue changes
@@ -103,9 +106,7 @@ const Product = () => {
 
                   <div>
                     <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Aliquam et cursus justo. Sed purus eros, consectetur quis
-                      erat vitae, consectetur.
+                      {product.description}
                     </p>
                   </div>
 

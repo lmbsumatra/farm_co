@@ -48,6 +48,7 @@ const storage2 = multer.diskStorage({
 const uploadProductImage = multer({ storage: storage1 });
 const uploadCustomerProfile = multer({ storage: storage2 });
 
+// Check connection
 db.connect((err) => {
   if (err) {
     console.error("MySQL connection error:", err);
@@ -61,8 +62,16 @@ db.connect((err) => {
 
 // ** For adding product, [admin]
 app.post("/products", uploadProductImage.single("image"), (req, res) => {
-  const query =
-    "INSERT INTO `products` (`product_name`, `description`, `price`, `stock_quantity`, `category_id`, `is_featured`, `image`) VALUES(?)";
+  const query = `
+  INSERT INTO products (
+    product_name, 
+    description, 
+    price, 
+    stock_quantity, 
+    category_id, 
+    is_featured, 
+    image) 
+  VALUES(?)`;
 
   const values = [
     req.body.product_name,
@@ -76,84 +85,80 @@ app.post("/products", uploadProductImage.single("image"), (req, res) => {
 
   db.query(query, [values], (err, data) => {
     if (err) return res.json(err);
-    res.json({
-      filename: req.file.filename,
-      message: "Successful: Adding product",
-    });
+    return res.json("Successful product insertion.");
   });
 });
 
 // ** Displaying products, [admin]
 app.get("/products", (req, res) => {
-  const sql = `
+  const query = `
     SELECT * 
     FROM products p 
-      LEFT JOIN categories c ON p.category_id = c.category_id`;
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
+    LEFT JOIN categories c ON p.category_id = c.category_id`;
+
+  db.query(query, (err, results) => {
+    if (err) return res.json(err);
+    return res.json(results);
   });
 });
 
 // ** Displaying product with [product_id], [admin]
 app.get("/product/:product_id", (req, res) => {
   const product_id = req.params.product_id;
-  const q = "SELECT * FROM products WHERE product_id = ?";
-  db.query(q, [product_id], (err, data) => {
+
+  const query = `
+  SELECT * 
+  FROM products 
+  WHERE product_id = ?`;
+
+  db.query(query, [product_id], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
 
-    if (data.length === 0) {
+    if (results.length === 0) {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    const product = data[0];
+    const product = results[0];
     return res.json(product);
   });
 });
 
 // ** Displaying all categories, [admin: add product, edit product]
 app.get("/categories", (req, res) => {
-  const query = "SELECT * FROM `categories`";
+  const query = `
+  SELECT * 
+  FROM categories`;
+
   db.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
+    if (err) return res.json(err);
+    return res.json(results);
   });
 });
 
 // ** Displaying all orders, [admin]
 app.get("/orders", (req, res) => {
-  const query = `SELECT * 
+  const query = `
+  SELECT * 
   FROM orders o
   JOIN status s ON o.status_id = s.status_id
-  `;
+  ORDER BY order_date DESC`;
 
   db.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
+    if (err) return res.json(err);
+    return res.json(results);
   });
 });
 
-// ** Displaying order summary, [admin]
+// Displaying order summary, [admin]
 app.get("/order-items/:order_id", (req, res) => {
   const orderId = req.params.order_id;
 
   // Query to get order items
   const orderItemsQuery = `
-    SELECT
-      *
+    SELECT *
     FROM order_items oi
     JOIN products p ON p.product_id = oi.product_id
-    WHERE oi.order_id = ?;
-  `;
+    WHERE oi.order_id = ?`;
 
   // Query to get customer details
   const customerDetailsQuery = `
@@ -215,13 +220,13 @@ app.get("/order-items/:order_id", (req, res) => {
 
 // ** Displaying all status [admin]
 app.get("/status", (req, res) => {
-  const query = "SELECT * FROM `status`";
+  const query = `
+  SELECT * 
+  FROM status`;
+
   db.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
+    if (err) return res.json(err);
+    return res.json(results);
   });
 });
 
@@ -232,47 +237,47 @@ app.get("/admins", (req, res) => {
     FROM admins`;
 
   db.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
+    if (err) return res.json(err);
+    return res.json(results);
   });
 });
 
-// ** Updating order status, [admin]
+// ** Updating order status, [admin: order summary id]
 app.put(
   "/order-items/:order_id",
   uploadProductImage.none(),
   async (req, res) => {
-    try {
-      const { status_id } = req.body;
-      const { order_id } = req.params;
+    const { status_id } = req.body;
+    const { order_id } = req.params;
 
-      const query = "UPDATE `orders` SET `status_id` = ? WHERE `order_id` = ?";
+    const query = `
+      UPDATE orders 
+      SET status_id = ? 
+      WHERE order_id = ?`;
 
-      await db.query(query, [status_id, order_id]);
-
-      res.status(200).json({ success: true });
-    } catch (error) {
-      console.error("Error updating order status:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+    db.query(query, [status_id, order_id], (err, data) => {
+      if (err) return res.json(err);
+      return res.json("Successful order status update.");
+    });
   }
 );
 
 // ** Deleting product, [admin]
 app.delete("/products/:product_id", (req, res) => {
   const product_id = req.params.product_id;
-  const q = "DELETE FROM products WHERE product_id = ?";
 
-  db.query(q, [product_id], (err, data) => {
+  const query = `
+  DELETE
+  FROM products 
+  WHERE product_id = ?`;
+
+  db.query(query, [product_id], (err, data) => {
     if (err) return res.json(err);
-    return res.json("Successfully deleted");
+    return res.json("Successfully deleted product");
   });
 });
 
-// ** Deleting customer, [admin]
+// Deleting customer, [admin]
 app.delete("/customers/:customer_id", (req, res) => {
   const customer_id = req.params.customer_id;
   const cart_id = req.params.customer_id;
@@ -300,14 +305,18 @@ app.delete("/customers/:customer_id", (req, res) => {
   });
 });
 
-
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// For adding items to cart, [customer]
+// ** For adding items to cart, [customer: add to cart]
 app.post("/cart", uploadProductImage.none(), (req, res) => {
-  const query =
-    "INSERT INTO `cart_items` (`cart_id`, `product_id`, `quantity`, `total`) VALUES (?, ?, ?, ?)";
+  const query = `
+  INSERT INTO cart_items (
+    cart_id, 
+    product_id, 
+    quantity, 
+    total) 
+  VALUES (?, ?, ?, ?)`;
 
   const values = [
     req.body.cart_id,
@@ -318,11 +327,11 @@ app.post("/cart", uploadProductImage.none(), (req, res) => {
 
   db.query(query, values, (err, data) => {
     if (err) return res.json(err);
-    res.json("Successful: Adding cart items");
+    return res.json("Successfully inserting item to cart");
   });
 });
 
-// For adding customer = cart, [customer]
+// For adding customer + cart, [customer]
 app.post("/customers", uploadProductImage.none(), (req, res) => {
   const customerQuery =
     "INSERT INTO `customers` (`customer_name`, `email`, `address`, `username`, `password`) VALUES (?, ?, ?, ?, ?)";
@@ -338,7 +347,6 @@ app.post("/customers", uploadProductImage.none(), (req, res) => {
 
   db.query(customerQuery, customerValues, (err, customerResult) => {
     if (err) {
-      // Rollback the transaction if an error occurs
       return db.rollback(() => {
         console.error("MySQL Customer Insertion Error:", err.sqlMessage);
         res.status(500).json({ error: "Internal Server Error" });
@@ -463,13 +471,21 @@ app.post("/checkout", (req, res) => {
   });
 });
 
-// Displaying cart items, [customer]
+// ** Displaying cart items, [customer]
 app.get("/cart/:customer_id", (req, res) => {
   const customerId = req.params.customer_id;
 
   const query = `
     SELECT
-      *
+      c.cart_item_id,
+      p.image,
+      p.product_name,
+      c.quantity,
+      p.price,
+      c.total,
+      cu.customer_name,
+      cu.address,
+      cu.email
     FROM cart_items c
       JOIN products p ON c.product_id = p.product_id
       JOIN carts ca ON c.cart_id = ca.cart_id
@@ -477,37 +493,34 @@ app.get("/cart/:customer_id", (req, res) => {
     WHERE cu.customer_id = ?`;
 
   db.query(query, [customerId], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
+    if (err) return res.json(err);
+    return res.json(results);
   });
 });
 
-// Displaying all orders, [customer]
+// ** Displaying all orders, [customer]
 app.get("/orders/:customer_id", (req, res) => {
   const customerId = req.params.customer_id;
 
   const query = `
   SELECT
-  *
-    FROM orders o
-    JOIN customers cu ON cu.customer_id = o.customer_id
-    JOIN status s ON o.status_id = s.status_id
-  WHERE cu.customer_id = ?;
-  `;
+    o.order_id,
+    o.grand_total,
+    s.status_name,
+    o.order_date
+  FROM orders o
+  JOIN customers cu ON cu.customer_id = o.customer_id
+  JOIN status s ON o.status_id = s.status_id
+  WHERE cu.customer_id = ?
+  ORDER BY o.order_date DESC`;
 
   db.query(query, [customerId], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
+    if (err) return res.json(err);
+    return res.json(results);
   });
 });
 
-// Displaying customer image, [customer]
+// ** Displaying customer image, [customer]
 app.get("/customers/:customer_id", (req, res) => {
   const customer_id = req.params.customer_id;
   const query = `
@@ -516,15 +529,12 @@ app.get("/customers/:customer_id", (req, res) => {
     WHERE customer_id = ?`;
 
   db.query(query, [customer_id], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
+    if (err) return res.json(err);
+    return res.json(results);
   });
 });
 
-// Displaying all customers, [customer login]
+// ** Displaying all customers, [customer login]
 app.get("/customers", (req, res) => {
   const query = `
     SELECT *
@@ -532,22 +542,28 @@ app.get("/customers", (req, res) => {
     LEFT JOIN carts ON customers.customer_id = carts.customer_id`;
 
   db.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Internal Server Error");
-    }
-    res.json(results);
+    if (err) return res.json(err);
+    return res.json(results);
   });
 });
 
-// Updating product, [admin]
+// ** Updating product, [admin]
 app.put(
   "/products/:product_id",
   uploadProductImage.single("image"),
   (req, res) => {
     const product_id = req.params.product_id;
-    const query =
-      "UPDATE products SET `product_name`=?, `description`=?, `price`=?, `stock_quantity`=?, `category_id`=?, `is_featured`=?, `image`=? WHERE `product_id`=?";
+    const query = `
+    UPDATE products 
+    SET 
+      product_name = ?, 
+      description = ?,
+      price = ?,
+      stock_quantity = ?,
+      category_id = ?,
+      is_featured = ?,
+      image = ? 
+    WHERE product_id = ?`;
 
     const values = [
       req.body.product_name,
@@ -560,24 +576,29 @@ app.put(
       product_id,
     ];
 
-    db.query(query, values, (err, data) => {
-      if (err) {
-        console.error("Error updating item:", err);
-        return res.json(err);
-      }
-      return res.json("Successfully updated");
+    db.query(query, values, (err, results) => {
+      if (err) return res.json(err);
+      return res.json(results);
     });
   }
 );
 
-// Updating customer, [customer]
+// ** Updating customer, [customer]
 app.put(
   "/customer/:customer_id",
   uploadCustomerProfile.single("image"),
   (req, res) => {
     // Handle product update logic
-    const query =
-      "UPDATE customers SET `customer_name`=?, `email`=?, `address`=?, `username`=?, `password`=?, `customer_image`=? WHERE `customer_id`=?";
+    const query = `
+    UPDATE customers 
+    SET 
+      customer_name = ?, 
+      email = ?, 
+      address = ?, 
+      username = ?, 
+      password = ?, 
+      customer_image = ? 
+    WHERE customer_id = ?`;
 
     // Using req.body for text formats; Using req.file for file formats
     const values = [
@@ -592,26 +613,19 @@ app.put(
 
     // SQL query execution
     db.query(query, values, (err, data) => {
-      if (err) {
-        console.error("Error updating item:", err);
-        return res.json(err);
-      }
-      return res.json("Successfully updated");
+      if (err) return res.json(err);
+      return res.json("Successfully updated customer");
     });
   }
 );
 
-// Deleting cart item, [customer]
+// ** Deleting cart item, [customer]
 app.delete("/cart/:cart_item_id", (req, res) => {
   const cart_item_id = req.params.cart_item_id;
 
-  const q = "DELETE FROM cart_items WHERE cart_item_id = ?";
-  db.query(q, [cart_item_id], (err, data) => {
-    if (err) {
-      console.error("Error deleting cart item:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
-    console.log("Deleted successfully");
-    return res.json("Successfully deleted");
+  const query = "DELETE FROM cart_items WHERE cart_item_id = ?";
+  db.query(query, [cart_item_id], (err, data) => {
+    if (err) return res.json(err);
+    return res.json("Successfully deleted cart item");
   });
 });

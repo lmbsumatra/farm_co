@@ -36,14 +36,24 @@ const AdminPanelProducts = () => {
     return isFeatured ? "Yes" : "No";
   };
 
+  const handleStockWarning = (stock_qty) => {
+    var warningMsg = ''
+    if (stock_qty <= 0.24) {
+      warningMsg = 'bg-danger'
+    }
+    else {
+      warningMsg = ''
+    }
+    return warningMsg;
+  }
+
   return (
     <>
       <NavBarAdmin />
-      
+
       <section className="body-bg">
         <h4 className="section-title">Products</h4>
         <div className="card mx-auto overflow-hidden width-80vw my-3 overflow-x">
-
           <div className="table-responsive">
             <table className="table">
               <thead>
@@ -74,11 +84,16 @@ const AdminPanelProducts = () => {
                     </td>
                     <td>{product.category_name}</td>
                     <td>{product.price}</td>
-                    <td>{product.stock_quantity}</td>
+                    <td id="stock" className={handleStockWarning(product.stock_quantity)}>
+                      {product.stock_quantity}
+                    </td>
                     <td>{getFeaturedStatus(product.is_featured)}</td>
                     <td>
                       <button type="button" className="btn btn-success">
-                        <Link to={`/edit-product/${product.product_id}`} className="no-decor-white">
+                        <Link
+                          to={`/edit-product/${product.product_id}`}
+                          className="no-decor-white"
+                        >
                           Update
                         </Link>
                       </button>
@@ -98,7 +113,9 @@ const AdminPanelProducts = () => {
                 <tr key="add-product-row">
                   <td colSpan="4">
                     <button type="button" className="btn btn-success">
-                      <Link to={`/add-product/`} className="no-decor-white">Add</Link>
+                      <Link to={`/add-product/`} className="no-decor-white">
+                        Add
+                      </Link>
                     </button>
                   </td>
                 </tr>

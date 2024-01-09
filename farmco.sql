@@ -14,7 +14,8 @@ CREATE TABLE products (
     FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
-ALTER TABLE products MODIFY COLUMN stock_quantity DECIMAL(10, 2);
+ALTER TABLE products MODIFY COLUMN stock_quantity DECIMAL(10, 2) unsigned;
+ROLLBACK;
 
 CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,

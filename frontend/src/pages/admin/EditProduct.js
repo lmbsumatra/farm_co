@@ -24,6 +24,7 @@ const EditProduct = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentImage, setCurrentImage] = useState("");
+  const [stockRangeWarning, setStockRangeWarning] = useState("");
   const navigate = useNavigate();
 
   // Getting product_id
@@ -93,6 +94,14 @@ const EditProduct = () => {
         ...prevProduct,
         [name]: type === "checkbox" ? (checked ? 1 : 0) : value,
       }));
+    } else if (type === "number") {
+      if (value <= 0.24) {
+        setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
+        setStockRangeWarning("Set stock to 0.25 kilos or higher.");
+      } else {
+        setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
+        setStockRangeWarning("");
+      }
     } else {
       setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
     }
@@ -130,10 +139,16 @@ const EditProduct = () => {
         formData.append("product_img", product.product_img);
       }
 
+      if (product.product_qty <= 0.24) {
+        formData.append("product_qty", 0);
+      } else {
+        formData.append("product_qty", product.product_qty);
+      }
+
       formData.append("product_name", product.product_name);
       formData.append("product_desc", product.product_desc);
       formData.append("product_price", product.product_price);
-      formData.append("product_qty", product.product_qty);
+
       formData.append("product_category", product.product_category);
       formData.append("product_isfeatured", product.product_isfeatured ? 1 : 0);
 
@@ -141,7 +156,6 @@ const EditProduct = () => {
 
       // Back to the admin products page
       navigate("/admin-panel-products");
-
     } catch (error) {
       console.error("Error updating product:", error);
     }
@@ -255,6 +269,7 @@ const EditProduct = () => {
                   onChange={handleChange}
                   className="form-control"
                 />
+                <p style={{ color: "red" }}>{stockRangeWarning}</p>
               </div>
             </div>
             <button

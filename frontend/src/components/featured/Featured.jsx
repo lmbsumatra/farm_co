@@ -23,7 +23,7 @@ const Featured = () => {
   }, []);
 
   const featuredProducts = product.filter(
-    (product) => product.is_featured === 1
+    (product) => product.is_featured === 1 &&  !(product.stock_quantity <= 0.24)
   );
 
   const handleClick = (e) => {

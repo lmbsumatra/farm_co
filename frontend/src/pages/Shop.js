@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 
 // Ui imports
 import "../components/styles.css";
@@ -12,24 +11,26 @@ import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
 
 const Shop = () => {
-  const [product, setProduct] = useState([]);
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
-
-  const location = useLocation();
-
 
   useEffect(() => {
     const fetchAllProduct = async () => {
       try {
         const res = await axios.get("http://localhost:5000/products");
-        setProduct(res.data);
+
+        const activeProducts = res.data.filter(
+          (product) => !(product.stock_quantity <= 0.24)
+        );
+        setProducts(activeProducts);
+        console.log(activeProducts);
       } catch (err) {
         console.error("Error fetching products:", err);
       }
     };
 
     fetchAllProduct();
-  }, []);
+  }, [products]);
 
   const handleAdd = (product_id) => {
     navigate(`/product/${product_id}`);
@@ -42,7 +43,7 @@ const Shop = () => {
         <h4 className="section-title">Products</h4>
         <div className="container-fluid">
           <div className="row justify-content-evenly">
-            {product.map((product) => (
+            {products.map((product) => (
               <div
                 className="card col-3 p-0 overflow-hidden product-card"
                 key={product.product_id}

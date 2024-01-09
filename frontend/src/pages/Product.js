@@ -21,7 +21,8 @@ const Product = () => {
     cart_id: null,
     product_id: product_id,
   });
-
+  const [productQty, setProductQty] = useState(null);
+  const [qtyWarningMsg, setQtyWarningMsg] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +32,7 @@ const Product = () => {
           `http://localhost:5000/product/${product_id}`
         );
         setProduct(response.data);
+        setProductQty(product.stock_quantity - kiloValue);
       } catch (error) {
         console.error("Error fetching product:", error);
       }
@@ -45,20 +47,33 @@ const Product = () => {
     } else {
       console.log("not logged in");
     }
-  }, [product_id, auth.user]);
+  }, [product_id, auth.user, product.stock_quantity, kiloValue]);
 
   useEffect(() => {
     // Update total when kiloValue changes
     const newTotal = kiloValue * product.price;
+
     setTotalValue(newTotal);
   }, [kiloValue, product.price]);
 
   const decreaseKilo = () => {
-    setKiloValue((prevValue) => Math.max(1 / 4, prevValue - 1 / 4));
+    if (kiloValue <= 0.25) {
+      setQtyWarningMsg("You have reached the lowest quantity you can buy");
+    } else {
+      setKiloValue((prevValue) => Math.max(1 / 4, prevValue - 1 / 4));
+      setProductQty(productQty + 1 / 4);
+      setQtyWarningMsg("");
+    }
   };
 
   const increaseKilo = () => {
-    setKiloValue((prevValue) => prevValue + 1 / 4);
+    if (productQty <= 0) {
+      setQtyWarningMsg("You have reached the highest quantity you can buy");
+    } else {
+      setKiloValue((prevValue) => prevValue + 1 / 4);
+      setProductQty(productQty - 1 / 4);
+      setQtyWarningMsg("");
+    }
   };
 
   const handleClick = async (e) => {
@@ -108,6 +123,7 @@ const Product = () => {
                   </div>
 
                   <div className="card p-1 my-3">
+                    <span style={{ color: "red" }}>{qtyWarningMsg}</span>
                     <div className="d-flex justify-content-between">
                       <span className="my-4 mx-2">
                         Total {totalValue.toFixed(2)}
@@ -140,7 +156,11 @@ const Product = () => {
                     >
                       Add to Cart
                     </button>
-                    <button type="button m-2" className="btn btn-success">
+                    <button
+                      type="button m-2"
+                      className="btn btn-success"
+                      onClick={handleClick}
+                    >
                       Buy Now
                     </button>
                   </div>

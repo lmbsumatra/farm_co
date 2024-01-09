@@ -23,6 +23,8 @@ const EditProfile = () => {
     password: auth.user.password,
     customer_id: auth.user.customer_id,
   });
+  const [passwordType, setPasswordType] = useState("password");
+  const [passwordBtn, setPasswordBtn] = useState("Show");
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -104,6 +106,17 @@ const EditProfile = () => {
     }
   };
 
+  // Handles show and hide password
+  const handleShowPassword = () => {
+    if (passwordType === "password") {
+      setPasswordType("text");
+      setPasswordBtn("Hide");
+    } else if (passwordType === "text") {
+      setPasswordType("password");
+      setPasswordBtn("Show");
+    }
+  };
+
   return (
     <>
       <NavBar />
@@ -176,13 +189,22 @@ const EditProfile = () => {
 
                 <div className="col-md-4">
                   <label>Password</label>
-                  <input
-                    type="text"
-                    value={customerDetails.password}
-                    name="password"
-                    onChange={handleChange}
-                    className="form-control"
-                  />
+                  <div className="d-flex mx-auto align-items-center">
+                    <input
+                      type={passwordType}
+                      value={customerDetails.password}
+                      name="password"
+                      onChange={handleChange}
+                      className="form-control me-2"
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={handleShowPassword}
+                    >
+                      {passwordBtn}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

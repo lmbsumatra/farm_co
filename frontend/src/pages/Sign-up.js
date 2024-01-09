@@ -39,6 +39,8 @@ const SignUp = () => {
   const [passwordNotValid, setPasswordNotValidMsg] = useState("");
   const [passwordTrigger, setPasswordTrigger] = useState(false);
   const [pwValid, setPwValid] = useState(false);
+  const [passwordType, setPasswordType] = useState("password");
+  const [passwordBtn, setPasswordBtn] = useState("Show");
 
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmPasswordIncorrect, setConfirmPasswordIncorrect] = useState("");
@@ -51,7 +53,7 @@ const SignUp = () => {
     e.preventDefault();
   };
 
-  // fetching data for comparison
+  // Fetching data for comparison
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -65,10 +67,10 @@ const SignUp = () => {
     fetchProduct();
   }, []);
 
-  // validation for fullname
+  // Validation for fullname
   useEffect(() => {
     const validateFullName = () => {
-      // should be filled out
+      // Should be filled out
       if (fullName === "") {
         setfullNameIsRequiredMsg("Fullname is required.");
         setFnValid(false);
@@ -82,10 +84,10 @@ const SignUp = () => {
     }
   }, [fullName, fullNameTrigger]);
 
-  // validation for address
+  // Validation for address
   useEffect(() => {
     const validateAddress = () => {
-      // should be filled out
+      // Should be filled out
       if (address === "") {
         setAddressIsRequiredMsg("Address is required.");
         setAddressValid(false);
@@ -99,10 +101,10 @@ const SignUp = () => {
     }
   }, [address, addressTrigger]);
 
-  // validation for email
+  // Validation for email
   useEffect(() => {
     const validateEmail = () => {
-      // should be filled out
+      // Should be filled out
       if (email === "") {
         setEmailIsRequiredMsg("Email is required.");
         setEmailValid(false);
@@ -111,7 +113,7 @@ const SignUp = () => {
         setEmailValid(true);
       }
 
-      //s should not contain white space
+      //s Should not contain white space
       if (/\s/.test(email)) {
         setEmailWhiteSpaceMsg("Email cannot contain whitespace.");
         setEmailValid(false);
@@ -120,7 +122,7 @@ const SignUp = () => {
         setEmailValid(true);
       }
 
-      // should have email formatting
+      // Should have email formatting
       if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         setEmailIsNotValidMsg("");
         setEmailValid(true);
@@ -129,7 +131,7 @@ const SignUp = () => {
         setEmailValid(false);
       }
 
-      // check email existance
+      // Check email existance
       for (let i = 0; i < userList.length; i++) {
         const user = userList[i];
         if (user.email === email) {
@@ -148,7 +150,7 @@ const SignUp = () => {
     }
   }, [email, emailTrigger, userList]);
 
-  // validation for username
+  // Validation for username
   useEffect(() => {
     const validateUserName = () => {
       // should be filled out
@@ -168,7 +170,7 @@ const SignUp = () => {
         setUnValid(true);
       }
 
-      //s should not contain white space
+      //s Should not contain white space
       if (/\s/.test(username)) {
         setUserNameWhiteSpaceMsg("Username cannot contain whitespace.");
         setUnValid(false);
@@ -177,7 +179,7 @@ const SignUp = () => {
         setUnValid(true);
       }
 
-      // should be unique
+      // Should be unique
       for (let i = 0; i < userList.length; i++) {
         const user = userList[i];
         if (user.username !== username) {
@@ -195,10 +197,10 @@ const SignUp = () => {
     }
   }, [username, userNameTrigger, userList]);
 
-  // validation for password
+  // Validation for password
   useEffect(() => {
     const validatePassword = () => {
-      // should be filled out
+      // Should be filled out
       if (password === "") {
         setPasswordIsRequiredMsg("Password is required.");
         setUnValid(false);
@@ -207,7 +209,7 @@ const SignUp = () => {
         setPwValid(false);
       }
 
-      // should count between 8 and 20
+      // Should count between 8 and 20
       if (password.length < 8 || password.length > 20) {
         setPasswordNotValidMsg(
           "Password characters should only count between 8 and 20."
@@ -223,7 +225,7 @@ const SignUp = () => {
     }
   }, [password, passwordTrigger]);
 
-  // validation for password confirmation
+  // Validation for password confirmation
   useEffect(() => {
     const validateConfirmPassword = () => {
       //
@@ -241,7 +243,7 @@ const SignUp = () => {
     }
   }, [password, confirmPassword, confirmPasswordTrigger]);
 
-  // register eme
+  // Register eme
   const Signup = async (e) => {
     e.preventDefault();
     try {
@@ -250,7 +252,7 @@ const SignUp = () => {
         email === "" &&
         fullName === "" &&
         username === "" &&
-        address ===""
+        address === ""
       ) {
         setfullNameIsRequiredMsg("Fullname is required.");
         setAddressIsRequiredMsg("Address is required.");
@@ -258,7 +260,14 @@ const SignUp = () => {
         setUserNameIsRequiredMsg("Username is required.");
         setPasswordIsRequiredMsg("Password is required.");
         setValidNotMsg("Please fill out correctly to proceed.");
-      } else if (!fnValid || !unValid || !emailValid || !pwValid || !cpwValid || !address) {
+      } else if (
+        !fnValid ||
+        !unValid ||
+        !emailValid ||
+        !pwValid ||
+        !cpwValid ||
+        !address
+      ) {
         setValidNotMsg("Please fill out correctly to proceed.");
       } else {
         setValidNotMsg("");
@@ -277,6 +286,16 @@ const SignUp = () => {
       console.log(err);
     }
   };
+  // Handles show-hide password
+  const handleShowPassword = () => {
+    if (passwordType === "password") {
+      setPasswordType("text");
+      setPasswordBtn("Hide");
+    } else if (passwordType === "text") {
+      setPasswordType("password");
+      setPasswordBtn("Show");
+    }
+  };
 
   return (
     <>
@@ -293,10 +312,9 @@ const SignUp = () => {
               <div className="mx-auto my-5 px-5">
                 <form className="" onSubmit={onSubmit}>
                   <p>
-                    Welcome to FarmCo, where fresh and wholesome
-                    agricultural products meet convenience – sign up
-                    to explore a bountiful world of farm-fresh goodness at your
-                    fingertips!
+                    Welcome to FarmCo, where fresh and wholesome agricultural
+                    products meet convenience – sign up to explore a bountiful
+                    world of farm-fresh goodness at your fingertips!
                   </p>
 
                   <p style={{ color: "red" }}>{validNotMsg}</p>
@@ -382,16 +400,27 @@ const SignUp = () => {
                     <label htmlFor="passwordInput" className="form-label">
                       Password
                     </label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      id="passwordInput"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                        setPasswordTrigger(true);
-                      }}
-                    />
+                    <div className="d-flex mx-auto align-items-center">
+                      <input
+                        className="form-control me-2"
+                        type={passwordType}
+                        id="inputLogPassword"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                          setPasswordTrigger(true);
+                        }}
+                      />
+
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={handleShowPassword}
+                      >
+                        {passwordBtn}
+                      </button>
+                    </div>
 
                     <p style={{ color: "red" }}>{passwordIsRequired}</p>
                     <p style={{ color: "red" }}>{passwordNotValid}</p>
@@ -402,16 +431,24 @@ const SignUp = () => {
                       {" "}
                       Confirm password
                     </label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      id="passwordConfirm"
-                      onChange={(e) => {
-                        setConfirmPassword(e.target.value);
-                        setConfirmPasswordTrigger(true);
-                      }}
-                    />
-
+                    <div className="d-flex mx-auto align-items-center">
+                      <input
+                        type={passwordType}
+                        className="form-control me-2"
+                        id="passwordConfirm"
+                        onChange={(e) => {
+                          setConfirmPassword(e.target.value);
+                          setConfirmPasswordTrigger(true);
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={handleShowPassword}
+                      >
+                        {passwordBtn}
+                      </button>
+                    </div>
                     <p style={{ color: "red" }}>{confirmPasswordIncorrect}</p>
                   </div>
 

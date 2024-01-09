@@ -19,6 +19,8 @@ const LogIn = () => {
   const [passwordIsRequired, setPasswordIsRequiredMsg] = useState("");
   const [passwordNotValid, setPasswordNotValidMsg] = useState("");
   const [passwordTrigger, setPasswordTrigger] = useState(false);
+  const [passwordType, setPasswordType] = useState("password");
+  const [passwordBtn, setPasswordBtn] = useState("Show");
 
   const [acctDoNotExist, setAcctDoNotExistMsg] = useState("");
 
@@ -122,6 +124,17 @@ const LogIn = () => {
     }
   };
 
+  // Handles show and hide password
+  const handleShowPassword = () => {
+    if (passwordType === "password") {
+      setPasswordType("text");
+      setPasswordBtn("Hide");
+    } else if (passwordType === "text") {
+      setPasswordType("password");
+      setPasswordBtn("Show");
+    }
+  };
+
   return (
     <>
       <NavBarAdmin />
@@ -165,18 +178,27 @@ const LogIn = () => {
                   <label htmlFor="inputLogPassword" className="form-label">
                     Password
                   </label>
-                  <input
-                    className="form-control"
-                    type="password"
-                    id="inputLogPassword"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setPasswordTrigger(true);
-                    }}
-                  />
+                  <div className="d-flex mx-auto align-items-center">
+                    <input
+                      className="form-control me-2"
+                      type={passwordType}
+                      id="inputLogPassword"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setPasswordTrigger(true);
+                      }}
+                    />
 
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={handleShowPassword}
+                    >
+                      {passwordBtn}
+                    </button>
+                  </div>
                   <p style={{ color: "red" }}>{passwordIsRequired}</p>
                   <p style={{ color: "red" }}>{passwordNotValid}</p>
                 </div>

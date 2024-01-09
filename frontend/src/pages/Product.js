@@ -36,7 +36,7 @@ const Product = () => {
       }
     };
     fetchProduct();
-  
+
     if (auth.user && auth.user.customer_id !== undefined) {
       setAddToCart((prevAddToCart) => ({
         ...prevAddToCart,
@@ -46,7 +46,6 @@ const Product = () => {
       console.log("not logged in");
     }
   }, [product_id, auth.user]);
-  
 
   useEffect(() => {
     // Update total when kiloValue changes
@@ -105,9 +104,7 @@ const Product = () => {
                   <h3 className="price">₱ {product.price} per kilo</h3>
 
                   <div>
-                    <p>
-                      {product.description}
-                    </p>
+                    <p>{product.description}</p>
                   </div>
 
                   <div className="card p-1 my-3">
@@ -115,10 +112,7 @@ const Product = () => {
                       <span className="my-4 mx-2">
                         Total {totalValue.toFixed(2)}
                       </span>
-                      <div
-                        className="card p-1 my-3"
-                        style={{ width: "200px"}}
-                      >
+                      <div className="card p-1 my-3" style={{ width: "200px" }}>
                         <div className="d-flex justify-content-between align-items-center">
                           <button
                             type="button"

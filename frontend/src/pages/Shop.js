@@ -23,7 +23,6 @@ const Shop = () => {
           (product) => !(product.stock_quantity <= 0.24)
         );
         setProducts(activeProducts);
-        console.log(activeProducts);
       } catch (err) {
         console.error("Error fetching products:", err);
       }

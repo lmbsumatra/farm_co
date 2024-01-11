@@ -50,6 +50,17 @@ const OrderSummary = () => {
     setSelectedTab(eventKey);
   };
 
+  const formatDateInWords = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", options);
+  };
+
   return (
     <>
       <NavBar />
@@ -64,14 +75,23 @@ const OrderSummary = () => {
           >
             <Tab eventKey="All" title="All Orders">
               {orders.map((order) => (
-                <div key={order.order_id} className="card mx-auto overflow-hidden width-80vw my-3">
+                <div
+                  key={order.order_id}
+                  className="card mx-auto overflow-hidden width-80vw my-3"
+                >
                   <div className="row d-flex justify-content-between">
                     <div className="col-md-4">
                       <div className="card-body">
-                        <h5 className="card-title">Order Id: {order.order_id}</h5>
-                        <p className="card-text">Total: ₱ {order.grand_total}</p>
+                        <h5 className="card-title">
+                          Order Id: {order.order_id}
+                        </h5>
+                        <p className="card-text">
+                          Total: ₱ {order.grand_total}
+                        </p>
                         <p className="card-text">Status: {order.status_name}</p>
-                        <p className="card-text">Order Date: {order.order_date.split("T")[0]}</p>
+                        <p className="card-text">
+                          Order Date: {formatDateInWords(order.order_date)}
+                        </p>
                       </div>
                     </div>
                     <div className="col-md-2">
@@ -87,32 +107,43 @@ const OrderSummary = () => {
                 </div>
               ))}
             </Tab>
-            
+
             <Tab eventKey="Pending" title="Pending Orders">
               {orders
                 .filter((order) => order.status_name === "Pending")
                 .map((order) => (
-                  <div key={order.order_id} className="card mx-auto overflow-hidden width-80vw my-3">
-                  <div className="row d-flex justify-content-between">
-                    <div className="col-md-4">
-                      <div className="card-body">
-                        <h5 className="card-title">Order Id: {order.order_id}</h5>
-                        <p className="card-text">Total: ₱ {order.grand_total}</p>
-                        <p className="card-text">Status: {order.status_name}</p>
-                        <p className="card-text">Order Date: {order.order_date.split("T")[0]}</p>
+                  <div
+                    key={order.order_id}
+                    className="card mx-auto overflow-hidden width-80vw my-3"
+                  >
+                    <div className="row d-flex justify-content-between">
+                      <div className="col-md-4">
+                        <div className="card-body">
+                          <h5 className="card-title">
+                            Order Id: {order.order_id}
+                          </h5>
+                          <p className="card-text">
+                            Total: ₱ {order.grand_total}
+                          </p>
+                          <p className="card-text">
+                            Status: {order.status_name}
+                          </p>
+                          <p className="card-text">
+                            Order Date: {formatDateInWords(order.order_date)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="col-md-2">
+                        <button
+                          type="button"
+                          className="btn btn-outline-success m-2"
+                          onClick={() => handleClick(order.order_id)}
+                        >
+                          View
+                        </button>
                       </div>
                     </div>
-                    <div className="col-md-2">
-                      <button
-                        type="button"
-                        className="btn btn-outline-success m-2"
-                        onClick={() => handleClick(order.order_id)}
-                      >
-                        View
-                      </button>
-                    </div>
                   </div>
-                </div>
                 ))}
             </Tab>
 
@@ -137,7 +168,7 @@ const OrderSummary = () => {
                             Status: {order.status_name}
                           </p>
                           <p className="card-text">
-                            Order Date: {order.order_date.split("T")[0]}
+                            Order Date: {formatDateInWords(order.order_date)}
                           </p>
                         </div>
                       </div>
@@ -159,27 +190,38 @@ const OrderSummary = () => {
               {orders
                 .filter((order) => order.status_name === "Shipped")
                 .map((order) => (
-                  <div key={order.order_id} className="card mx-auto overflow-hidden width-80vw my-3">
-                  <div className="row d-flex justify-content-between">
-                    <div className="col-md-4">
-                      <div className="card-body">
-                        <h5 className="card-title">Order Id: {order.order_id}</h5>
-                        <p className="card-text">Total: ₱ {order.grand_total}</p>
-                        <p className="card-text">Status: {order.status_name}</p>
-                        <p className="card-text">Order Date: {order.order_date.split("T")[0]}</p>
+                  <div
+                    key={order.order_id}
+                    className="card mx-auto overflow-hidden width-80vw my-3"
+                  >
+                    <div className="row d-flex justify-content-between">
+                      <div className="col-md-4">
+                        <div className="card-body">
+                          <h5 className="card-title">
+                            Order Id: {order.order_id}
+                          </h5>
+                          <p className="card-text">
+                            Total: ₱ {order.grand_total}
+                          </p>
+                          <p className="card-text">
+                            Status: {order.status_name}
+                          </p>
+                          <p className="card-text">
+                            Order Date: {formatDateInWords(order.order_date)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="col-md-2">
+                        <button
+                          type="button"
+                          className="btn btn-outline-success m-2"
+                          onClick={() => handleClick(order.order_id)}
+                        >
+                          View
+                        </button>
                       </div>
                     </div>
-                    <div className="col-md-2">
-                      <button
-                        type="button"
-                        className="btn btn-outline-success m-2"
-                        onClick={() => handleClick(order.order_id)}
-                      >
-                        View
-                      </button>
-                    </div>
                   </div>
-                </div>
                 ))}
             </Tab>
           </Tabs>

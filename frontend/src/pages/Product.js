@@ -97,6 +97,10 @@ const Product = () => {
     }
   };
 
+  const handleBuyNow = () => {
+    navigate(`/checkout?item=${product_id}`);
+  };
+
   return (
     <div key={product.product_id}>
       <NavBar />
@@ -159,7 +163,7 @@ const Product = () => {
                     <button
                       type="button m-2"
                       className="btn btn-success"
-                      onClick={handleClick}
+                      onClick={handleBuyNow}
                     >
                       Buy Now
                     </button>

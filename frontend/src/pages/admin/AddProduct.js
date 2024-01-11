@@ -21,11 +21,12 @@ const AddProduct = () => {
     product_name: "",
     product_price: "",
     product_qty: "",
-    product_isfeatured: 0
+    product_isfeatured: 0,
   });
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [requireMsg, setRequireMsg] = useState();
   const navigate = useNavigate();
+  const [imgPreview, setImgPreview] = useState();
 
   // Fetching categories: category_id and category_name, for setting product category
   useEffect(() => {
@@ -64,6 +65,11 @@ const AddProduct = () => {
     // Checking if input is from checkbox. If so, toggled=1, not=0
     if (type === "checkbox") {
       setProduct((prev) => ({ ...prev, [name]: checked ? 1 : 0 }));
+
+    } else if (type === "file") {
+      setProduct((prev) => ({ ...prev, [name]: value }));
+      setImgPreview(URL.createObjectURL(e.target.files[0]));
+      
     } else {
       setProduct((prev) => ({ ...prev, [name]: value }));
     }
@@ -149,6 +155,7 @@ const AddProduct = () => {
               <div className="col-md-3">
                 {/* Image upload */}
                 <label>Image</label>
+                <img src={imgPreview} />
                 <div className="custom-file">
                   <input
                     name="image"

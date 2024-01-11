@@ -311,12 +311,16 @@ app.delete("/customers/:customer_id", (req, res) => {
 // ** For adding items to cart, [customer: add to cart]
 app.post("/cart", uploadProductImage.none(), (req, res) => {
   const query = `
-  INSERT INTO cart_items (
-    cart_id, 
-    product_id, 
-    quantity, 
-    total) 
-  VALUES (?, ?, ?, ?)`;
+    INSERT INTO cart_items (
+      cart_id, 
+      product_id, 
+      quantity, 
+      total
+    ) VALUES (?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+      quantity = quantity + VALUES(quantity),
+      total = total + VALUES(total)
+  `;
 
   const values = [
     req.body.cart_id,
@@ -327,7 +331,7 @@ app.post("/cart", uploadProductImage.none(), (req, res) => {
 
   db.query(query, values, (err, data) => {
     if (err) return res.json(err);
-    return res.json("Successfully inserting item to cart");
+    return res.json("Successfully inserting/updating item in the cart");
   });
 });
 
@@ -524,7 +528,7 @@ app.get("/orders/:customer_id", (req, res) => {
 app.get("/customers/:customer_id", (req, res) => {
   const customer_id = req.params.customer_id;
   const query = `
-    SELECT customer_image
+    SELECT *
     FROM customers
     WHERE customer_id = ?`;
 

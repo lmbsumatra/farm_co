@@ -26,6 +26,7 @@ const EditProduct = () => {
   const [currentImage, setCurrentImage] = useState("");
   const [stockRangeWarning, setStockRangeWarning] = useState("");
   const navigate = useNavigate();
+  const [imgPreview, setImgPreview] = useState();
 
   // Getting product_id
   const location = useLocation();
@@ -69,6 +70,7 @@ const EditProduct = () => {
 
         // Initializing current product values before user applies changes: for image
         setCurrentImage(fetchedProduct.image);
+        setImgPreview(`http://localhost:5000/images/products/${fetchedProduct.image}`);
 
         // Initializing current product values before user applies changes: for category
         const selectedCategoryObject = categories.find(
@@ -86,26 +88,31 @@ const EditProduct = () => {
   }, [product_id, categories]); // Include all dependencies in the dependency array
 
   // Handles input changes and setting value to product variable
-  const handleChange = ({ target }) => {
-    const { name, value, type, checked } = target;
-
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+  
     if (type === "checkbox") {
       setProduct((prevProduct) => ({
         ...prevProduct,
         [name]: type === "checkbox" ? (checked ? 1 : 0) : value,
       }));
     } else if (type === "number") {
-      if (value <= 0.24) {
-        setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
-        setStockRangeWarning("Set stock to 0.25 kilos or higher.");
+      // Your existing code for handling number input
+    } else if (type === "file") {
+      // Handle image file input
+      setProduct((prev) => ({ ...prev, [name]: value }));
+      
+      const file = e.target.files[0];
+      if (file) {
+        setImgPreview(URL.createObjectURL(file));
       } else {
-        setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
-        setStockRangeWarning("");
+        setImgPreview(""); // Clear image preview if no file selected
       }
     } else {
       setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
     }
   };
+  
 
   // Handles input changes and setting value to product variable: for category
   const handleCategorySelect = (eventKey) => {
@@ -195,6 +202,7 @@ const EditProduct = () => {
             <div className="row py-3">
               <div className="col-md-3">
                 <label>Image</label>
+                <img src={imgPreview}/>
                 <div className="custom-file">
                   <input
                     type="file"

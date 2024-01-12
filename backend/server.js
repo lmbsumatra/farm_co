@@ -86,7 +86,7 @@ app.post("/products", uploadProductImage.single("image"), (req, res) => {
 
   db.query(query, [values], (err, data) => {
     if (err) return res.json(err);
-    return res.json("Successful product insertion.");
+    return res.json("Successful: Product insertion.");
   });
 });
 
@@ -258,7 +258,7 @@ app.put(
 
     db.query(query, [status_id, order_id], (err, data) => {
       if (err) return res.json(err);
-      return res.json("Successful order status update.");
+      return res.json("Successful: Order status update.");
     });
   }
 );
@@ -274,37 +274,45 @@ app.delete("/products/:product_id", (req, res) => {
 
   db.query(query, [product_id], (err, data) => {
     if (err) return res.json(err);
-    return res.json("Successfully deleted product");
+    return res.json("Successful: Deleted product");
   });
 });
 
-// Deleting customer, [admin]
+// ** Deleting customer, [admin]
 app.delete("/customers/:customer_id", (req, res) => {
   const customer_id = req.params.customer_id;
   const cart_id = req.params.customer_id;
 
+  const updateOrders = "UPDATE orders SET customer_id = NULL WHERE customer_id = ?";
+  const deleteCartItems = "DELETE FROM cart_items WHERE cart_id = ?";
   const deleteCart = "DELETE FROM carts WHERE cart_id = ?";
   const deleteCustomer = "DELETE FROM customers WHERE customer_id = ?";
 
-  // Delete from cart table
-  db.query(deleteCart, [cart_id], (err, cartData) => {
-    if (err) {
-      console.error("Error deleting from cart:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
+  // Update orders table (set customer_id to NULL)
+  db.query(updateOrders, [customer_id], (err, updateOrdersData) => {
+    if (err) return res.json(err);
 
-    // Delete from customers table
-    db.query(deleteCustomer, [customer_id], (err, customerData) => {
-      if (err) {
-        console.error("Error deleting from customers:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
+    // Delete from cart_items table
+    db.query(deleteCartItems, [cart_id], (err, cartItemsData) => {
+      if (err) return res.json(err);
 
-      // Assuming both queries were successful
-      return res.json("Successfully deleted");
+      // Delete from carts table
+      db.query(deleteCart, [cart_id], (err, cartData) => {
+        if (err) return res.json(err);
+
+        // Delete from customers table
+        db.query(deleteCustomer, [customer_id], (err, customerData) => {
+          if (err) return res.json(err);
+
+          // Assuming all queries were successful
+          return res.status(200).json({ message: "Successful: Deleted customer." });
+        });
+      });
     });
   });
 });
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -331,11 +339,7 @@ app.post("/cart", uploadProductImage.none(), (req, res) => {
   ];
 
   db.query(query, values, (err, data) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json(err);
-    }
-
+    if (err) return res.json(err);
     return res.json("Successfully inserting/updating item in the cart");
   });
 });
@@ -353,12 +357,7 @@ app.post("/customers", uploadProductImage.none(), (req, res) => {
   ];
 
   db.query(customerQuery, customerValues, (err, customerResult) => {
-    if (err) {
-      return db.rollback(() => {
-        console.error("MySQL Customer Insertion Error:", err.sqlMessage);
-        res.status(500).json({ error: "Internal Server Error" });
-      });
-    }
+    if (err) return res.json(err);
 
     const customerId = customerResult.insertId;
 
@@ -366,12 +365,7 @@ app.post("/customers", uploadProductImage.none(), (req, res) => {
     const cartValues = [customerId];
 
     db.query(cartQuery, cartValues, (err, cartResult) => {
-      if (err) {
-        return db.rollback(() => {
-          console.error("MySQL Cart Insertion Error:", err.sqlMessage);
-          res.status(500).json({ error: "Internal Server Error" });
-        });
-      }
+      if (err) return res.json(err);
 
       db.commit((err) => {
         if (err) return res.json(err);
@@ -626,6 +620,6 @@ app.delete("/cart/:cart_item_id", (req, res) => {
   const query = "DELETE FROM cart_items WHERE cart_item_id = ?";
   db.query(query, [cart_item_id], (err, data) => {
     if (err) return res.json(err);
-    return res.json("Successfully deleted cart item");
+    return res.json("Successful: Deleted cart item");
   });
 });

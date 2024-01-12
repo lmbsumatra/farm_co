@@ -37,7 +37,7 @@ const OrderSummaryId = () => {
     };
 
     fetchProduct();
-  }, [orderItems, status, customerDetails]);
+  }, [order_id, orderItems, status, customerDetails]);
 
   return (
     <>

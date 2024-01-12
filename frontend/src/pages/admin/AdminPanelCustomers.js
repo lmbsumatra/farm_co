@@ -1,7 +1,7 @@
 // Modules
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // UI imports
 import "../../components/styles.css";
@@ -9,9 +9,13 @@ import "../../components/styles.css";
 // Components
 import NavBarAdmin from "../../components/navbar/NavBarAdmin";
 import Footer from "../../components/footer/Footer";
+import { useUserAuth } from "../../pages/context/useAuth";
 
 const AdminPanelCustomers = () => {
   const [customers, setCustomers] = useState([]);
+  const auth = useUserAuth();
+  const navigate = useNavigate();
+  const [deletionSuccess, setDeletionSuccess] = useState(false);
 
   // Fetching products
   useEffect(() => {
@@ -21,27 +25,42 @@ const AdminPanelCustomers = () => {
       .catch((error) => console.error("Error fetching products: ", error));
   }, []);
 
-  console.log(customers)
-
+  // Handles delete products
   // Handles delete products
   const handleDelete = async (customer_id) => {
     try {
-      await axios.delete("http://localhost:5000/customers/" + customer_id);
-      window.location.reload();
+      const response = await axios.delete(
+        "http://localhost:5000/customers/" + customer_id
+      );
+
+      // Check if the delete request was successful
+      if (response.status === 200) {
+        setDeletionSuccess(true); // Trigger the useEffect for logout
+      } else {
+        console.log("Failed to delete customer. Status code:", response.status);
+      }
     } catch (err) {
-      console.log(err);
+      console.error("Error deleting customer:", err);
     }
   };
 
+  // Use a useEffect to trigger logout when deletion is successful
+  useEffect(() => {
+    if (deletionSuccess) {
+      auth.logout();
+      navigate("/");
+      window.location.reload();
+    }
+  }, [deletionSuccess]);
+  
 
   return (
     <>
       <NavBarAdmin />
-      
+
       <section className="body-bg">
         <h4 className="section-title">Customers</h4>
         <div className="card mx-auto overflow-hidden width-80vw my-3 overflow-x">
-
           <div className="table-responsive">
             <table className="table">
               <thead>

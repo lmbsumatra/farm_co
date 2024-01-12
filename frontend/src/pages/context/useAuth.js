@@ -24,10 +24,15 @@ export const UserAuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    console.log("back", user)
+  };
+
+  const deleteUser = () => {
+    logout();
   };
 
   return (
-    <UserAuthContext.Provider value={{ user, login, logout }}>
+    <UserAuthContext.Provider value={{ user, login, logout, deleteUser }}>
       {children}
     </UserAuthContext.Provider>
   );

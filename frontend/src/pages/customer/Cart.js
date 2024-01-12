@@ -18,7 +18,7 @@ const Cart = () => {
 
   const auth = useUserAuth();
   const customer_id = auth.user.customer_id;
-
+console.log(auth.user)
   useEffect(() => {
     const fetchProduct = async () => {
       try {

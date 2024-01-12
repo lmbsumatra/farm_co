@@ -44,37 +44,34 @@ const Shop = () => {
           <div className="row justify-content-evenly">
             {products.map((product) => (
               <div
-                className="card col-3 p-0 overflow-hidden product-card"
-                key={product.product_id}
-              >
-                <Link
-                  to={`/product/${product.product_id}`}
-                  className="no-decor"
-                >
-                  {product.image && (
-                    <img
-                      src={`http://localhost:5000/images/products/${product.image}`}
-                      className="img-fluid object-fit-cover"
-                      alt={product.product_name}
-                      style={{ height: "10rem" }}
-                    />
-                  )}
-                  <div className="card-body no-spacing p-2">
-                    <h6 className="card-title">{product.product_name}</h6>
-                    <p className="">{product.description}</p>
-                    <p className="price">₱ {product.price} per kilo</p>
-                  </div>
-                </Link>
-                <div className="p-2">
-                  <button
-                    type="button"
-                    className="btn btn-success"
-                    onClick={() => handleAdd(product.product_id)}
-                  >
-                    Add to Cart
-                  </button>
+              className="card col-3 p-0 overflow-hidden product-card"
+              key={product.product_id}
+            >
+              <Link to={`/product/${product.product_id}`} className="no-decor">
+                {product.image && (
+                  <img
+                    src={`http://localhost:5000/images/products/${product.image}`}
+                    className="card-img-top img-fluid img-cover"
+                    alt={product.product_name}
+                    style={{ height: "10rem", objectFit: "cover" }}
+                  />
+                )}
+                <div className="card-body no-spacing p-2">
+                  <h6 className="card-title">{product.product_name}</h6>
+                  <p className="">{product.description}</p>
+                  <p className="price">₱ {product.price}</p>
                 </div>
+              </Link>
+              <div className="p-2">
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={handleAdd}
+                >
+                  Add to Cart
+                </button>
               </div>
+            </div>
             ))}
           </div>
         </div>

@@ -87,14 +87,14 @@ const Product = () => {
         formData.append("product_id", addToCart.product_id);
         formData.append("quantity", kiloValue.toFixed(2));
         formData.append("total", totalValue.toFixed(2));
-  
+
         // Convert FormData to a plain object
         const formDataObject = Object.fromEntries(formData);
-  
+
         console.log(formDataObject);
-  
+
         await axios.post("http://localhost:5000/cart", formDataObject);
-  
+
         navigate(`/cart`);
       }
     } catch (err) {
@@ -117,7 +117,7 @@ const Product = () => {
               <div className="col-md-6">
                 <img
                   src={`http://localhost:5000/images/products/${product.image}`}
-                  className="img-fluid"
+                  className="img-fluid product-image"
                   alt={product.description}
                 />
               </div>

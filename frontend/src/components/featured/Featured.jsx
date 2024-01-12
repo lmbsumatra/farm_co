@@ -7,14 +7,23 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles.css";
 
 const Featured = () => {
-  const [product, setProduct] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [filter, setFilter] = useState("Featured");
+  const [filterProducts, setFilterProducts] = useState([]);
+  const [activeFilter, setActiveFilter] = useState({
+    Featured: "btn btn-success",
+    Vegetables: "btn btn-outline-success",
+    Fruits: "btn btn-outline-success",
+    Dairy: "btn btn-outline-success",
+    Grains: "btn btn-outline-success",
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
         const res = await axios.get("http://localhost:5000/products");
-        setProduct(res.data);
+        setProducts(res.data);
       } catch (err) {
         console.log(err);
       }
@@ -22,9 +31,35 @@ const Featured = () => {
     fetchAllProducts();
   }, []);
 
-  const featuredProducts = product.filter(
-    (product) => product.is_featured === 1 &&  !(product.stock_quantity <= 0.24)
-  );
+  const handleProductFilter = (e) => {
+    const clickedFilter = e.target.value;
+    setActiveFilter((prevActiveFilter) => ({
+      ...Object.fromEntries(
+        Object.entries(prevActiveFilter).map(([key, value]) => [
+          key,
+          key === clickedFilter ? "btn btn-success" : "btn btn-outline-success",
+        ])
+      ),
+    }));
+
+    setFilter(clickedFilter);
+  };
+
+  useEffect(() => {
+    if (filter === "Featured") {
+      const product = products.filter(
+        (product) =>
+          product.is_featured === 1 && !(product.stock_quantity <= 0.24)
+      );
+      setFilterProducts(product);
+    } else {
+      const product = products.filter(
+        (product) =>
+          product.category_name === filter && !(product.stock_quantity <= 0.24)
+      );
+      setFilterProducts(product);
+    }
+  }, [filter, products]);
 
   const handleClick = (e) => {
     navigate("/shop");
@@ -35,22 +70,50 @@ const Featured = () => {
       <h4 className="section-title">Products</h4>
       <div className="container-fluid">
         <nav className="nav justify-content-center">
-          <a className="nav-link active" href="/">
-            Featured
-          </a>
-          <a className="nav-link" href="/">
-            New
-          </a>
-          <a className="nav-link" href="/">
+          <button
+            type="button"
+            className={`ter-btn ${activeFilter.Featured}`}
+            onClick={handleProductFilter}
+            value="Featured"
+          >
+            Features
+          </button>
+          <button
+            type="button"
+            className={`ter-btn ${activeFilter.Vegetables}`}
+            onClick={handleProductFilter}
+            value="Vegetables"
+          >
             Vegetables
-          </a>
-          <a className="nav-link disabled" href="/">
+          </button>
+          <button
+            type="button"
+            className={`ter-btn ${activeFilter.Fruits}`}
+            onClick={handleProductFilter}
+            value="Fruits"
+          >
             Fruits
-          </a>
+          </button>
+          <button
+            type="button"
+            className={`ter-btn ${activeFilter.Grains}`}
+            onClick={handleProductFilter}
+            value="Grains"
+          >
+            Grains
+          </button>
+          <button
+            type="button"
+            className={`ter-btn ${activeFilter.Dairy}`}
+            onClick={handleProductFilter}
+            value="Dairy"
+          >
+            Dairy
+          </button>
         </nav>
 
         <div className="row justify-content-evenly">
-          {featuredProducts.map((product) => (
+          {filterProducts.map((product) => (
             <div
               className="card col-3 p-0 overflow-hidden product-card"
               key={product.product_id}
@@ -59,9 +122,9 @@ const Featured = () => {
                 {product.image && (
                   <img
                     src={`http://localhost:5000/images/products/${product.image}`}
-                    className="img-fluid object-fit-cover"
+                    className="card-img-top img-fluid img-cover"
                     alt={product.product_name}
-                    style={{ height: "10rem" }}
+                    style={{ height: "10rem", objectFit: "cover" }}
                   />
                 )}
                 <div className="card-body no-spacing p-2">
@@ -71,13 +134,13 @@ const Featured = () => {
                 </div>
               </Link>
               <div className="p-2">
-              <button
-                type="button"
-                className="btn btn-success"
-                onClick={handleClick}
-              >
-                Add to Cart
-              </button>
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={handleClick}
+                >
+                  Add to Cart
+                </button>
               </div>
             </div>
           ))}

@@ -56,6 +56,9 @@ const Cart = () => {
     const selectedItemsArray = Object.keys(selectedItems).filter(
       (itemId) => selectedItems[itemId]
     );
+    selectedItemsArray.forEach((itemId) => {
+      console.log(`Selected item: ${itemId}`);
+    });
     navigate(`/checkout?selectedItems=${selectedItemsArray.join(",")}`);
   };
 

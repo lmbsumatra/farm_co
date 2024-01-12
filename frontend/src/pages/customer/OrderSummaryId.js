@@ -26,7 +26,7 @@ const OrderSummaryId = () => {
         );
         const { orderItems, currentStatus, grandTotal, customerDetails } =
           response.data;
-
+        console.log(response.data);
         setOrderItems(orderItems);
         setStatus(currentStatus);
         setGrandTotal(grandTotal);
@@ -37,7 +37,7 @@ const OrderSummaryId = () => {
     };
 
     fetchProduct();
-  }, [order_id, orderItems, status, customerDetails]);
+  }, [orderItems, status, customerDetails]);
 
   return (
     <>

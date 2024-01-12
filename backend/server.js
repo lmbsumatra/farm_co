@@ -9,6 +9,7 @@ const port = 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
 
 // Create a MySQL connection
 const db = mysql.createConnection({
@@ -330,7 +331,11 @@ app.post("/cart", uploadProductImage.none(), (req, res) => {
   ];
 
   db.query(query, values, (err, data) => {
-    if (err) return res.json(err);
+    if (err) {
+      console.error(err);
+      return res.status(500).json(err);
+    }
+
     return res.json("Successfully inserting/updating item in the cart");
   });
 });
@@ -346,8 +351,6 @@ app.post("/customers", uploadProductImage.none(), (req, res) => {
     req.body.username,
     req.body.password,
   ];
-
-  console.log(req.body);
 
   db.query(customerQuery, customerValues, (err, customerResult) => {
     if (err) {
@@ -379,100 +382,93 @@ app.post("/customers", uploadProductImage.none(), (req, res) => {
 });
 
 // Create order: transfer cart item to order items, update product stock quantities, delete selected cart items, [customer]
-app.post("/checkout", (req, res) => {
-  const { customer_id, grandTotal, selectedItemsArray } = req.body;
+app.post("/checkout", async (req, res) => {
+  try {
+    const { customer_id, grandTotal, items, buyNow } = req.body;
 
-  db.beginTransaction((err) => {
-    if (err) {
-      console.error("Error starting transaction: ", err);
-      res.status(500).send("Internal Server Error");
-      return;
-    }
+    const createOrder = async () => {
+      return new Promise((resolve, reject) => {
+        const query =
+          "INSERT INTO orders (customer_id, grand_total, status_id) VALUES (?, ?, 1)";
 
-    // Create a new order
-    db.query(
-      "INSERT INTO orders (customer_id, grand_total, status_id) VALUES (?, ?, 1)",
-      [customer_id, grandTotal],
-      (err, results) => {
-        if (err) {
-          db.rollback(() => {
-            console.error("Error creating order: ", err);
-            res.status(500).send("Internal Server Error");
-          });
-          return;
+        db.query(query, [customer_id, grandTotal], (error, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(results.insertId);
+          }
+        });
+      });
+    };
+
+    const insertOrderItems = async (orderId, item) => {
+      db.query(
+        "INSERT INTO order_items (order_id, product_id, quantity, total) VALUES (?, ?, ?, ?)",
+        [orderId, item.product_id, item.quantity, item.total]
+      );
+    };
+
+    const updateProductStock = async (item) => {
+      await db.query(
+        "UPDATE products SET stock_quantity = stock_quantity - ? WHERE product_id = ?",
+        [item.quantity, item.product_id]
+      );
+    };
+
+    const transferCartItemsToOrder = async (
+      orderId,
+      customer_id,
+      cartItemIds
+    ) => {
+      db.query(
+        "INSERT INTO order_items (order_id, product_id, quantity, total) " +
+          "SELECT ?, ci.product_id, ci.quantity, ci.total " +
+          "FROM carts c " +
+          "JOIN cart_items ci ON c.cart_id = ci.cart_id " +
+          "WHERE c.customer_id = ? AND ci.cart_item_id IN (?)",
+        [orderId, customer_id, cartItemIds]
+      );
+    };
+
+    const deleteCartItems = async (customer_id, cartItemIds) => {
+      db.query(
+        "DELETE FROM cart_items WHERE cart_id IN (SELECT cart_id FROM carts WHERE customer_id = ? AND cart_item_id IN (?))",
+        [customer_id, cartItemIds]
+      );
+    };
+
+    db.beginTransaction();
+
+    try {
+      const orderId = await createOrder();
+
+      if (buyNow) {
+        for (const item of items) {
+          await insertOrderItems(orderId, item);
+          await updateProductStock(item);
+        }
+      } else {
+        const cartItemIds = items.map((item) => item.cart_item_id);
+        await transferCartItemsToOrder(orderId, customer_id, cartItemIds);
+
+        for (const item of items) {
+          await updateProductStock(item);
         }
 
-        const orderId = results.insertId;
-
-        // Transfer selected cart items to order items
-        db.query(
-          "INSERT INTO order_items (order_id, product_id, quantity, total) " +
-            "SELECT ?, ci.product_id, ci.quantity, ci.total " +
-            "FROM carts c " +
-            "JOIN cart_items ci ON c.cart_id = ci.cart_id " +
-            "WHERE c.customer_id = ? AND ci.cart_item_id IN (?)",
-          [orderId, customer_id, selectedItemsArray],
-          (err) => {
-            if (err) {
-              db.rollback(() => {
-                console.error("Error transferring cart items: ", err);
-                res.status(500).send("Internal Server Error");
-              });
-              return;
-            }
-
-            // Update product stock quantities
-            db.query(
-              "UPDATE products p " +
-                "JOIN order_items oi ON p.product_id = oi.product_id " +
-                "SET p.stock_quantity = p.stock_quantity - oi.quantity " +
-                "WHERE oi.order_id = ?",
-              [orderId],
-              (err) => {
-                if (err) {
-                  db.rollback(() => {
-                    console.error(
-                      "Error updating product stock quantities: ",
-                      err
-                    );
-                    res.status(500).send("Internal Server Error");
-                  });
-                  return;
-                }
-
-                // Delete selected cart items after moving them to order items
-                db.query(
-                  "DELETE FROM cart_items WHERE cart_id IN (SELECT cart_id FROM carts WHERE customer_id = ? AND cart_item_id IN (?))",
-                  [customer_id, selectedItemsArray],
-                  (err) => {
-                    if (err) {
-                      db.rollback(() => {
-                        console.error("Error deleting cart items: ", err);
-                        res.status(500).send("Internal Server Error");
-                      });
-                      return;
-                    }
-
-                    // Commit the transaction
-                    db.commit((err) => {
-                      if (err) {
-                        db.rollback(() => {
-                          console.error("Error committing transaction: ", err);
-                          res.status(500).send("Internal Server Error");
-                        });
-                      } else {
-                        res.status(200).send("Checkout successful");
-                      }
-                    });
-                  }
-                );
-              }
-            );
-          }
-        );
+        await deleteCartItems(customer_id, cartItemIds);
       }
-    );
-  });
+
+      db.commit();
+      res.status(200).send("Checkout successful");
+    } catch (error) {
+      db.rollback();
+      console.error("Error during checkout: ", error);
+      res.status(500).send("Internal Server Error");
+    }
+  } catch (error) {
+    console.error("Error parsing request body: ", error);
+    res.status(400).send("Bad Request");
+  }
 });
 
 // ** Displaying cart items, [customer]
@@ -524,7 +520,7 @@ app.get("/orders/:customer_id", (req, res) => {
   });
 });
 
-// ** Displaying customer image, [customer]
+// ** Displaying customer , [customer]
 app.get("/customers/:customer_id", (req, res) => {
   const customer_id = req.params.customer_id;
   const query = `

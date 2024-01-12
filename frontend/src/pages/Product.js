@@ -85,11 +85,16 @@ const Product = () => {
         const formData = new FormData();
         formData.append("cart_id", addToCart.cart_id);
         formData.append("product_id", addToCart.product_id);
-        formData.append("quantity", kiloValue);
+        formData.append("quantity", kiloValue.toFixed(2));
         formData.append("total", totalValue.toFixed(2));
-
-        await axios.post("http://localhost:5000/cart", formData);
-
+  
+        // Convert FormData to a plain object
+        const formDataObject = Object.fromEntries(formData);
+  
+        console.log(formDataObject);
+  
+        await axios.post("http://localhost:5000/cart", formDataObject);
+  
         navigate(`/cart`);
       }
     } catch (err) {

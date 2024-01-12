@@ -17,6 +17,7 @@ const Checkout = () => {
   const [grandTotal, setGrandTotal] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
+  const [buyNow, setBuyNow] = useState(false);
 
   const auth = useUserAuth();
   const customer_id = auth.user.customer_id;
@@ -40,24 +41,34 @@ const Checkout = () => {
         const customer = await axios.get(
           `http://localhost:5000/customers/${customer_id}`
         );
+        setCustomerDetails(customer.data);
 
-        if (parameter === "selectedItems") {
+        if (parameter === "item") {
+          const response = await axios.get(
+            `http://localhost:5000/product/${selectedItemsArray}`
+          );
+          const productData = response.data;
+
+          const newItemData = {
+            cart_id: 0,
+            product_id: productData.product_id,
+            quantity: 1,
+            total: productData.price,
+            price: productData.price,
+            image: productData.image,
+            product_name: productData.product_name,
+          };
+
+          setItems([newItemData]); // Set as an array for consistency
+          setBuyNow(true); // Set to true for "Buy Now" scenario // Set to true for "Buy Now" scenario
+        } else if (parameter === "selectedItems") {
           const cartItems = await axios.get(
             `http://localhost:5000/cart/${customer_id}`
           );
-
           const selectedItemsInCart = cartItems.data.filter((cartItem) =>
             selectedItemsArray.includes(cartItem.cart_item_id.toString())
           );
           setItems(selectedItemsInCart);
-        } else if (parameter === "item") {
-          const item = await axios.get(
-            `http://localhost:5000/product/${selectedItemsArray}`
-          );
-          const newItemData = [
-            { ...item.data, total: item.data.price },
-          ];
-          setItems(newItemData);
         }
 
         setCustomerDetails(customer.data);
@@ -67,7 +78,7 @@ const Checkout = () => {
     };
 
     fetchData();
-  }, [selectedItemsArray, customer_id, parameter, items]); // Include 'items' in the dependency array
+  }, [selectedItemsArray, customer_id, parameter]);
 
   useEffect(() => {
     // Calculate the grand total when items change
@@ -77,12 +88,15 @@ const Checkout = () => {
 
   const handleCheckout = async () => {
     try {
-      // Send a POST request to your backend server to handle checkout
-      await axios.post("http://localhost:5000/checkout", {
+      const response = await axios.post("http://localhost:5000/checkout", {
         customer_id,
         grandTotal,
         selectedItemsArray,
+        items,
+        buyNow,
       });
+
+      console.log("Server response:", response.data);
 
       navigate(`/orders`);
     } catch (error) {
@@ -98,8 +112,8 @@ const Checkout = () => {
     <>
       <NavBar />
       {customer_id}
-        {grandTotal}
-        {selectedItemsArray}
+      {grandTotal}
+      {selectedItemsArray}
       <section className="body-bg">
         <div>
           <h2 className="section-title">Checkout</h2>

@@ -111,9 +111,6 @@ const Checkout = () => {
   return (
     <>
       <NavBar />
-      {customer_id}
-      {grandTotal}
-      {selectedItemsArray}
       <section className="body-bg">
         <div>
           <h2 className="section-title">Checkout</h2>

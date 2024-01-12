@@ -65,11 +65,9 @@ const AddProduct = () => {
     // Checking if input is from checkbox. If so, toggled=1, not=0
     if (type === "checkbox") {
       setProduct((prev) => ({ ...prev, [name]: checked ? 1 : 0 }));
-
     } else if (type === "file") {
       setProduct((prev) => ({ ...prev, [name]: value }));
       setImgPreview(URL.createObjectURL(e.target.files[0]));
-      
     } else {
       setProduct((prev) => ({ ...prev, [name]: value }));
     }
@@ -155,7 +153,18 @@ const AddProduct = () => {
               <div className="col-md-3">
                 {/* Image upload */}
                 <label>Image</label>
-                <img src={imgPreview} />
+                {imgPreview ? (
+                  <img
+                    className="card imgprev"
+                    src={imgPreview}
+                    alt="Product preview"
+                  />
+                ) : (
+                  <div className="card d-flex justify-content-center align-items-center imgprev">
+                    <i className="fa-solid fa-camera"></i>
+                  </div>
+                )}
+
                 <div className="custom-file">
                   <input
                     name="image"

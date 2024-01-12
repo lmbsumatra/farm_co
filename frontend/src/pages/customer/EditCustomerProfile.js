@@ -32,18 +32,22 @@ const EditProfile = () => {
         const response = await axios.get(
           `http://localhost:5000/customers/${auth.user.customer_id}`
         );
-        setUserImage(response.data[0].customer_image);
+
         setCustomerDetails((prevCustomerDetails) => ({
           ...prevCustomerDetails,
           customer_image: response.data[0].customer_image,
         }));
+        setUserImage(
+          `http://localhost:5000/images/customers/${response.data[0].customer_image}`
+        );
+        
       } catch (error) {
         console.error("Error fetching product:", error);
       }
     };
 
     fetchProduct();
-  }, [userImage, auth.user.customer_id]);
+  }, [auth.user.customer_id]);
 
   // Handles input changes and setting value to product variable
   const handleChange = ({ target }) => {
@@ -55,6 +59,8 @@ const EditProfile = () => {
         [name]: type === "checkbox" ? (checked ? 1 : 0) : value,
       }));
     } else if (type === "file") {
+      setUserImage(URL.createObjectURL(files[0]));
+
       setCustomerDetails((prevCustomerDetails) => ({
         ...prevCustomerDetails,
         customer_image:
@@ -151,6 +157,18 @@ const EditProfile = () => {
             <div className="row py-3">
               <div className="col-md-3">
                 <label>Image</label>
+
+                {userImage ? (
+                  <img
+                    className="card imgprev"
+                    src={userImage}
+                    alt="Product preview"
+                  />
+                ) : (
+                  <div className="card d-flex justify-content-center align-items-center imgprev">
+                    <i className="fa-solid fa-camera"></i>
+                  </div>
+                )}
                 <div className="custom-file">
                   <input
                     type="file"
@@ -159,9 +177,6 @@ const EditProfile = () => {
                     accept="image/*"
                     onChange={handleChange}
                   />
-                  <label className="custom-file-label" htmlFor="imageUpload">
-                    {userImage || "Choose image"}
-                  </label>
                 </div>
               </div>
 

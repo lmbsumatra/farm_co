@@ -70,7 +70,9 @@ const EditProduct = () => {
 
         // Initializing current product values before user applies changes: for image
         setCurrentImage(fetchedProduct.image);
-        setImgPreview(`http://localhost:5000/images/products/${fetchedProduct.image}`);
+        setImgPreview(
+          `http://localhost:5000/images/products/${fetchedProduct.image}`
+        );
 
         // Initializing current product values before user applies changes: for category
         const selectedCategoryObject = categories.find(
@@ -90,7 +92,7 @@ const EditProduct = () => {
   // Handles input changes and setting value to product variable
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-  
+
     if (type === "checkbox") {
       setProduct((prevProduct) => ({
         ...prevProduct,
@@ -101,7 +103,7 @@ const EditProduct = () => {
     } else if (type === "file") {
       // Handle image file input
       setProduct((prev) => ({ ...prev, [name]: value }));
-      
+
       const file = e.target.files[0];
       if (file) {
         setImgPreview(URL.createObjectURL(file));
@@ -112,7 +114,6 @@ const EditProduct = () => {
       setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
     }
   };
-  
 
   // Handles input changes and setting value to product variable: for category
   const handleCategorySelect = (eventKey) => {
@@ -202,7 +203,17 @@ const EditProduct = () => {
             <div className="row py-3">
               <div className="col-md-3">
                 <label>Image</label>
-                <img src={imgPreview}/>
+                <div className="imgprev">
+                  {currentImage ? (
+                    <img
+                      className="card imgprev"
+                      src={imgPreview}
+                      alt="Product preview"
+                    />
+                  ) : (
+                    <i class="fa-solid fa-camera"></i>
+                  )}
+                </div>
                 <div className="custom-file">
                   <input
                     type="file"
@@ -211,9 +222,6 @@ const EditProduct = () => {
                     accept="image/*"
                     onChange={handleChange}
                   />
-                  <label className="custom-file-label" htmlFor="imageUpload">
-                    {currentImage || "Choose image"}
-                  </label>
                 </div>
               </div>
 

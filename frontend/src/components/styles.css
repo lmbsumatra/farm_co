@@ -127,3 +127,8 @@ section {
 .hover-link:hover {
   background-color:#46f890;
 }
+
+.imgprev {
+  height: 100px;
+  width: auto;
+}

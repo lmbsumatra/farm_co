@@ -1,7 +1,6 @@
 // Modules
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
 
 // UI imports
 import "../../components/styles.css";
@@ -10,12 +9,13 @@ import "../../components/styles.css";
 import NavBarAdmin from "../../components/navbar/NavBarAdmin";
 import Footer from "../../components/footer/Footer";
 import { useUserAuth } from "../../pages/context/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const AdminPanelCustomers = () => {
   const [customers, setCustomers] = useState([]);
   const auth = useUserAuth();
-  const navigate = useNavigate();
   const [deletionSuccess, setDeletionSuccess] = useState(false);
+  const navigate = useNavigate();
 
   // Fetching products
   useEffect(() => {
@@ -25,7 +25,6 @@ const AdminPanelCustomers = () => {
       .catch((error) => console.error("Error fetching products: ", error));
   }, []);
 
-  // Handles delete products
   // Handles delete products
   const handleDelete = async (customer_id) => {
     try {
@@ -48,10 +47,9 @@ const AdminPanelCustomers = () => {
   useEffect(() => {
     if (deletionSuccess) {
       auth.logout();
-      navigate("/");
-      window.location.reload();
+      navigate(`/admin-panel-customers`)
     }
-  }, [deletionSuccess]);
+  }, [deletionSuccess, auth, navigate]);
   
 
   return (

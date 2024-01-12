@@ -5,6 +5,8 @@ import { useUserAuth } from "../../pages/context/useAuth";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import userCircle from "../../assets/images/profile/user-circle.svg";
+
 const NavBar = () => {
   const navigate = useNavigate();
   const auth = useUserAuth();
@@ -39,7 +41,7 @@ const NavBar = () => {
     };
 
     fetchProduct();
-  }, [userImage]);
+  }, [auth.user, userImage]);
 
   return (
     <section id="Navbar" className="container">
@@ -102,8 +104,15 @@ const NavBar = () => {
                 className="m-2"
               >
                 {auth.user ? (
+                  userImage ?
                   <img
                     src={`http://localhost:5000/images/customers/${userImage}`}
+                    className="col-1 object-fit-cover rounded-circle img-profile"
+                    alt="Customer profile"
+                  />
+                  :
+                  <img
+                    src={userCircle}
                     className="col-1 object-fit-cover rounded-circle img-profile"
                     alt="Customer profile"
                   />
@@ -112,6 +121,7 @@ const NavBar = () => {
                 )}
               </Nav.Link>
             </Nav>
+            
 
             <div className="col-lg-4 col-md-12 mx-auto">
               <Nav>

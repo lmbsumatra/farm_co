@@ -26,7 +26,6 @@ const OrderSummaryId = () => {
         );
         const { orderItems, currentStatus, grandTotal, customerDetails } =
           response.data;
-        console.log(response.data);
         setOrderItems(orderItems);
         setStatus(currentStatus);
         setGrandTotal(grandTotal);

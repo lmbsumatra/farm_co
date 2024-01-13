@@ -15,6 +15,7 @@ const EditProduct = () => {
   const [product, setProduct] = useState({
     product_name: "",
     product_desc: "",
+    product_unit: "",
     product_img: "",
     product_price: null,
     product_category: null,
@@ -60,6 +61,7 @@ const EditProduct = () => {
         setProduct({
           product_name: fetchedProduct.product_name,
           product_desc: fetchedProduct.description,
+          product_unit: fetchedProduct.unit_weight,
           product_img: fetchedProduct.image,
           product_price: fetchedProduct.price,
           product_category: fetchedProduct.category_id,
@@ -101,14 +103,13 @@ const EditProduct = () => {
     } else if (type === "number") {
       // Your existing code for handling number input
     } else if (type === "file") {
-      // Handle image file input
       setProduct((prev) => ({ ...prev, [name]: value }));
 
       const file = e.target.files[0];
       if (file) {
         setImgPreview(URL.createObjectURL(file));
       } else {
-        setImgPreview(""); // Clear image preview if no file selected
+        setImgPreview("");
       }
     } else {
       setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
@@ -155,12 +156,13 @@ const EditProduct = () => {
 
       formData.append("product_name", product.product_name);
       formData.append("product_desc", product.product_desc);
+      formData.append("product_unit", product.product_unit);
       formData.append("product_price", product.product_price);
 
       formData.append("product_category", product.product_category);
       formData.append("product_isfeatured", product.product_isfeatured ? 1 : 0);
 
-      await axios.put(`http://localhost:5000/products/${product_id}`, formData);
+      const res = await axios.put(`http://localhost:5000/products/${product_id}`, formData);
 
       // Back to the admin products page
       navigate("/admin-panel-products");
@@ -194,6 +196,17 @@ const EditProduct = () => {
                   type="text"
                   value={product.product_desc}
                   name="product_desc"
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label>Unit Weight</label>
+                <input
+                  type="text"
+                  value={product.product_unit}
+                  name="product_unit"
                   onChange={handleChange}
                   className="form-control"
                 />

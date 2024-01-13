@@ -18,6 +18,7 @@ const AddProduct = () => {
     image: "",
     product_category: "",
     product_desc: "",
+    product_unit: "",
     product_name: "",
     product_price: "",
     product_qty: "",
@@ -87,18 +88,18 @@ const AddProduct = () => {
         product.price === "" ||
         product.qty === ""
       ) {
-        console.log(product);
+
         setRequireMsg("Fill out completely");
       } else {
         const imgInput = document.getElementById("imageUpload");
         const file = imgInput.files[0];
-
         // Using formdata to pass data to backend
         const formData = new FormData();
         formData.append("image", file);
 
         formData.append("product_name", product.product_name);
         formData.append("product_desc", product.product_desc);
+        formData.append("product_unit", product.product_unit);
         formData.append("product_price", product.product_price);
         formData.append("product_qty", product.product_qty);
         formData.append("product_category", product.product_category);
@@ -143,6 +144,18 @@ const AddProduct = () => {
                   type="text"
                   placeholder="Description"
                   name="product_desc"
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
+
+              <div className="col-md-4">
+                {/* Unit weight input */}
+                <label>Unit Weight</label>
+                <input
+                  type="text"
+                  placeholder="Unit Weight"
+                  name="product_unit"
                   onChange={handleChange}
                   className="form-control"
                 />

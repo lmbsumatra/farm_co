@@ -6,6 +6,7 @@ const path = require("path");
 const multer = require("multer");
 const app = express();
 const port = 5000;
+const fs = require("fs");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -71,7 +72,8 @@ app.post("/products", uploadProductImage.single("image"), (req, res) => {
     stock_quantity, 
     category_id, 
     is_featured, 
-    image) 
+    image,
+    unit_weight) 
   VALUES(?)`;
 
   const values = [
@@ -82,6 +84,7 @@ app.post("/products", uploadProductImage.single("image"), (req, res) => {
     req.body.product_category,
     req.body.product_isfeatured,
     req.file.filename,
+    req.body.product_unit
   ];
 
   db.query(query, [values], (err, data) => {
@@ -93,12 +96,21 @@ app.post("/products", uploadProductImage.single("image"), (req, res) => {
 // ** Displaying products, [admin]
 app.get("/products", (req, res) => {
   const query = `
-    SELECT * 
+    SELECT p.*, c.*
     FROM products p 
     LEFT JOIN categories c ON p.category_id = c.category_id`;
 
   db.query(query, (err, results) => {
-    if (err) return res.json(err);
+    if (err) {
+      console.error(err);
+      return res.json(err);
+    }
+
+    results.forEach((product) => {
+      const imagePath = path.join(__dirname, "images/products", product.image);
+      product.image = fs.existsSync(imagePath) ? product.image : null;
+    });
+
     return res.json(results);
   });
 });
@@ -115,11 +127,13 @@ app.get("/product/:product_id", (req, res) => {
   db.query(query, [product_id], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
 
-    if (results.length === 0) {
-      return res.status(404).json({ error: "Product not found" });
-    }
+    // if (results.length === 0) {
+    //   return res.status(404).json({ error: "Product not found" });
+    // }
 
     const product = results[0];
+    const imagePath = path.join(__dirname, "images/products", results[0].image);
+    product.image = fs.existsSync(imagePath) ? product.image : null;
     return res.json(product);
   });
 });
@@ -281,36 +295,16 @@ app.delete("/products/:product_id", (req, res) => {
 // ** Deleting customer, [admin]
 app.delete("/customers/:customer_id", (req, res) => {
   const customer_id = req.params.customer_id;
-  const cart_id = req.params.customer_id;
 
-  const updateOrders = "UPDATE orders SET customer_id = NULL WHERE customer_id = ?";
-  const deleteCartItems = "DELETE FROM cart_items WHERE cart_id = ?";
-  const deleteCart = "DELETE FROM carts WHERE cart_id = ?";
   const deleteCustomer = "DELETE FROM customers WHERE customer_id = ?";
 
-  // Update orders table (set customer_id to NULL)
-  db.query(updateOrders, [customer_id], (err, updateOrdersData) => {
+  // Delete from customers table (cascading deletes will handle related records in other tables)
+  db.query(deleteCustomer, [customer_id], (err, customerData) => {
     if (err) return res.json(err);
-
-    // Delete from cart_items table
-    db.query(deleteCartItems, [cart_id], (err, cartItemsData) => {
-      if (err) return res.json(err);
-
-      // Delete from carts table
-      db.query(deleteCart, [cart_id], (err, cartData) => {
-        if (err) return res.json(err);
-
-        // Delete from customers table
-        db.query(deleteCustomer, [customer_id], (err, customerData) => {
-          if (err) return res.json(err);
-
-          // Assuming all queries were successful
-          return res.status(200).json({ message: "Successful: Deleted customer." });
-        });
-      });
-    });
+    return res.status(200).json({ message: "Successful: Deleted customer." });
   });
 });
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -338,11 +332,11 @@ app.post("/cart", uploadProductImage.none(), (req, res) => {
 
   db.query(query, values, (err, data) => {
     if (err) return res.json(err);
-    return res.json("Successfully inserting/updating item in the cart");
+    return res.json("Successful: Inserting item in the cart");
   });
 });
 
-// For adding customer + cart, [customer]
+// ** For adding customer + cart, [customer]
 app.post("/customers", uploadProductImage.none(), (req, res) => {
   const customerQuery =
     "INSERT INTO `customers` (`customer_name`, `email`, `address`, `username`, `password`) VALUES (?, ?, ?, ?, ?)";
@@ -367,7 +361,7 @@ app.post("/customers", uploadProductImage.none(), (req, res) => {
 
       db.commit((err) => {
         if (err) return res.json(err);
-        res.json("Successful: Adding customer");
+        res.json("Successful: Adding customer and cart");
       });
     });
   });
@@ -401,7 +395,7 @@ app.post("/checkout", async (req, res) => {
     };
 
     const updateProductStock = async (item) => {
-      await db.query(
+      db.query(
         "UPDATE products SET stock_quantity = stock_quantity - ? WHERE product_id = ?",
         [item.quantity, item.product_id]
       );
@@ -554,7 +548,8 @@ app.put(
       stock_quantity = ?,
       category_id = ?,
       is_featured = ?,
-      image = ? 
+      image = ?,
+      unit_weight = ? 
     WHERE product_id = ?`;
 
     const values = [
@@ -565,6 +560,7 @@ app.put(
       req.body.product_category,
       req.body.product_isfeatured,
       req.file ? req.file.filename : req.body.product_img,
+      req.body.product_unit,
       product_id,
     ];
 
@@ -606,7 +602,7 @@ app.put(
     // SQL query execution
     db.query(query, values, (err, data) => {
       if (err) return res.json(err);
-      return res.json("Successfully updated customer");
+      return res.json("Successful: Updated customer");
     });
   }
 );

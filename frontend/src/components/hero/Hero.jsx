@@ -21,7 +21,7 @@ const Hero = () => {
       <div className="container-fluid">
         <div
           className="d-flex flex-column align-items-center justify-content-center"
-          style={{ height: "75vh" }}
+          style={{ height: "83vh" }}
         >
           <p className="text-center h1">
             Your Community's Farm: Bringing Freshness to <br /> Your Doorstep

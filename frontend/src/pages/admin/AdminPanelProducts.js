@@ -52,7 +52,6 @@ const AdminPanelProducts = () => {
           return valueB.localeCompare(valueA);
         }
       } else {
-        // Handle other data types (e.g., numbers, booleans)
         if (sortOrder === "asc") {
           return valueA - valueB;
         } else {
@@ -65,8 +64,6 @@ const AdminPanelProducts = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  // ...
-
   useEffect(() => {
     const handleSearch = () => {
       const query = searchQuery.toLowerCase();
@@ -76,6 +73,7 @@ const AdminPanelProducts = () => {
         return (
           product.product_name.toLowerCase().includes(query) ||
           product.description.toLowerCase().includes(query) ||
+          product.unit_weight.toLowerCase().includes(query) ||
           product.category_name.toLowerCase().includes(query) ||
           String(product.price).includes(query) ||
           String(product.stock_quantity).includes(query) ||
@@ -89,170 +87,192 @@ const AdminPanelProducts = () => {
     handleSearch(); // Always update the filter when the search query changes
   }, [searchQuery, products]);
 
-  // ...
-
   return (
     <>
       <NavBarAdmin />
 
       <section className="body-bg">
         <h4 className="section-title">Products</h4>
-        <form className="col-lg-6 col-md-12 col-sm-10" role="search">
-          <input
-            className="form-control me-2 d-flex"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setSearchTrigger(true);
-            }}
-          />
-        </form>
-        <div className="card mx-auto overflow-hidden width-80vw my-3 overflow-x">
-          <div className="table-responsive">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th className="">
-                    <div
-                      className="d-flex"
-                      onClick={() => handleSort("product_id")}
-                    >
-                      Id
-                      <div class="icon-container">
-                        {sortOrder === "asc" && (
-                          <i className="fa-solid fa-caret-up"></i>
-                        )}
-                        {sortOrder === "desc" && (
-                          <i className="fa-solid fa-caret-down"></i>
-                        )}
+        <div className="mx-auto overflow-hidden width-80vw">
+          
+          <form className="" role="search">
+            <input
+              className="form-control me-2 d-flex"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setSearchTrigger(true);
+              }}
+            />
+          </form>
+          <div className="card mx-auto overflow-hidden width-80vw my-3 overflow-x">
+            <div className="table-responsive">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th className="">
+                      <div
+                        className="d-flex"
+                        onClick={() => handleSort("product_id")}
+                      >
+                        Id
+                        <div className="icon-container">
+                          {sortOrder === "asc" && (
+                            <i className="fa-solid fa-caret-up"></i>
+                          )}
+                          {sortOrder === "desc" && (
+                            <i className="fa-solid fa-caret-down"></i>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </th>
-                  <th className="">
-                    <div
-                      className="d-flex"
-                      onClick={() => handleSort("product_name")}
-                    >
-                      Name
-                      <div class="icon-container">
-                        {sortOrder === "asc" && (
-                          <i className="fa-solid fa-caret-up"></i>
-                        )}
-                        {sortOrder === "desc" && (
-                          <i className="fa-solid fa-caret-down"></i>
-                        )}
+                    </th>
+                    <th className="">
+                      <div
+                        className="d-flex"
+                        onClick={() => handleSort("product_name")}
+                      >
+                        Name
+                        <div className="icon-container">
+                          {sortOrder === "asc" && (
+                            <i className="fa-solid fa-caret-up"></i>
+                          )}
+                          {sortOrder === "desc" && (
+                            <i className="fa-solid fa-caret-down"></i>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </th>
-                  <th>Description</th>
-                  <th>Image</th>
-                  <th className="">
-                    <div
-                      className="d-flex"
-                      onClick={() => handleSort("category_id")}
-                    >
-                      Category
-                      <div class="icon-container">
-                        {sortOrder === "asc" && (
-                          <i className="fa-solid fa-caret-up"></i>
-                        )}
-                        {sortOrder === "desc" && (
-                          <i className="fa-solid fa-caret-down"></i>
-                        )}
+                    </th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th className="">
+                      <div
+                        className="d-flex"
+                        onClick={() => handleSort("category_id")}
+                      >
+                        Category
+                        <div className="icon-container">
+                          {sortOrder === "asc" && (
+                            <i className="fa-solid fa-caret-up"></i>
+                          )}
+                          {sortOrder === "desc" && (
+                            <i className="fa-solid fa-caret-down"></i>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </th>
-                  <th className="">
-                    <div className="d-flex" onClick={() => handleSort("price")}>
-                      Price
-                      <div class="icon-container">
-                        {sortOrder === "asc" && (
-                          <i className="fa-solid fa-caret-up"></i>
-                        )}
-                        {sortOrder === "desc" && (
-                          <i className="fa-solid fa-caret-down"></i>
-                        )}
+                    </th>
+                    <th className="">
+                      <div
+                        className="d-flex"
+                        onClick={() => handleSort("price")}
+                      >
+                        Price
+                        <div className="icon-container">
+                          {sortOrder === "asc" && (
+                            <i className="fa-solid fa-caret-up"></i>
+                          )}
+                          {sortOrder === "desc" && (
+                            <i className="fa-solid fa-caret-down"></i>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </th>
-                  <th className="">
-                    <div
-                      className="d-flex"
-                      onClick={() => handleSort("stock_quantity")}
-                    >
-                      Stock
-                      <div class="icon-container">
-                        {sortOrder === "asc" && (
-                          <i className="fa-solid fa-caret-up"></i>
-                        )}
-                        {sortOrder === "desc" && (
-                          <i className="fa-solid fa-caret-down"></i>
-                        )}
+                    </th>
+                    <th className="">
+                      <div
+                        className="d-flex"
+                        onClick={() => handleSort("stock_quantity")}
+                      >
+                        Stock
+                        <div className="icon-container">
+                          {sortOrder === "asc" && (
+                            <i className="fa-solid fa-caret-up"></i>
+                          )}
+                          {sortOrder === "desc" && (
+                            <i className="fa-solid fa-caret-down"></i>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </th>
-                  <th>Featured</th>
-                </tr>
-              </thead>
+                    </th>
+                    <th>Featured</th>
+                    <th>Unit</th>
+                    <th colSpan={2}>Actions</th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                {filteredProducts.map((product) => (
-                  <tr key={product.product_id}>
-                    <td>{product.product_id}</td>
-                    <td>{product.product_name}</td>
-                    <td>{product.description}</td>
-                    <td>
-                      <img
-                        src={`http://localhost:5000/images/products/${product.image}`}
-                        alt={product.name}
-                        style={{ width: "50px" }}
-                      />
-                    </td>
-                    <td>{product.category_name}</td>
-                    <td>{product.price}</td>
-                    <td
-                      id="stock"
-                      className={handleStockWarning(product.stock_quantity)}
-                    >
-                      {product.stock_quantity}
-                    </td>
-                    <td>{getFeaturedStatus(product.is_featured)}</td>
-                    <td>
-                      <button type="button" className="btn btn-success">
-                        <Link
+                <tbody>
+                  {filteredProducts.map((product) => (
+                    <tr key={product.product_id}>
+                      <td>{product.product_id}</td>
+                      <td>{product.product_name}</td>
+                      <td>{product.description}</td>
+                      <td>
+                        <img
+                          src={`http://localhost:5000/images/products/${product.image}`}
+                          alt={product.name}
+                          style={{ width: "50px" }}
+                        />
+                      </td>
+                      <td>{product.category_name}</td>
+                      <td>{product.price}</td>
+                      <td
+                        id="stock"
+                        className={handleStockWarning(product.stock_quantity)}
+                      >
+                        {product.stock_quantity}
+                      </td>
+                      <td>{getFeaturedStatus(product.is_featured)}</td>
+                      <td>{product.unit_weight}</td>
+                      <td>
+                        <a
+                          href={`/edit-product/${product.product_id}`}
+                          style={{ color: "#0cb656", fontSize: "25px" }}
+                        >
+                          <i className="fas fa-edit"></i>
+                        </a>
+                        {/* <Link
                           to={`/edit-product/${product.product_id}`}
                           className="no-decor-white"
                         >
                           Update
-                        </Link>
-                      </button>
-                    </td>
-                    <td>
-                      <button
+                        </Link> */}
+                      </td>
+                      <td>
+                        {/* <button
                         type="button"
                         className="btn btn-outline-danger"
                         onClick={() => handleDelete(product.product_id)}
                       >
                         Delete
+                      </button> */}
+
+                        <a
+                          style={{
+                            color: "#b60c0c",
+                            fontSize: "25px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleDelete(product.product_id)}
+                        >
+                          <i className="fas fa-trash-alt"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+
+                  <tr key="add-product-row">
+                    <td colSpan="4">
+                      <button type="button" className="btn btn-success">
+                        <Link to={`/add-product/`} className="no-decor-white">
+                          Add
+                        </Link>
                       </button>
                     </td>
                   </tr>
-                ))}
-
-                <tr key="add-product-row">
-                  <td colSpan="4">
-                    <button type="button" className="btn btn-success">
-                      <Link to={`/add-product/`} className="no-decor-white">
-                        Add
-                      </Link>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>

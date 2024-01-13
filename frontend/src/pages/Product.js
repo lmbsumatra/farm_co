@@ -6,6 +6,8 @@ import { useUserAuth } from "./context/useAuth";
 import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
 
+import imgNotAvailable from "../assets/images/others/img-not-available.svg";
+
 const Product = () => {
   const [product, setProduct] = useState({});
   const location = useLocation();
@@ -103,7 +105,7 @@ const Product = () => {
   };
 
   const handleBuyNow = () => {
-    navigate(`/checkout?item=${product_id}`);
+    navigate(`/checkout?item=${product_id}&unit_value=${kiloValue.toFixed(2)}`);
   };
 
   return (
@@ -115,11 +117,21 @@ const Product = () => {
           <div className="card mx-auto overflow-hidden width-80vw height-30vw">
             <div className="row g-0">
               <div className="col-md-6">
-                <img
-                  src={`http://localhost:5000/images/products/${product.image}`}
-                  className="img-fluid product-image"
-                  alt={product.description}
-                />
+                {product.image != null ? (
+                  <img
+                    src={`http://localhost:5000/images/products/${product.image}`}
+                    className="img-fluid product-image"
+                    alt={product.description}
+                  />
+                ) : (
+                  <div className="d-flex justify-content-center align-items-center product-image">
+                    <img
+                      src={imgNotAvailable}
+                      alt={product.product_name}
+                      style={{ height: "30px" }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="col-md-6">

@@ -9,6 +9,7 @@ import "../components/styles.css";
 // Components
 import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
+import imgNotAvailable from "../assets/images/others/img-not-available.svg";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -48,13 +49,22 @@ const Shop = () => {
               key={product.product_id}
             >
               <Link to={`/product/${product.product_id}`} className="no-decor">
-                {product.image && (
+              {product.image != null ? (
                   <img
                     src={`http://localhost:5000/images/products/${product.image}`}
                     className="card-img-top img-fluid img-cover"
                     alt={product.product_name}
                     style={{ height: "10rem", objectFit: "cover" }}
                   />
+                ) : (
+                  <div className="d-flex justify-content-center align-items-center imgprev"
+                  style={{ height: "10rem"}}>
+                    <img
+                    src={imgNotAvailable}
+                    alt={product.product_name}
+                    style={{ height: "30px" }}
+                  />
+                  </div>
                 )}
                 <div className="card-body no-spacing p-2">
                   <h6 className="card-title">{product.product_name}</h6>

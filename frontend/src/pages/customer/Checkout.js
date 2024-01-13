@@ -35,6 +35,8 @@ const Checkout = () => {
     ? "selectedItems"
     : "item";
 
+  const unit = searchParams.get("unit_value");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -52,8 +54,8 @@ const Checkout = () => {
           const newItemData = {
             cart_id: 0,
             product_id: productData.product_id,
-            quantity: 1,
-            total: productData.price,
+            quantity: unit,
+            total: productData.price * unit,
             price: productData.price,
             image: productData.image,
             product_name: productData.product_name,

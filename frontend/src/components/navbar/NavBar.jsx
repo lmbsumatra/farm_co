@@ -45,17 +45,17 @@ const NavBar = () => {
 
   return (
     <section id="Navbar" className="container">
-      <div className="row m-2">
-        <Navbar expand="lg">
+      <div className="row m-1">
+        <Navbar expand="lg" style={{padding: 0}} className="">
           <Navbar.Brand href="/">
             <h2>FarmCo</h2>
           </Navbar.Brand>
 
           {/* Search Bar */}
-          <div className="col-lg-4 col-md-8 col-sm-6">
+          <div className="col-lg-4 col-md-8 col-sm-7">
             <Nav>
               <form
-                className="d-flex mx-auto col-lg-11 col-md-12 col-sm-10"
+                className="d-flex mx-auto col-lg-11 col-md-12 col-sm-12"
                 role="search"
               >
                 <input
@@ -76,7 +76,7 @@ const NavBar = () => {
           {/* Menu Bar */}
           <Navbar.Collapse id="navbar-nav">
             <Nav className="col-lg-10 mx-auto align-items-center">
-              <Nav.Link href={"/"} className="me-2">
+              <Nav.Link href={"/"} className="me-2 my-3">
                 Home
               </Nav.Link>
 
@@ -101,7 +101,6 @@ const NavBar = () => {
 
               <Nav.Link
                 href={auth.user ? `/edit-profile` : "/log-in"}
-                className="m-2"
               >
                 {auth.user ? (
                   userImage ?

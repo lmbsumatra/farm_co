@@ -22,17 +22,17 @@ const NavBarAdmin = () => {
 
   return (
     <section id="Navbar" className="container ">
-      <div className="row m-2">
-        <Navbar expand="lg">
+      <div className="row m-1">
+        <Navbar expand="lg" style={{ padding: 0 }}>
           <Navbar.Brand href="/">
             <h2>FarmCo</h2>
           </Navbar.Brand>
 
           {/* Search Bar */}
-          <div className="col-lg-4 col-md-8 col-sm-6">
+          <div className="col-lg-4 col-md-8 col-sm-7">
             <Nav>
               <form
-                className="d-flex mx-auto col-lg-10 col-md-10 col-sm-10"
+                className="d-flex mx-auto col-lg-11 col-md-12 col-sm-12"
                 role="search"
               >
                 <input
@@ -52,8 +52,8 @@ const NavBarAdmin = () => {
 
           {/* Menu Bar */}
           <Navbar.Collapse id="navbar-nav">
-            <Nav className=" mx-auto">
-              <Nav.Link href={"/admin-panel"} className="me-2">
+            <Nav className="col-lg-10 mx-auto align-items-center">
+              <Nav.Link href={"/admin-panel"} className="me-2 my-3">
                 Panel
               </Nav.Link>
 
@@ -79,7 +79,7 @@ const NavBarAdmin = () => {
               </Nav.Link>
             </Nav>
 
-            <div className="col-lg-6 col-md-12 mx-auto">
+            <div className="col-lg-4 col-md-12 mx-auto">
               <Nav>
                 {!auth.admin ? (
                   <button

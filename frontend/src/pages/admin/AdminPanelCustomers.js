@@ -25,16 +25,17 @@ const AdminPanelCustomers = () => {
       .catch((error) => console.error("Error fetching products: ", error));
   }, []);
 
-  // Handles delete products
+  // Handles delete customer
   const handleDelete = async (customer_id) => {
     try {
       const response = await axios.delete(
         "http://localhost:5000/customers/" + customer_id
       );
 
-      // Check if the delete request was successful
       if (response.status === 200) {
-        setDeletionSuccess(true); // Trigger the useEffect for logout
+        setDeletionSuccess(true);
+        window.location.reload();
+
       } else {
         console.log("Failed to delete customer. Status code:", response.status);
       }
@@ -47,10 +48,9 @@ const AdminPanelCustomers = () => {
   useEffect(() => {
     if (deletionSuccess) {
       auth.logout();
-      navigate(`/admin-panel-customers`)
+      navigate(`/admin-panel-customers`);
     }
   }, [deletionSuccess, auth, navigate]);
-  
 
   return (
     <>
@@ -63,11 +63,12 @@ const AdminPanelCustomers = () => {
             <table className="table">
               <thead>
                 <tr>
-                  <td>Id</td>
-                  <td>Name</td>
-                  <td>Email Address</td>
-                  <td>Image</td>
-                  <td>Address</td>
+                  <th>Id</th>
+                  <th>Name</th>
+                  <th>Email Address</th>
+                  <th>Image</th>
+                  <th>Address</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
 
@@ -86,13 +87,23 @@ const AdminPanelCustomers = () => {
                     </td>
                     <td>{customer.address}</td>
                     <td>
-                      <button
+                      {/* <button
                         type="button"
                         className="btn btn-outline-danger"
                         onClick={() => handleDelete(customer.customer_id)}
                       >
                         Delete
-                      </button>
+                      </button> */}
+                      <a
+                        style={{
+                          color: "#b60c0c",
+                          fontSize: "25px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleDelete(customer.customer_id)}
+                      >
+                        <i className="fas fa-trash-alt"></i>
+                      </a>
                     </td>
                   </tr>
                 ))}

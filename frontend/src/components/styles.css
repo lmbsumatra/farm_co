@@ -17,7 +17,7 @@
 
 /* General */
 section {
-  padding: 20px;
+  padding: 10px;
 }
 
 .section-title {
@@ -115,9 +115,10 @@ section {
 }
 
 .img-profile {
-  width: 5vw;
-  height: 5vw;
-  border: #138844 5px solid;
+  width: 50px;
+  height: 50px;
+  border: #138844 3px solid;
+  padding: 0;
 }
 
 .star-filled {

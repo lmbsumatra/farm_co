@@ -21,6 +21,8 @@ https://getbootstrap.com/docs/4.0/examples/dashboard/
 ** npm update
 const express = require('express');
 const mysql = require('mysql');
+npm install react-responsive
+
 
 const app = express();
 const port = 8800;

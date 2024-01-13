@@ -30,3 +30,8 @@ CREATE TABLE cart_items (
     FOREIGN KEY (cart_id) REFERENCES carts(cart_id),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
+
+ALTER TABLE cart_items
+ADD CONSTRAINT unique_cart_items UNIQUE (cart_id, product_id);
+
+DELETE FROM cart_items;

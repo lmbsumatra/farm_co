@@ -80,7 +80,7 @@ const Checkout = () => {
     };
 
     fetchData();
-  }, [selectedItemsArray, customer_id, parameter]);
+  }, [selectedItemsArray, customer_id, parameter, unit]);
 
   useEffect(() => {
     // Calculate the grand total when items change

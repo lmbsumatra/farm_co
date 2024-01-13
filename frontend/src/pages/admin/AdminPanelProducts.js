@@ -3,15 +3,34 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 import "../../components/styles.css";
+import { Dropdown } from "react-bootstrap";
+import imgNotAvailable from "../../assets/images/others/img-not-available.svg";
+
 import NavBarAdmin from "../../components/navbar/NavBarAdmin";
 import Footer from "../../components/footer/Footer";
 
 const AdminPanelProducts = () => {
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [products, setProducts] = useState([]);
   const [sortOrder, setSortOrder] = useState("asc");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTrigger, setSearchTrigger] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+
+  // Fetching categories: category_id and category_name, for setting product category
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/categories`);
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     axios
@@ -87,6 +106,24 @@ const AdminPanelProducts = () => {
     handleSearch(); // Always update the filter when the search query changes
   }, [searchQuery, products]);
 
+  const handleCategorySelect = (eventKey, event) => {
+    // Setting category_id, category_name to selectedCategoryObject
+    const selectedCategoryObject = categories.find(
+      (category) => category.category_name === eventKey
+    );
+
+    // If selectedCategoryObject(not null), set product.product_category
+    if (selectedCategoryObject) {
+      setSelectedCategory(eventKey);
+    }
+
+    const filteredProducts = products.filter((product) => {
+      return product.category_name === eventKey;
+    });
+
+    setFilteredProducts(filteredProducts);
+  };
+
   return (
     <>
       <NavBarAdmin />
@@ -94,7 +131,6 @@ const AdminPanelProducts = () => {
       <section className="body-bg">
         <h4 className="section-title">Products</h4>
         <div className="mx-auto overflow-hidden width-80vw">
-          
           <form className="" role="search">
             <input
               className="form-control me-2 d-flex"
@@ -148,20 +184,27 @@ const AdminPanelProducts = () => {
                     <th>Description</th>
                     <th>Image</th>
                     <th className="">
-                      <div
-                        className="d-flex"
-                        onClick={() => handleSort("category_id")}
-                      >
-                        Category
-                        <div className="icon-container">
-                          {sortOrder === "asc" && (
-                            <i className="fa-solid fa-caret-up"></i>
-                          )}
-                          {sortOrder === "desc" && (
-                            <i className="fa-solid fa-caret-down"></i>
-                          )}
-                        </div>
-                      </div>
+                      <Dropdown onSelect={handleCategorySelect}>
+                        <Dropdown.Toggle
+                          variant="secondary"
+                          id="category-dropdown"
+                        >
+                          {selectedCategory
+                            ? `${selectedCategory}`
+                            : "Category"}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                          {categories.map((category) => (
+                            <Dropdown.Item
+                              key={category.category_id}
+                              eventKey={category.category_name}
+                            >
+                              {category.category_name}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
                     </th>
                     <th className="">
                       <div
@@ -208,11 +251,19 @@ const AdminPanelProducts = () => {
                       <td>{product.product_name}</td>
                       <td>{product.description}</td>
                       <td>
-                        <img
-                          src={`http://localhost:5000/images/products/${product.image}`}
-                          alt={product.name}
-                          style={{ width: "50px" }}
-                        />
+                        {product.image != null ? (
+                          <img
+                            src={`http://localhost:5000/images/products/${product.image}`}
+                            alt={product.name}
+                            style={{ width: "50px" }}
+                          />
+                        ) : (
+                          <img
+                            src={imgNotAvailable}
+                            alt={product.product_name}
+                            style={{ height: "30px" }}
+                          />
+                        )}
                       </td>
                       <td>{product.category_name}</td>
                       <td>{product.price}</td>

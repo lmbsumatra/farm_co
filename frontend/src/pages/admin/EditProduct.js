@@ -217,15 +217,17 @@ const EditProduct = () => {
               <div className="col-md-3">
                 <label>Image</label>
                 <div className="imgprev">
-                  {currentImage ? (
-                    <img
-                      className="card imgprev"
-                      src={imgPreview}
-                      alt="Product preview"
-                    />
-                  ) : (
-                    <i class="fa-solid fa-camera"></i>
-                  )}
+                {currentImage ? (
+                  <img
+                    className="card imgprev"
+                    src={imgPreview}
+                    alt="Product preview"
+                  />
+                ) : (
+                  <div className="card d-flex justify-content-center align-items-center imgprev">
+                    <i className="fa-solid fa-camera"></i>
+                  </div>
+                )}
                 </div>
                 <div className="custom-file">
                   <input

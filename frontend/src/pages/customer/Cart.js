@@ -18,7 +18,7 @@ const Cart = () => {
 
   const auth = useUserAuth();
   const customer_id = auth.user.customer_id;
-console.log(auth.user)
+  console.log(auth.user);
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -106,13 +106,23 @@ console.log(auth.user)
                       <td>₱ {item.total}</td>
 
                       <td>
-                        <button
+                        {/* <button
                           type="button"
                           className="btn btn-outline-danger"
                           onClick={() => handleDelete(item.cart_item_id)}
                         >
                           Delete
-                        </button>
+                        </button> */}
+                        <a
+                          style={{
+                            color: "#b60c0c",
+                            fontSize: "25px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleDelete(item.cart_item_id)}
+                        >
+                          <i className="fas fa-trash-alt"></i>
+                        </a>
                       </td>
                     </tr>
                   ))}

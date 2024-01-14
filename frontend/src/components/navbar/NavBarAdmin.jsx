@@ -2,9 +2,10 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { useAdminAuth } from "../../pages/context/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const NavBarAdmin = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const auth = useAdminAuth();
 
@@ -53,27 +54,34 @@ const NavBarAdmin = () => {
           {/* Menu Bar */}
           <Navbar.Collapse id="navbar-nav">
             <Nav className="col-lg-10 mx-auto align-items-center">
-              <Nav.Link href={"/admin-panel"} className="me-2 my-3">
+              <Nav.Link
+                href={"/admin-panel"}
+                className={`me-2 my-3 ${
+                  location.pathname === "/admin-panel"
+                    ? "active"
+                    : ""
+                }`}
+              >
                 Panel
               </Nav.Link>
 
               <Nav.Link
                 href={auth.admin ? `/admin-panel-products` : "/admin-login"}
-                className="me-2"
+                className={`me-2 my-3 ${location.pathname ===  "/admin-panel-products" ? "active" : ""}`}
               >
                 Products
               </Nav.Link>
 
               <Nav.Link
                 href={auth.admin ? `/admin-panel-orders` : "/admin-login"}
-                className="me-2"
+                className={`me-2 my-3 ${location.pathname ===  "/admin-panel-orders" ? "active" : ""}`}
               >
                 Orders
               </Nav.Link>
 
               <Nav.Link
                 href={auth.admin ? `/admin-panel-customers` : "/admin-login"}
-                className="me-2"
+                className={`me-2 my-3 ${location.pathname ===  "/admin-panel-customers" ? "active" : ""}`}
               >
                 Customers
               </Nav.Link>

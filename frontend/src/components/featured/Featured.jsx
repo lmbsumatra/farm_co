@@ -138,12 +138,14 @@ const Featured = () => {
         </nav>
         <Carousel>
           {groupedProducts.map((set, setIndex) => (
-            <Carousel.Item key={setIndex} className="">
-              <div className="row justify-content-evenly">
+            <Carousel.Item key={setIndex} className=""
+            >
+              <div className="row justify-content-evenly product-shadow">
                 {set.map((product) => (
                   <div
                     key={product.product_id}
                     className="card col-lg-3 col-md-4 col-sm-12 p-0 overflow-hidden product-card"
+                    
                   >
                     <Link
                       to={`/product/${product.product_id}`}

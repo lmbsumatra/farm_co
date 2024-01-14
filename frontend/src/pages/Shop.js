@@ -39,49 +39,63 @@ const Shop = () => {
   return (
     <div>
       <NavBar />
-      <section className="body-bg">
+      <section id="Shop" className="body-bg">
         <h4 className="section-title">Products</h4>
         <div className="container-fluid">
           <div className="row justify-content-evenly">
             {products.map((product) => (
               <div
-              className="card col-3 p-0 overflow-hidden product-card"
-              key={product.product_id}
-            >
-              <Link to={`/product/${product.product_id}`} className="no-decor">
-              {product.image != null ? (
-                  <img
-                    src={`http://localhost:5000/images/products/${product.image}`}
-                    className="card-img-top img-fluid img-cover"
-                    alt={product.product_name}
-                    style={{ height: "10rem", objectFit: "cover" }}
-                  />
-                ) : (
-                  <div className="d-flex justify-content-center align-items-center imgprev"
-                  style={{ height: "10rem"}}>
-                    <img
-                    src={imgNotAvailable}
-                    alt={product.product_name}
-                    style={{ height: "30px" }}
-                  />
-                  </div>
-                )}
-                <div className="card-body no-spacing p-2">
-                  <h6 className="card-title">{product.product_name}</h6>
-                  <p className="">{product.description}</p>
-                  <p className="price">₱ {product.price}</p>
-                </div>
-              </Link>
-              <div className="p-2">
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  onClick={handleAdd}
+                className="card product-card col-3 p-0 overflow-hidden"
+                key={product.product_id}
+              >
+                <Link
+                  to={`/product/${product.product_id}`}
+                  className="no-decor"
                 >
-                  Add to Cart
-                </button>
+                  {product.image != null ? (
+                    <div style={{ height: "10rem", position: "relative" }}>
+                      <div
+                        className="product-card-bg-s"
+                        style={{
+                          backgroundImage: `url(http://localhost:5000/images/products/${product.image})`,
+                        }}
+                      ></div>
+
+                      <img
+                        src={`http://localhost:5000/images/products/${product.image}`}
+                        className="product-card-img"
+                        alt={product.product_name}
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className="d-flex justify-content-center align-items-center imgprev"
+                    >
+                      <img
+                        src={imgNotAvailable}
+                        alt={product.product_name}
+                        style={{ height: "30px" }}
+                      />
+                    </div>
+                  )}
+                  <div className="card-body elements">
+                    <div className="d-flex justify-content-between">
+                      <h5 className="card-title">{product.product_name}</h5>
+                      <h5 className="price">₱ {product.price}</h5>
+                    </div>
+
+                    <p className="subtitle">{product.category_name}</p>
+                    <p className="">{product.description}</p>
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={handleAdd}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </Link>
               </div>
-            </div>
             ))}
           </div>
         </div>

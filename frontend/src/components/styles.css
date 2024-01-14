@@ -14,11 +14,10 @@
 }
 
 #Navbar .img-profile {
-  width: 50px ;
+  width: 50px;
   height: 50px;
   border: #138844 3px solid;
   padding: 0;
-
 }
 
 /* Hero Section */
@@ -29,23 +28,109 @@
 }
 #SubHero {
   background-color: rgb(255, 255, 255);
+  box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
+    rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 
 .brand-feature {
   font-size: 30px;
-  color:#138844;
+  color: #138844;
   width: 100px;
 }
 
 .sub-hero-item {
   width: 500px;
-  border: 1px solid #138844;
   border-radius: 5px;
   padding: 10px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  margin: 10px 0;
 }
 
+/* ----------------------------------------------------------------------------------------- */
+/* Small Product Card */
+#Shop .product-card,
+#Featured .product-card {
+  border-color: #ffffff;
+  width: 275px;
+  height: 325px;
+  margin: 10px;
+}
+
+#Shop .product-card:hover,
+#Featured .product-card:hover {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  transition: 0.2s ease;
+}
+
+#Shop .product-card-bg-s,
+#Featured .product-card-bg-s {
+  filter: blur(40px);
+  height: 100%;
+  background-size: cover;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+
+#Shop .product-card-img,
+#Featured .product-card-img {
+  height: 100px;
+  width: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* Edit Product, Shop*/
+.imgprev {
+  height: 150px !important;
+  min-width: 150px !important;
+  object-fit: contain;
+  z-index: 2;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: rgba(36, 36, 36, 0.3);
+  font-weight: bold;
+}
+
+#Shop .elements,
+#Featured .elements {
+  line-height: 1.2;
+}
+#Shop .price, #Featured .price {
+  font-size: 18px;
+  color: #138844;
+  font-weight: bold;
+}
+
+/* -------------------------------------------------------------------------------- */
+/* Featured */
+#Featured .btn-tertiary.active {
+  border-bottom: #111111 2px solid;
+  color: rgb(85, 85, 85);
+}
+
+#Featured .btn-tertiary {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+}
+
+
 /* General */
+html {
+  background-color: #138844;
+  padding: 0;
+  margin: 0;
+}
+
 section {
   padding: 10px;
 }
@@ -88,8 +173,22 @@ section {
   background-color: rgb(255, 255, 255);
 }
 
-
+.table-container {
+  width: 80vw;
+  overflow-x: auto;
+  margin: auto;
+}
+/* Testimonies */
+.card-hw {
+  width: 18rem !important;
+  height: 15rem !important;
+}
 /* Footer */
+#Footer,
+#Footer a {
+  background-color: #138844;
+  color: white;
+}
 .socials-logo {
   width: 50px;
   height: 50px;
@@ -100,28 +199,11 @@ section {
   height: 15px;
   margin-right: 10px;
 }
-
-.table-container {
-  width: 80vw;
-  overflow-x: auto;
-  margin: auto;
-}
-
-.card-hw {
-  width: 18rem;
-  height: 15rem;
-}
-
 .product-card {
   width: 15rem;
   height: 20rem;
   margin-bottom: 20px;
   transition: filter 0.3s ease;
-}
-
-.product-card:hover {
-  filter: brightness(0.95);
-  border-color: #138844;
 }
 
 .no-decor {
@@ -138,14 +220,6 @@ section {
   line-height: 0.8;
 }
 
-.price {
-  font-size: 1rem;
-  color: #138844;
-  font-weight: 600;
-}
-
-
-
 .star-filled {
   color: #e1aa14;
 }
@@ -154,18 +228,7 @@ section {
   background-color: #46f890;
 }
 
-.imgprev {
-  height: 100px;
-  width: auto;
-}
-
-.ter-btn {
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px;
-}
+/* ------------------------------------------------------------------------------ */
 
 .product-image {
   width: 100% !important;
@@ -180,4 +243,3 @@ section {
   align-items: center;
   font-size: 15px;
 }
-

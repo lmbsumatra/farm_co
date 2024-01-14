@@ -72,8 +72,8 @@ const EditProduct = () => {
 
         // Initializing current product values before user applies changes: for image
         setCurrentImage(fetchedProduct.image);
-        setImgPreview(
-          `http://localhost:5000/images/products/${fetchedProduct.image}`
+        setImgPreview(fetchProduct.image ?
+          `http://localhost:5000/images/products/${fetchedProduct.image}` : ""
         );
 
         // Initializing current product values before user applies changes: for category
@@ -162,7 +162,7 @@ const EditProduct = () => {
       formData.append("product_category", product.product_category);
       formData.append("product_isfeatured", product.product_isfeatured ? 1 : 0);
 
-      const res = await axios.put(`http://localhost:5000/products/${product_id}`, formData);
+      await axios.put(`http://localhost:5000/products/${product_id}`, formData);
 
       // Back to the admin products page
       navigate("/admin-panel-products");
@@ -217,7 +217,7 @@ const EditProduct = () => {
               <div className="col-md-3">
                 <label>Image</label>
                 <div className="imgprev">
-                {currentImage ? (
+                {imgPreview ? (
                   <img
                     className="card imgprev"
                     src={imgPreview}

@@ -65,10 +65,8 @@ const Checkout = () => {
             unit_weight: productData.unit_weight,
           };
 
-          console.log("this", productData.unit_weight);
-
-          setItems([newItemData]); // Set as an array for consistency
-          setBuyNow(true); // Set to true for "Buy Now" scenario // Set to true for "Buy Now" scenario
+          setItems([newItemData]);
+          setBuyNow(true);
         } else if (parameter === "selectedItems") {
           const cartItems = await axios.get(
             `http://localhost:5000/cart/${customer_id}`
@@ -93,26 +91,31 @@ const Checkout = () => {
     const newGrandTotal = items.reduce((total, item) => total + item.total, 0);
     setGrandTotal(newGrandTotal);
   }, [items]);
-
-  const handleCheckout = async () => {
-    try {
-      const response = await axios.post("http://localhost:5000/checkout", {
-        customer_id,
-        grandTotal,
-        selectedItemsArray,
-        items,
-        buyNow,
-        selectedPaymentMethod
+  
+// STRIPE
+  const handleCheckout = () => {
+    fetch("http://localhost:5000/create-checkout-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+      body: JSON.stringify({
+        items: [{ id: 1, quantity: 100, price: 100, name: "kitkat" }],
+      }),
+    })
+      .then((res) => {
+        if (res.ok) return res.json();
+        return res.json().then((json) => Promise.reject(json));
+      })
+      .then(({url})=>{
+        window.location = url
+      })
+      .catch((e) => {
+        console.log(e.error);
       });
-
-      console.log("Server response:", response.data);
-
-      navigate(`/orders`);
-    } catch (error) {
-      console.error("Error during checkout:", error);
-    }
   };
-
+  
   const handleEditProfile = () => {
     navigate("/edit-profile");
   };

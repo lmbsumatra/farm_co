@@ -50,6 +50,7 @@ SELECT * FROM orders_items;
 ALTER TABLE farmco.orders ADD orderee_name VARCHAR(255);
 ALTER TABLE orders ADD orderee_address TEXT;
 ALTER TABLE orders ADD orderee_email VARCHAR(255);
+ALTER TABLE orders ADD mode_of_payment INT;
 
 use farmco;
 UPDATE orders o
@@ -68,3 +69,12 @@ DELETE FROM orders
 WHERE customer_id IS NULL
     AND orderee_address IS NULL
     AND orderee_email IS NULL;
+
+DELETE FROM order_items
+WHERE order_id IN (
+    SELECT order_id
+    FROM orders
+    WHERE customer_id IS NULL
+      AND orderee_address IS NULL
+      AND orderee_email IS NULL
+);

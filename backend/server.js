@@ -84,7 +84,7 @@ app.post("/products", uploadProductImage.single("image"), (req, res) => {
     req.body.product_category,
     req.body.product_isfeatured,
     req.file.filename,
-    req.body.product_unit
+    req.body.product_unit,
   ];
 
   db.query(query, [values], (err, data) => {
@@ -169,67 +169,40 @@ app.get("/order-items/:order_id", (req, res) => {
   const orderId = req.params.order_id;
 
   // Query to get order items
-  const orderItemsQuery = `
-    SELECT *
-    FROM order_items oi
-    JOIN products p ON p.product_id = oi.product_id
-    WHERE oi.order_id = ?`;
+  const query = `
+  SELECT
+    o.orderee_name,
+    o.orderee_address,
+    o.orderee_email,
+    oi.*,
+    p.product_name,
+    o.status_id,
+    s.status_name,
+    o.grand_total,
+    o.mode_of_payment,
+    p.image,
+    p.price
 
-  // Query to get customer details
-  const customerDetailsQuery = `
-    SELECT * 
-    FROM customers c 
-    JOIN orders o ON o.customer_id = c.customer_id
-    WHERE o.order_id = ?;
-  `;
+  FROM order_items oi
+  JOIN products p ON p.product_id = oi.product_id
+  JOIN orders o ON o.order_id = oi.order_id
+  JOIN status s ON o.status_id = s.status_id
+  WHERE oi.order_id = ?;
+`;
 
-  // Query to get order status and grand total based on order_id
-  const statusAndTotalQuery = `
-    SELECT
-      o.status_id,
-      s.status_name,
-      o.grand_total
-    FROM orders o
-    JOIN status s ON o.status_id = s.status_id
-    WHERE o.order_id = ?;
-  `;
-
-  db.query(orderItemsQuery, [orderId], (errOrderItems, resultsOrderItems) => {
-    if (errOrderItems) {
-      console.error(errOrderItems);
+  db.query(query, [orderId], (err, results) => {
+    if (err) {
+      console.error(err);
       return res.status(500).send("Internal Server Error");
     }
 
-    db.query(
-      customerDetailsQuery,
-      [orderId],
-      (errCustomerDetails, resultsCustomerDetails) => {
-        if (errCustomerDetails) {
-          console.error(errCustomerDetails);
-          return res.status(500).send("Internal Server Error");
-        }
-
-        db.query(
-          statusAndTotalQuery,
-          [orderId],
-          (errStatus, resultsStatusAndTotal) => {
-            if (errStatus) {
-              console.error(errStatus);
-              return res.status(500).send("Internal Server Error");
-            }
-
-            const responseData = {
-              orderItems: resultsOrderItems,
-              currentStatus: resultsStatusAndTotal[0].status_name,
-              grandTotal: resultsStatusAndTotal[0].grand_total,
-              customerDetails: resultsCustomerDetails,
-            };
-
-            res.json(responseData);
-          }
-        );
-      }
-    );
+    // const responseData = {
+    //   orderItems: results,
+    //   currentStatus: results[0].status_name,
+    //   grandTotal: results[0].grand_total,
+    //   customerDetails: results[0], // Assuming you want all customer details in the response
+    // };
+    res.json(results);
   });
 });
 
@@ -305,7 +278,6 @@ app.delete("/customers/:customer_id", (req, res) => {
   });
 });
 
-
 //////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -370,20 +342,36 @@ app.post("/customers", uploadProductImage.none(), (req, res) => {
 // Create order: transfer cart item to order items, update product stock quantities, delete selected cart items, [customer]
 app.post("/checkout", async (req, res) => {
   try {
-    const { customer_id, grandTotal, items, buyNow } = req.body;
+    const { customer_id, grandTotal, items, buyNow, selectedPaymentMethod } =
+      req.body;
 
     const createOrder = async () => {
       return new Promise((resolve, reject) => {
-        const query =
-          "INSERT INTO orders (customer_id, grand_total, status_id) VALUES (?, ?, 1)";
+        const query = `
+        INSERT INTO orders (customer_id, grand_total, status_id, order_date, orderee_name, orderee_address, orderee_email, mode_of_payment)
+        SELECT
+            c.customer_id,
+            ? AS grand_total,
+            ? AS status_id,
+            NOW() AS order_date,
+            c.customer_name AS orderee_name,
+            c.address AS orderee_address,
+            c.email AS orderee_email,
+            ? AS mode_of_payment
+        FROM customers c
+        WHERE c.customer_id = ?`;
 
-        db.query(query, [customer_id, grandTotal], (error, results) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(results.insertId);
+        db.query(
+          query,
+          [grandTotal, 1, selectedPaymentMethod, customer_id],
+          (error, results) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(results.insertId);
+            }
           }
-        });
+        );
       });
     };
 
@@ -406,13 +394,18 @@ app.post("/checkout", async (req, res) => {
       customer_id,
       cartItemIds
     ) => {
+      // Generate the placeholders based on the length of cartItemIds
+      const placeholders = Array(cartItemIds.length).fill("?").join(", ");
+
       db.query(
         "INSERT INTO order_items (order_id, product_id, quantity, total) " +
           "SELECT ?, ci.product_id, ci.quantity, ci.total " +
           "FROM carts c " +
           "JOIN cart_items ci ON c.cart_id = ci.cart_id " +
-          "WHERE c.customer_id = ? AND ci.cart_item_id IN (?)",
-        [orderId, customer_id, cartItemIds]
+          "WHERE c.customer_id = ? AND ci.cart_item_id IN (" +
+          placeholders +
+          ")",
+        [orderId, customer_id, ...cartItemIds]
       );
     };
 
@@ -618,3 +611,4 @@ app.delete("/cart/:cart_item_id", (req, res) => {
     return res.json("Successful: Deleted cart item");
   });
 });
+

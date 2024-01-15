@@ -2,7 +2,7 @@
 import React from "react";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 // import { AuthProvider } from './context/Authentication';
-import { createRoot } from "react-dom/client";
+import { createRoot } from 'react-dom/client';
 
 // Public pages
 import Home from "./pages/Home";
@@ -42,8 +42,8 @@ const App = () => (
       <UserAuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/success" Component={Success} />
-            <Route path="/cancel" Component={Cancel} />
+          <Route path="/success" Component={Success} />
+          <Route path="/cancel" Component={Cancel} />
             {/* public route */}
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
@@ -120,7 +120,7 @@ const App = () => (
               }
             />
             <Route
-              path="/checkout"
+              path="/checkout/:sessionId"
               element={
                 <RequireUserAuth>
                   <Checkout />
@@ -152,24 +152,21 @@ const App = () => (
               }
             />
 
-            {/* STRIPE */}
+            {/* tama na bhie, d q na keriiiiii getgetawwwwwww */}
             <Route
-              path="/checkout/:sessionId"
+              path="/not-available"
               element={
-                <RequireUserAuth>
-                  <Checkout />
-                </RequireUserAuth>
+                  <NotAvailable />
               }
             />
-
-            {/* tama na bhie, d q na keriiiiii getgetawwwwwww */}
-            <Route path="/not-available" element={<NotAvailable />} />
           </Routes>
         </BrowserRouter>
       </UserAuthProvider>
     </AdminAuthProvider>
   </div>
 );
+
+
 
 const root = createRoot(document.getElementById("root"));
 

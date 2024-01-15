@@ -18,7 +18,9 @@ const Cart = () => {
 
   const auth = useUserAuth();
   const customer_id = auth.user.customer_id;
-  console.log(auth.user);
+  const [grandTotal, setGrandTotal] = useState(0);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState("CashOnDelivery");
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -49,7 +51,6 @@ const Cart = () => {
       ...prevSelectedItems,
       [cart_item_id]: !prevSelectedItems[cart_item_id],
     }));
-    console.log(cart_item_id);
   };
 
   const handleCheckout = () => {
@@ -62,87 +63,163 @@ const Cart = () => {
     navigate(`/checkout?selectedItems=${selectedItemsArray.join(",")}`);
   };
 
+  useEffect(() => {
+    // Calculate the grand total when items change
+    const newGrandTotal = items.reduce((total, item) => {
+      if (selectedItems[item.cart_item_id]) {
+        return total + item.total;
+      }
+      return total;
+    }, 0);
+    setGrandTotal(newGrandTotal);
+  }, [selectedItems, items]);
+
   return (
     <>
       <NavBar />
       <section className="body-bg">
         <div>
           <h4 className="section-title">My Cart</h4>
-          <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
-            <div className="table-responsive">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <td>Select</td>
-                    <td>Image</td>
-                    <td>Product</td>
-                    <td>Quantity</td>
-                    <td>Price</td>
-                    <td>Total</td>
-                    <td></td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((item) => (
-                    <tr key={item.cart_item_id}>
-                      <td>
-                        <input
-                          type="checkbox"
-                          onChange={() =>
-                            handleCheckboxChange(item.cart_item_id)
-                          }
-                        />
-                      </td>
-                      <td>
-                        <img
-                          src={`http://localhost:5000/images/products/${item.image}`}
-                          alt={item.name}
-                          style={{ width: "50px" }}
-                        />
-                      </td>
-                      <td>{item.product_name}</td>
-                      <td>{item.quantity}</td>
-                      <td>₱ {item.price}</td>
-                      <td>₱ {item.total}</td>
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-6 col-md-10 col-sm-12 mx-auto p-0">
+                <div className="table-responsive bg-white rounded-2">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th colSpan={3}>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {items.map((item) => (
+                        <tr key={item.cart_item_id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              onChange={() =>
+                                handleCheckboxChange(item.cart_item_id)
+                              }
+                            />
+                          </td>
+                          <td>
+                            <img
+                              src={`http://localhost:5000/images/products/${item.image}`}
+                              alt={item.name}
+                              style={{ width: "50px" }}
+                            />
+                          </td>
+                          <td>{item.product_name}</td>
+                          <td>{item.quantity}</td>
+                          <td>
+                            ₱ {item.price} {item.unit_weight}
+                          </td>
+                          <td>₱ {item.total}</td>
 
-                      <td>
-                        {/* <button
+                          <td>
+                            {/* <button
                           type="button"
                           className="btn btn-outline-danger"
                           onClick={() => handleDelete(item.cart_item_id)}
                         >
                           Delete
                         </button> */}
-                        <a
-                          style={{
-                            color: "#b60c0c",
-                            fontSize: "25px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleDelete(item.cart_item_id)}
-                        >
-                          <i className="fas fa-trash-alt"></i>
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-                  <tr>
-                    <td colSpan="7">
-                      <button
-                        type="button"
-                        className="btn btn-success"
-                        onClick={handleCheckout}
-                        disabled={
-                          Object.values(selectedItems).filter(Boolean)
-                            .length === 0
-                        }
-                      >
-                        Checkout
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                            <a
+                              style={{
+                                color: "#b60c0c",
+                                fontSize: "25px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => handleDelete(item.cart_item_id)}
+                            >
+                              <i className="fas fa-trash-alt"></i>
+                            </a>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="bg-white p-3 rounded-2 my-2">
+                  <p>
+                    Delivery Information: Standard Delivery takes
+                    <strong> 2-4 working days</strong>, but you can opt for
+                    <strong> Next Day Delivery</strong> during Checkout for
+                    quicker delivery (Order before 10 pm). <br />
+                    <br />
+                    Next Day Delivery is restricted for delivery effieciency.
+                    Deliveries are made Monday to Friday, excluding public
+                    holidays. <br />
+                    <br />
+                    Orders placed after 10 pm on Friday or over the weekend will
+                    be dispatched on Monday, excluding public holidays. Returns
+                    are free, just message us. <br />
+                    <br />
+                    Note that some large items will be delivered in their
+                    original packing, which may display images or details of the
+                    contents.
+                  </p>
+                </div>
+              </div>
+              <div className="col-lg-5 col-md-10 col-sm-12 bg-white rounded-2 mx-auto h-100 p-3">
+                <p className="">Mode of Payment</p>
+                <div className="d-flex">
+                  <div className="form-check bg-gray px-5 py-3 rounded-2 m-1">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="cod"
+                      id="cod"
+                      checked={selectedPaymentMethod === "CashOnDelivery"}
+                      onChange={() =>
+                        setSelectedPaymentMethod("CashOnDelivery")
+                      }
+                    />
+                    <label className="form-check-label" htmlFor="cod">
+                      Cash on Delivery
+                    </label>
+                  </div>
+                  <div className="form-check bg-gray px-5 py-3 rounded-2 m-1">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="paynow"
+                      id="paynow"
+                      checked={selectedPaymentMethod === "PayNow"}
+                      onChange={() => setSelectedPaymentMethod("PayNow")}
+                    />
+                    <label className="form-check-label" htmlFor="paynow">
+                      Pay Now
+                    </label>
+                  </div>
+                </div>
+
+                {selectedPaymentMethod === "PayNow" ? (
+                  <div className="card d-flex justify-content-center align-items-center imgprev">
+                    Pay now is available with Gcash.
+                  </div>
+                ) : (
+                  <div className="card d-flex justify-content-center align-items-center imgprev">
+                    Cash on delivery is available with physical money.
+                  </div>
+                )}
+                <p>Grand Total: {grandTotal}</p>
+                <p>Delivery Fee: </p>
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={handleCheckout}
+                  disabled={
+                    Object.values(selectedItems).filter(Boolean).length === 0
+                  }
+                >
+                  Checkout
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import { useUserAuth } from "../context/useAuth";
 
 // Ui imports
 import "../../components/styles.css";
+import QRCode from "../../assets/images/others/gcash.jpg";
 
 // Components
 import NavBar from "../../components/navbar/NavBar";
@@ -18,6 +19,8 @@ const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [buyNow, setBuyNow] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState("CashOnDelivery");
 
   const auth = useUserAuth();
   const customer_id = auth.user.customer_id;
@@ -59,7 +62,10 @@ const Checkout = () => {
             price: productData.price,
             image: productData.image,
             product_name: productData.product_name,
+            unit_weight: productData.unit_weight,
           };
+
+          console.log("this", productData.unit_weight);
 
           setItems([newItemData]); // Set as an array for consistency
           setBuyNow(true); // Set to true for "Buy Now" scenario // Set to true for "Buy Now" scenario
@@ -115,72 +121,118 @@ const Checkout = () => {
       <NavBar />
       <section className="body-bg">
         <div>
-          <h2 className="section-title">Checkout</h2>
-          <div className=" width-80vw mx-auto bg-white p-3 rounded-2">
-            <h5>Order Details</h5>
-            {customerDetails.length > 0 && (
-              <div className="card">
-                <div className="m-2">
-                  <p>Name: {customerDetails[0].customer_name}</p>
-                  <p>Address: {customerDetails[0].address}</p>
-                  <p>Email: {customerDetails[0].email}</p>
-                  <button
-                    className="btn btn-outline-secondary"
-                    onClick={handleEditProfile}
-                  >
-                    Edit Details
-                  </button>
+          <h4 className="section-title">Checkout</h4>
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-6 col-md-10 col-sm-12 mx-auto bg-white p-3 rounded-2 my-2">
+                <h5>Order Details</h5>
+                {customerDetails.length > 0 && (
+                  <div className="card">
+                    <div className="m-2">
+                      <p>Name: {customerDetails[0].customer_name}</p>
+                      <p>Address: {customerDetails[0].address}</p>
+                      <p>Email: {customerDetails[0].email}</p>
+                      <button
+                        className="btn btn-outline-secondary"
+                        onClick={handleEditProfile}
+                      >
+                        Edit Details
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="table-responsive">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th colSpan={2}>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {items.map((item) => (
+                        <tr key={item.cart_item_id}>
+                          <td>
+                            <img
+                              src={`http://localhost:5000/images/products/${item.image}`}
+                              alt={item.name}
+                              style={{ width: "50px" }}
+                            />
+                          </td>
+                          <td>{item.product_name}</td>
+                          <td>{item.quantity}</td>
+                          <td>
+                            ₱ {item.price} {item.unit_weight}
+                          </td>
+                          <td>₱ {item.total}</td>
+                        </tr>
+                      ))}
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Grand Total:</td>
+                        <td>₱ {grandTotal.toFixed(2)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
-            )}
+              <div className="col-lg-5 col-md-10 col-sm-12 bg-white rounded-2 mx-auto h-100 p-3 my-2">
+                <p className="">Mode of Payment</p>
+                <div className="d-flex">
+                  <div className="form-check bg-gray px-5 py-3 rounded-2 m-1">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="cod"
+                      id="cod"
+                      checked={selectedPaymentMethod === "CashOnDelivery"}
+                      onChange={() =>
+                        setSelectedPaymentMethod("CashOnDelivery")
+                      }
+                    />
+                    <label className="form-check-label" htmlFor="cod">
+                      Cash on Delivery
+                    </label>
+                  </div>
+                  <div className="form-check bg-gray px-5 py-3 rounded-2 m-1">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="paynow"
+                      id="paynow"
+                      checked={selectedPaymentMethod === "PayNow"}
+                      onChange={() => setSelectedPaymentMethod("PayNow")}
+                    />
+                    <label className="form-check-label" htmlFor="paynow">
+                      Pay Now
+                    </label>
+                  </div>
+                </div>
 
-            <div className="table-responsive">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <td>Image</td>
-                    <td>Product</td>
-                    <td>Quantity</td>
-                    <td>Price</td>
-                    <td>Total</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((item) => (
-                    <tr key={item.cart_item_id}>
-                      <td>
-                        <img
-                          src={`http://localhost:5000/images/products/${item.image}`}
-                          alt={item.name}
-                          style={{ width: "50px" }}
-                        />
-                      </td>
-                      <td>{item.product_name}</td>
-                      <td>{item.quantity}</td>
-                      <td>₱ {item.price}</td>
-                      <td>₱ {item.total}</td>
-                    </tr>
-                  ))}
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>Grand Total:</td>
-                    <td>₱ {grandTotal.toFixed(2)}</td>
-                  </tr>
-                  <tr>
-                    <td colSpan="7">
-                      <button
-                        type="button"
-                        className="btn btn-success"
-                        onClick={handleCheckout}
-                      >
-                        Order
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                {selectedPaymentMethod === "PayNow" ? (
+                  <div className="card d-flex justify-content-center align-items-center imgprev">
+                    <img src={QRCode} className="imgprev" />
+                  </div>
+                ) : (
+                  <div className="card d-flex justify-content-center align-items-center imgprev">
+                    Cash on delivery is available with physical money.
+                  </div>
+                )}
+                <p>Grand Total: {grandTotal}</p>
+                <p>Delivery Fee: </p>
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={handleCheckout}
+                >
+                  Confirm Order
+                </button>
+              </div>
             </div>
           </div>
         </div>

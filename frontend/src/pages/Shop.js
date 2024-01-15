@@ -68,9 +68,7 @@ const Shop = () => {
                       />
                     </div>
                   ) : (
-                    <div
-                      className="d-flex justify-content-center align-items-center imgprev"
-                    >
+                    <div className="d-flex justify-content-center align-items-center imgprev">
                       <img
                         src={imgNotAvailable}
                         alt={product.product_name}
@@ -84,7 +82,10 @@ const Shop = () => {
                       <h5 className="price">₱ {product.price}</h5>
                     </div>
 
-                    <p className="subtitle">{product.category_name}</p>
+                    <div className="d-flex justify-content-between">
+                      <p className="subtitle">{product.category_name}</p>
+                      <p className="subtitle">{product.unit_weight}</p>
+                    </div>
                     <p className="">{product.description}</p>
                     <button
                       type="button"

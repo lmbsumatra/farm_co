@@ -46,3 +46,25 @@ ALTER TABLE order_items MODIFY COLUMN quantity DECIMAL(10, 2);
 SELECT * FROM farmco.orders;
 
 SELECT * FROM orders_items;
+
+ALTER TABLE farmco.orders ADD orderee_name VARCHAR(255);
+ALTER TABLE orders ADD orderee_address TEXT;
+ALTER TABLE orders ADD orderee_email VARCHAR(255);
+
+use farmco;
+UPDATE orders o
+JOIN customers c ON o.customer_id = c.customer_id
+SET o.orderee_name = c.customer_name;
+
+UPDATE orders o
+JOIN customers c ON o.customer_id = c.customer_id
+SET o.orderee_address = c.address;
+
+UPDATE orders o
+JOIN customers c ON o.customer_id = c.customer_id
+SET o.orderee_email = c.email;
+
+DELETE FROM orders
+WHERE customer_id IS NULL
+    AND orderee_address IS NULL
+    AND orderee_email IS NULL;

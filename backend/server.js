@@ -471,7 +471,8 @@ app.get("/cart/:customer_id", (req, res) => {
       c.total,
       cu.customer_name,
       cu.address,
-      cu.email
+      cu.email,
+      p.unit_weight
     FROM cart_items c
       JOIN products p ON c.product_id = p.product_id
       JOIN carts ca ON c.cart_id = ca.cart_id

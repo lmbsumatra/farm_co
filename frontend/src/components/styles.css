@@ -41,9 +41,11 @@
 
 .sub-hero-item {
   width: 500px;
-  border-radius: 5px;
   padding: 10px;
-  margin: 10px 0;
+}
+
+#SubHero .border-right {
+  border-right: #138844 2px solid;
 }
 
 /* ----------------------------------------------------------------------------------------- */
@@ -54,6 +56,9 @@
   width: 275px;
   height: 325px;
   margin: 10px;
+  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 #Shop .product-card:hover,
@@ -161,7 +166,7 @@ section {
 }
 
 .body-bg {
-  background-color: rgb(245, 245, 245);
+  background-color: rgb(238, 238, 238);
 }
 .body-bg-img {
   background-image: url("../images/background/body-bg-img.jpg");
@@ -171,6 +176,9 @@ section {
 
 .bg-white {
   background-color: rgb(255, 255, 255);
+}
+.bg-gray {
+  background-color: rgb(241, 241, 241);
 }
 
 .table-container {

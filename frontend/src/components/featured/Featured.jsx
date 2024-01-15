@@ -8,7 +8,7 @@ import Carousel from "react-bootstrap/Carousel";
 import "../styles.css";
 import imgNotAvailable from "../../assets/images/others/img-not-available.svg";
 import { useMediaQuery } from "react-responsive";
-import { Navbar, Nav } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
 
 const Featured = () => {
   const [products, setProducts] = useState([]);
@@ -92,9 +92,7 @@ const Featured = () => {
 
   return (
     <section id="Featured">
-      <h4 className="section-title">
-        Products
-      </h4>
+      <h4 className="section-title">Products</h4>
       <div className="container-fluid col-12 ">
         <Nav className="nav justify-content-center">
           {Object.keys(activeFilter).map((key) => (
@@ -112,7 +110,10 @@ const Featured = () => {
           ))}
         </Nav>
 
-        <Carousel className="col-12 justify-content-center">
+        <Carousel
+          className="col-12 justify-content-center"
+          style={{ height: "400px" }}
+        >
           {groupedProducts.map((set, setIndex) => (
             <Carousel.Item key={setIndex}>
               <div className="col-9 mx-auto">
@@ -160,7 +161,10 @@ const Featured = () => {
                             <h5 className="price">₱ {product.price}</h5>
                           </div>
 
-                          <p className="subtitle">{product.category_name}</p>
+                          <div className="d-flex justify-content-between">
+                            <p className="subtitle">{product.category_name}</p>
+                            <p className="subtitle">{product.unit_weight}</p>
+                          </div>
                           <p className="">{product.description}</p>
                           <button
                             type="button"

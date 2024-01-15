@@ -44,6 +44,17 @@ const AdminPanelOrders = () => {
     setSelectedTab(eventKey);
   };
 
+  const formatDateInWords = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", options);
+  };
+
   return (
     <>
       <NavBarAdmin />
@@ -63,29 +74,28 @@ const AdminPanelOrders = () => {
                   className="card mx-auto overflow-hidden width-80vw my-3"
                 >
                   <div className="row d-flex justify-content-between">
-                    <div className="col-md-4">
+                    <div className="col-12">
                       <div className="card-body">
-                        <h5 className="card-title">
+                        <h5 className="card-title d-flex justify-content-between">
                           Order Id: {order.order_id}
+                          <button
+                            type="button"
+                            className="btn btn-outline-success"
+                            onClick={() => handleClick(order.order_id)}
+                          >
+                            View
+                          </button>
                         </h5>
                         <p className="card-text">
                           Total: ₱ {order.grand_total}
                         </p>
                         <p className="card-text">Status: {order.status_name}</p>
                         <p className="card-text">
-                          Order Date: {order.order_date.split("T")[0]}
+                          Order Date: {formatDateInWords(order.order_date)}
                         </p>
                       </div>
                     </div>
-                    <div className="col-md-2">
-                      <button
-                        type="button"
-                        className="btn btn-outline-success m-2"
-                        onClick={() => handleClick(order.order_id)}
-                      >
-                        View
-                      </button>
-                    </div>
+                    <div className="col-md-2"></div>
                   </div>
                 </div>
               ))}
@@ -100,10 +110,17 @@ const AdminPanelOrders = () => {
                     className="card mx-auto overflow-hidden width-80vw my-3"
                   >
                     <div className="row d-flex justify-content-between">
-                      <div className="col-md-4">
+                      <div className="col-12">
                         <div className="card-body">
-                          <h5 className="card-title">
+                          <h5 className="card-title d-flex justify-content-between">
                             Order Id: {order.order_id}
+                            <button
+                              type="button"
+                              className="btn btn-outline-success"
+                              onClick={() => handleClick(order.order_id)}
+                            >
+                              View
+                            </button>
                           </h5>
                           <p className="card-text">
                             Total: ₱ {order.grand_total}
@@ -112,24 +129,16 @@ const AdminPanelOrders = () => {
                             Status: {order.status_name}
                           </p>
                           <p className="card-text">
-                            Order Date: {order.order_date.split("T")[0]}
+                            Order Date: {formatDateInWords(order.order_date)}
                           </p>
                         </div>
                       </div>
-                      <div className="col-md-2">
-                        <button
-                          type="button"
-                          className="btn btn-outline-success m-2"
-                          onClick={() => handleClick(order.order_id)}
-                        >
-                          View
-                        </button>
-                      </div>
+                      <div className="col-md-2"></div>
                     </div>
                   </div>
                 ))}
             </Tab>
-            
+
             <Tab eventKey="Processing" title="Processing Orders">
               {orders
                 .filter((order) => order.status_name === "Processing")
@@ -139,10 +148,17 @@ const AdminPanelOrders = () => {
                     className="card mx-auto overflow-hidden width-80vw my-3"
                   >
                     <div className="row d-flex justify-content-between">
-                      <div className="col-md-4">
+                      <div className="col-12">
                         <div className="card-body">
-                          <h5 className="card-title">
+                          <h5 className="card-title d-flex justify-content-between">
                             Order Id: {order.order_id}
+                            <button
+                              type="button"
+                              className="btn btn-outline-success"
+                              onClick={() => handleClick(order.order_id)}
+                            >
+                              View
+                            </button>
                           </h5>
                           <p className="card-text">
                             Total: ₱ {order.grand_total}
@@ -151,19 +167,11 @@ const AdminPanelOrders = () => {
                             Status: {order.status_name}
                           </p>
                           <p className="card-text">
-                            Order Date: {order.order_date.split("T")[0]}
+                            Order Date: {formatDateInWords(order.order_date)}
                           </p>
                         </div>
                       </div>
-                      <div className="col-md-2">
-                        <button
-                          type="button"
-                          className="btn btn-outline-success m-2"
-                          onClick={() => handleClick(order.order_id)}
-                        >
-                          View
-                        </button>
-                      </div>
+                      <div className="col-md-2"></div>
                     </div>
                   </div>
                 ))}
@@ -178,10 +186,17 @@ const AdminPanelOrders = () => {
                     className="card mx-auto overflow-hidden width-80vw my-3"
                   >
                     <div className="row d-flex justify-content-between">
-                      <div className="col-md-4">
+                      <div className="col-12">
                         <div className="card-body">
-                          <h5 className="card-title">
+                          <h5 className="card-title d-flex justify-content-between">
                             Order Id: {order.order_id}
+                            <button
+                              type="button"
+                              className="btn btn-outline-success"
+                              onClick={() => handleClick(order.order_id)}
+                            >
+                              View
+                            </button>
                           </h5>
                           <p className="card-text">
                             Total: ₱ {order.grand_total}
@@ -190,19 +205,11 @@ const AdminPanelOrders = () => {
                             Status: {order.status_name}
                           </p>
                           <p className="card-text">
-                            Order Date: {order.order_date.split("T")[0]}
+                            Order Date: {formatDateInWords(order.order_date)}
                           </p>
                         </div>
                       </div>
-                      <div className="col-md-2">
-                        <button
-                          type="button"
-                          className="btn btn-outline-success m-2"
-                          onClick={() => handleClick(order.order_id)}
-                        >
-                          View
-                        </button>
-                      </div>
+                      <div className="col-md-2"></div>
                     </div>
                   </div>
                 ))}

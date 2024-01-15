@@ -23,6 +23,8 @@ const express = require('express');
 const mysql = require('mysql');
 npm install react-responsive
 npm install @stripe/react-stripe-js
+npm install react-chartjs-2 chart.js axios
+
 
 
 const app = express();

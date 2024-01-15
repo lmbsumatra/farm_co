@@ -117,7 +117,14 @@ REFERENCES carts (cart_id)
 ON DELETE CASCADE;
 
 
+use market_place;
 
+SELECT p.product_id, p.product_name, COUNT(o.order_id) as total_orders
+FROM products p
+JOIN order_items o ON p.product_id = o.product_id
+GROUP BY p.product_id, p.product_name
+ORDER BY total_orders DESC
+LIMIT 4;
 
 
 

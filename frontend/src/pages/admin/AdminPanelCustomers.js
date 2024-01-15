@@ -19,10 +19,16 @@ const AdminPanelCustomers = () => {
 
   // Fetching products
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/customers")
-      .then((response) => setCustomers(response.data))
-      .catch((error) => console.error("Error fetching products: ", error));
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/customers");
+        setCustomers(response.data);
+      } catch (error) {
+        console.error("Error fetching customers: ", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   // Handles delete customer
@@ -35,7 +41,6 @@ const AdminPanelCustomers = () => {
       if (response.status === 200) {
         setDeletionSuccess(true);
         window.location.reload();
-
       } else {
         console.log("Failed to delete customer. Status code:", response.status);
       }

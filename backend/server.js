@@ -612,3 +612,19 @@ app.delete("/cart/:cart_item_id", (req, res) => {
   });
 });
 
+// ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+app.get("/top-products", (req, res) => {
+  const query = `
+  SELECT p.product_id, p.product_name, p.image, COUNT(o.order_id) as total_orders
+  FROM products p
+  JOIN order_items o ON p.product_id = o.product_id
+  GROUP BY p.product_id, p.product_name
+  ORDER BY total_orders DESC
+  LIMIT 4`;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});

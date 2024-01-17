@@ -339,11 +339,171 @@ app.post("/customers", uploadProductImage.none(), (req, res) => {
   });
 });
 
+const stripe = require("stripe")(
+  "sk_test_51OYlhUDRMudlBJl3DDuipGz44cu3O1sQFG2CbvNXDshT8FOEmPsHduh1EhNMqTyVGeQSCdfVIprEDVcMnafTe1FP000ROHqvTY"
+);
 // Create order: transfer cart item to order items, update product stock quantities, delete selected cart items, [customer]
-app.post("/checkout", async (req, res) => {
+
+app.post("/create-checkout-session", async (req, res) => {
+  try {
+    const {
+      customer_id,
+      grandTotal,
+      items,
+      buyNow,
+      selectedPaymentMethod,
+      customerDetails,
+    } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: items.map((item) => ({
+        price_data: {
+          currency: "php",
+          product_data: {
+            name: item.product_name,
+          },
+          unit_amount: Math.round(item.price * 100),
+        },
+        quantity: Math.round(item.quantity),
+      })),
+      mode: "payment",
+      success_url: `http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}`, // Include session ID as a query parameter
+      cancel_url: "http://localhost:3000/cancel",
+      // customer_email: customerDetails[0].email,
+    });
+
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error("Error parsing request body: ", error);
+    res.status(400).send("Bad Request");
+  }
+});
+
+app.post("/order-paid/:sessionId", async (req, res) => {
   try {
     const { customer_id, grandTotal, items, buyNow, selectedPaymentMethod } =
       req.body;
+    console.log(buyNow)
+    const createOrder = async () => {
+      return new Promise((resolve, reject) => {
+        const query = `
+        INSERT INTO orders (customer_id, grand_total, status_id, order_date, orderee_name, orderee_address, orderee_email, mode_of_payment)
+        SELECT
+            c.customer_id,
+            ? AS grand_total,
+            ? AS status_id,
+            NOW() AS order_date,
+            c.customer_name AS orderee_name,
+            c.address AS orderee_address,
+            c.email AS orderee_email,
+            ? AS mode_of_payment
+        FROM customers c
+        WHERE c.customer_id = ?`;
+
+        db.query(
+          query,
+          [grandTotal, 1, selectedPaymentMethod, customer_id],
+          (error, results) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(results.insertId);
+            }
+          }
+        );
+      });
+    };
+
+    const insertOrderItems = async (orderId, item) => {
+      db.query(
+        "INSERT INTO order_items (order_id, product_id, quantity, total) VALUES (?, ?, ?, ?)",
+        [orderId, item.product_id, item.quantity, item.total]
+      );
+    };
+
+    const updateProductStock = async (item) => {
+      db.query(
+        "UPDATE products SET stock_quantity = stock_quantity - ? WHERE product_id = ?",
+        [item.quantity, item.product_id]
+      );
+    };
+
+    const transferCartItemsToOrder = async (
+      orderId,
+      customer_id,
+      cartItemIds
+    ) => {
+      // Generate the placeholders based on the length of cartItemIds
+      const placeholders = Array(cartItemIds.length).fill("?").join(", ");
+
+      db.query(
+        "INSERT INTO order_items (order_id, product_id, quantity, total) " +
+          "SELECT ?, ci.product_id, ci.quantity, ci.total " +
+          "FROM carts c " +
+          "JOIN cart_items ci ON c.cart_id = ci.cart_id " +
+          "WHERE c.customer_id = ? AND ci.cart_item_id IN (" +
+          placeholders +
+          ")",
+        [orderId, customer_id, ...cartItemIds]
+      );
+    };
+
+    const deleteCartItems = async (customer_id, cartItemIds) => {
+      db.query(
+        "DELETE FROM cart_items WHERE cart_id IN (SELECT cart_id FROM carts WHERE customer_id = ? AND cart_item_id IN (?))",
+        [customer_id, cartItemIds]
+      );
+    };
+
+    db.beginTransaction();
+
+    try {
+      const orderId = await createOrder();
+
+      if (buyNow) {
+        for (const item of items) {
+          await insertOrderItems(orderId, item);
+          await updateProductStock(item);
+          await deleteCartItems(customer_id, item.cart_item_id);
+        }
+      } else {
+        const cartItemIds = items.map((item) => item.cart_item_id);
+        await transferCartItemsToOrder(orderId, customer_id, cartItemIds);
+        console.log("before")
+        for (const item of items) {
+          await updateProductStock(item);
+        }
+        
+        await deleteCartItems(customer_id, cartItemIds);
+        console.log("after")
+      }
+
+      db.commit();
+      const codSuccessUrl = "http://localhost:3000/orders";
+
+      res.json({
+        success: true,
+        message: "Cash on Delivery successful!",
+        url: codSuccessUrl,
+      });
+    } catch (error) {
+      db.rollback();
+      console.error("Error during checkout: ", error);
+      res.status(500).send("Internal Server Error");
+    }
+  } catch (error) {
+    console.error("Error parsing request body: ", error);
+    res.status(400).send("Bad Request");
+  }
+});
+
+app.post("/checkout-cod", async (req, res) => {
+  try {
+    const { customer_id, grandTotal, items, buyNow, selectedPaymentMethod } =
+      req.body;
+
+    console.log(req.body);
 
     const createOrder = async () => {
       return new Promise((resolve, reject) => {
@@ -438,7 +598,13 @@ app.post("/checkout", async (req, res) => {
       }
 
       db.commit();
-      res.status(200).send("Checkout successful");
+      const codSuccessUrl = "http://localhost:3000/orders";
+
+      res.json({
+        success: true,
+        message: "Cash on Delivery successful!",
+        url: codSuccessUrl,
+      });
     } catch (error) {
       db.rollback();
       console.error("Error during checkout: ", error);
@@ -457,6 +623,7 @@ app.get("/cart/:customer_id", (req, res) => {
   const query = `
     SELECT
       c.cart_item_id,
+      p.product_id,
       p.image,
       p.product_name,
       c.quantity,
@@ -622,6 +789,20 @@ app.get("/top-products", (req, res) => {
   GROUP BY p.product_id, p.product_name
   ORDER BY total_orders DESC
   LIMIT 4`;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+app.get("/top-customer", (req, res) => {
+  const query = `SELECT o.customer_id, c.customer_image, c.customer_name, COUNT(o.order_id) as total_orders
+  FROM orders o
+  JOIN customers c ON o.customer_id = c.customer_id
+  GROUP BY o.customer_id, c.customer_image, c.customer_name
+  ORDER BY total_orders DESC
+  LIMIT 1`;
 
   db.query(query, (err, data) => {
     if (err) return res.json(err);

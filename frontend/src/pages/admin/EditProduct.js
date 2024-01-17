@@ -72,8 +72,8 @@ const EditProduct = () => {
 
         // Initializing current product values before user applies changes: for image
         setCurrentImage(fetchedProduct.image);
-        setImgPreview(fetchProduct.image ?
-          `http://localhost:5000/images/products/${fetchedProduct.image}` : ""
+        setImgPreview(response.data.image ?
+          `http://localhost:5000/images/products/${response.data.image}` : ""
         );
 
         // Initializing current product values before user applies changes: for category
@@ -101,7 +101,7 @@ const EditProduct = () => {
         [name]: type === "checkbox" ? (checked ? 1 : 0) : value,
       }));
     } else if (type === "number") {
-      // Your existing code for handling number input
+      setProduct((prev) => ({ ...prev, [name]: value }));
     } else if (type === "file") {
       setProduct((prev) => ({ ...prev, [name]: value }));
 

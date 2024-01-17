@@ -37,8 +37,8 @@ const EditProfile = () => {
           ...prevCustomerDetails,
           customer_image: response.data[0].customer_image,
         }));
-        setUserImage(
-          `http://localhost:5000/images/customers/${response.data[0].customer_image}`
+        setUserImage(response.data[0].image ?
+          `http://localhost:5000/images/products/${response.data[0].image}` : ""
         );
         
       } catch (error) {

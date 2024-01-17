@@ -126,6 +126,13 @@ GROUP BY p.product_id, p.product_name
 ORDER BY total_orders DESC
 LIMIT 4;
 
+SELECT o.customer_id, c.customer_image, COUNT(o.order_id) as total_orders
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+GROUP BY o.customer_id, c.customer_image
+ORDER BY total_orders DESC
+LIMIT 1;
+
 
 
 

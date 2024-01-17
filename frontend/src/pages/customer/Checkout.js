@@ -65,8 +65,6 @@ const Checkout = () => {
             unit_weight: productData.unit_weight,
           };
 
-          console.log("this", productData.unit_weight);
-
           setItems([newItemData]); // Set as an array for consistency
           setBuyNow(true); // Set to true for "Buy Now" scenario // Set to true for "Buy Now" scenario
         } else if (parameter === "selectedItems") {
@@ -95,19 +93,32 @@ const Checkout = () => {
   }, [items]);
 
   const handleCheckout = async () => {
+    let response;
     try {
-      const response = await axios.post("http://localhost:5000/checkout", {
-        customer_id,
-        grandTotal,
-        selectedItemsArray,
-        items,
-        buyNow,
-        selectedPaymentMethod
-      });
+      if (selectedPaymentMethod === "CashOnDelivery") {
+        // Handle Cash on Delivery
+        response = await axios.post("http://localhost:5000/checkout-cod", {
+          customer_id,
+          grandTotal,
+          items,
+          buyNow,
+          selectedPaymentMethod,
+        });
+      } else if (selectedPaymentMethod === "PayNow") {
+        // Handle Pay Now (Stripe payment)
+        response = await axios.post(
+          "http://localhost:5000/create-checkout-session",
+          {
+            customer_id,
+            grandTotal,
+            items,
+            buyNow,
+            selectedPaymentMethod,
+          }
+        );
+      }
 
-      console.log("Server response:", response.data);
-
-      navigate(`/orders`);
+      window.location = response.data.url;
     } catch (error) {
       console.error("Error during checkout:", error);
     }
@@ -116,6 +127,30 @@ const Checkout = () => {
   const handleEditProfile = () => {
     navigate("/edit-profile");
   };
+
+  sessionStorage.setItem("items", JSON.stringify(items));
+  sessionStorage.setItem("customerDetails", JSON.stringify(customerDetails));
+
+  sessionStorage.setItem("customer_id", customer_id);
+  sessionStorage.setItem("grandTotal", grandTotal.toFixed(2));
+
+  sessionStorage.setItem("buyNow", buyNow);
+  sessionStorage.setItem("selectedPaymentMethod", selectedPaymentMethod);
+
+  // console.log(
+  //   "id",
+  //   customer_id,
+  //   "gtotal",
+  //   grandTotal,
+  //   "items",
+  //   items,
+  //   "buynow",
+  //   buyNow,
+  //   "paymentmethod",
+  //   selectedPaymentMethod,
+  //   "cust",
+  //   customerDetails
+  // );
 
   return (
     <>

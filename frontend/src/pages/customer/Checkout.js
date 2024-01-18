@@ -117,7 +117,7 @@ const Checkout = () => {
           }
         );
       }
-
+      
       window.location = response.data.url;
     } catch (error) {
       console.error("Error during checkout:", error);
@@ -137,20 +137,6 @@ const Checkout = () => {
   sessionStorage.setItem("buyNow", buyNow);
   sessionStorage.setItem("selectedPaymentMethod", selectedPaymentMethod);
 
-  // console.log(
-  //   "id",
-  //   customer_id,
-  //   "gtotal",
-  //   grandTotal,
-  //   "items",
-  //   items,
-  //   "buynow",
-  //   buyNow,
-  //   "paymentmethod",
-  //   selectedPaymentMethod,
-  //   "cust",
-  //   customerDetails
-  // );
 
   return (
     <>

@@ -37,10 +37,11 @@ const EditProfile = () => {
           ...prevCustomerDetails,
           customer_image: response.data[0].customer_image,
         }));
-        setUserImage(response.data[0].image ?
-          `http://localhost:5000/images/products/${response.data[0].image}` : ""
+        setUserImage(
+          response.data[0].customer_image
+            ? `http://localhost:5000/images/customers/${response.data[0].customer_image}`
+            : ""
         );
-        
       } catch (error) {
         console.error("Error fetching product:", error);
       }

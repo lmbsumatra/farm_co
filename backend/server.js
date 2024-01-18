@@ -343,7 +343,6 @@ const stripe = require("stripe")(
   "sk_test_51OYlhUDRMudlBJl3DDuipGz44cu3O1sQFG2CbvNXDshT8FOEmPsHduh1EhNMqTyVGeQSCdfVIprEDVcMnafTe1FP000ROHqvTY"
 );
 // Create order: transfer cart item to order items, update product stock quantities, delete selected cart items, [customer]
-
 app.post("/create-checkout-session", async (req, res) => {
   try {
     const {
@@ -381,10 +380,10 @@ app.post("/create-checkout-session", async (req, res) => {
 });
 
 app.post("/order-paid/:sessionId", async (req, res) => {
+
   try {
     const { customer_id, grandTotal, items, buyNow, selectedPaymentMethod } =
       req.body;
-    console.log(buyNow)
     const createOrder = async () => {
       return new Promise((resolve, reject) => {
         const query = `
@@ -436,7 +435,6 @@ app.post("/order-paid/:sessionId", async (req, res) => {
     ) => {
       // Generate the placeholders based on the length of cartItemIds
       const placeholders = Array(cartItemIds.length).fill("?").join(", ");
-
       db.query(
         "INSERT INTO order_items (order_id, product_id, quantity, total) " +
           "SELECT ?, ci.product_id, ci.quantity, ci.total " +
@@ -461,22 +459,20 @@ app.post("/order-paid/:sessionId", async (req, res) => {
     try {
       const orderId = await createOrder();
 
-      if (buyNow) {
+      if (buyNow === "true") {
         for (const item of items) {
           await insertOrderItems(orderId, item);
           await updateProductStock(item);
-          await deleteCartItems(customer_id, item.cart_item_id);
+          // await deleteCartItems(customer_id, item.cart_item_id);
         }
-      } else {
+      } else if (buyNow === "false") {
         const cartItemIds = items.map((item) => item.cart_item_id);
         await transferCartItemsToOrder(orderId, customer_id, cartItemIds);
-        console.log("before")
         for (const item of items) {
           await updateProductStock(item);
         }
-        
+
         await deleteCartItems(customer_id, cartItemIds);
-        console.log("after")
       }
 
       db.commit();
@@ -502,8 +498,6 @@ app.post("/checkout-cod", async (req, res) => {
   try {
     const { customer_id, grandTotal, items, buyNow, selectedPaymentMethod } =
       req.body;
-
-    console.log(req.body);
 
     const createOrder = async () => {
       return new Promise((resolve, reject) => {
@@ -788,7 +782,7 @@ app.get("/top-products", (req, res) => {
   JOIN order_items o ON p.product_id = o.product_id
   GROUP BY p.product_id, p.product_name
   ORDER BY total_orders DESC
-  LIMIT 4`;
+  LIMIT 5`;
 
   db.query(query, (err, data) => {
     if (err) return res.json(err);
@@ -803,6 +797,75 @@ app.get("/top-customer", (req, res) => {
   GROUP BY o.customer_id, c.customer_image, c.customer_name
   ORDER BY total_orders DESC
   LIMIT 1`;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+app.get("/count-products", (req, res) => {
+  const query = `
+  SELECT COUNT(product_id) 
+  AS product_count 
+  FROM products;
+`;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+app.get("/sales", (req, res) => {
+  const query = `
+  SELECT SUM(grand_total) 
+  AS sales 
+  FROM orders;
+`;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+app.get("/total-orders", (req, res) => {
+  const query = `
+  SELECT COUNT(order_id) 
+  AS totalOrders 
+  FROM orders;
+`;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+app.get("/new-customers", (req, res) => {
+  const query = `
+  SELECT *
+  FROM customers
+  ORDER BY date_created DESC
+  LIMIT 3;
+`;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+app.get("/revenue", (req, res) => {
+  const query = `
+  SELECT
+    DATE_FORMAT(order_date, '%Y-%m') AS month,
+    SUM(orders.grand_total) AS monthly_revenue
+  FROM orders
+  GROUP BY month
+  ORDER BY month;
+`;
 
   db.query(query, (err, data) => {
     if (err) return res.json(err);

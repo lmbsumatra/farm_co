@@ -7,7 +7,7 @@ import axios from "axios";
 
 import userCircle from "../../assets/images/profile/user-circle.svg";
 import "../styles.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -80,37 +80,48 @@ const NavBar = () => {
           <Navbar.Collapse id="navbar-nav">
             <Nav className="col-lg-10 mx-auto align-items-center">
               <Nav.Link
-              href={"/"}
-              className={`me-2 my-3 ${location.pathname ===  "/" && location.hash === "" ? "active" : ""}`}
-            >
-              Home
-            </Nav.Link>
+                href={"/"}
+                className={`me-2 my-3 ${
+                  location.pathname === "/" && location.hash === ""
+                    ? "active"
+                    : ""
+                }`}
+              >
+                Home
+              </Nav.Link>
 
-            <Nav.Link
-              href={"/#About-us"}
-              className={`me-2 my-3 ${location.hash === "#About-us" ? "active" : ""}`}
-            >
-              About us
-            </Nav.Link>
-            <Nav.Link
-              href={"/shop"}
-              className={`me-2 my-3 ${location.pathname === "/shop" ? "active" : ""}`}
-            >
-              Shop
-            </Nav.Link>
-            <Nav.Link
-              href={"/cart"}
-              className={`me-2 my-3 ${location.pathname === "/cart" ? "active" : ""}`}
-            >
-              Cart
-            </Nav.Link>
-            <Nav.Link
-              href={"/orders"}
-              className={`me-2 my-3 ${location.pathname === "/orders" ? "active" : ""}`}
-            >
-              Orders
-            </Nav.Link>
-
+              <Nav.Link
+                href={"/#About-us"}
+                className={`me-2 my-3 ${
+                  location.hash === "#About-us" ? "active" : ""
+                }`}
+              >
+                About us
+              </Nav.Link>
+              <Nav.Link
+                href={"/shop"}
+                className={`me-2 my-3 ${
+                  location.pathname === "/shop" ? "active" : ""
+                }`}
+              >
+                Shop
+              </Nav.Link>
+              <Nav.Link
+                href={"/cart"}
+                className={`me-2 my-3 ${
+                  location.pathname === "/cart" ? "active" : ""
+                }`}
+              >
+                Cart
+              </Nav.Link>
+              <Nav.Link
+                href={"/orders"}
+                className={`me-2 my-3 ${
+                  location.pathname === "/orders" ? "active" : ""
+                }`}
+              >
+                Orders
+              </Nav.Link>
 
               <Nav.Link href={auth.user ? `/edit-profile` : "/log-in"}>
                 {auth.user ? (

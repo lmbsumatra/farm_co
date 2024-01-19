@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import successImg from "../assets/images/others/success.png"
 
 const Success = () => {
   const [checkoutSession, setCheckoutSession] = useState(null);
@@ -78,8 +79,10 @@ const Success = () => {
   return (
     <div className="container-fluid d-flex align-items-center justify-content-center vh-100 bg-white">
       <div className="text-center">
-        <h2>Checkout Session Details</h2>
-        {checkoutSession ? (
+        <h2>Order has been placed.</h2>
+        <img src={successImg} alt="Success Order Illustration" />
+        <br />
+        {/* {checkoutSession ? (
           <p className="lead">Session ID: {sessionId}</p>
         ) : loading ? (
           <p className="lead">Creating Order...</p>
@@ -88,7 +91,7 @@ const Success = () => {
             <p className="lead">Order has been created automatically.</p>
             <p className="lead">Redirecting back to cart...</p>
           </>
-        )}
+        )} */}
         <button className="btn btn-success" onClick={handleBackToCart}>
           Back to Cart
         </button>

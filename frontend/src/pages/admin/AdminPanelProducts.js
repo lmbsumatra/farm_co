@@ -17,6 +17,15 @@ const AdminPanelProducts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTrigger, setSearchTrigger] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const calculateCurrentItems = () => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+  };
 
   // Fetching categories: category_id and category_name, for setting product category
   useEffect(() => {
@@ -101,6 +110,7 @@ const AdminPanelProducts = () => {
       });
 
       setFilteredProducts(filteredProducts);
+      setCurrentPage(1);
     };
 
     handleSearch(); // Always update the filter when the search query changes
@@ -122,6 +132,7 @@ const AdminPanelProducts = () => {
     });
 
     setFilteredProducts(filteredProducts);
+    setCurrentPage(1)
   };
 
   return (
@@ -245,7 +256,7 @@ const AdminPanelProducts = () => {
                 </thead>
 
                 <tbody>
-                  {filteredProducts.map((product) => (
+                  {calculateCurrentItems().map((product) => (
                     <tr key={product.product_id}>
                       <td>{product.product_id}</td>
                       <td>{product.product_name}</td>
@@ -325,6 +336,28 @@ const AdminPanelProducts = () => {
               </table>
             </div>
           </div>
+        </div>
+
+        <div className="d-flex justify-content-center">
+          <ul className="pagination">
+            {Array.from({
+              length: Math.ceil(filteredProducts.length / itemsPerPage),
+            }).map((_, index) => (
+              <li
+                key={index}
+                className={`page-item ${
+                  currentPage === index + 1 ? "active" : ""
+                }`}
+              >
+                <button
+                  onClick={() => paginate(index + 1)}
+                  className="page-link"
+                >
+                  {index + 1}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

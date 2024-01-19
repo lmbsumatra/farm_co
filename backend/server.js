@@ -380,7 +380,6 @@ app.post("/create-checkout-session", async (req, res) => {
 });
 
 app.post("/order-paid/:sessionId", async (req, res) => {
-
   try {
     const { customer_id, grandTotal, items, buyNow, selectedPaymentMethod } =
       req.body;
@@ -740,7 +739,8 @@ app.put(
       address = ?, 
       username = ?, 
       password = ?, 
-      customer_image = ? 
+      customer_image = ?,
+      testimony = ?
     WHERE customer_id = ?`;
 
     // Using req.body for text formats; Using req.file for file formats
@@ -751,6 +751,7 @@ app.put(
       req.body.username,
       req.body.password,
       req.file ? req.file.filename : req.body.customer_image,
+      req.body.testimony,
       req.body.customer_id,
     ];
 
@@ -775,6 +776,8 @@ app.delete("/cart/:cart_item_id", (req, res) => {
 
 // ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
+
+// Admin panel
 app.get("/top-products", (req, res) => {
   const query = `
   SELECT p.product_id, p.product_name, p.image, COUNT(o.order_id) as total_orders

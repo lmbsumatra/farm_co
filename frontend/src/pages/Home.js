@@ -6,7 +6,6 @@ import Featured from "../components/featured/Featured";
 import About from "../components/about/About";
 import Testimonials from "../components/testimonials/Testimonials";
 import Footer from "../components/footer/Footer";
-import CustomCarousel from "./CustomCarousel";
 
 import "../components/styles.css";
 

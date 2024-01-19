@@ -10,7 +10,7 @@ const SubHero = () => {
     <section id="SubHero">
       <div className="container-fluid">
         <div className="row justify-content-evenly align-items-center">
-          <div className="col-lg-3 col-md-8 col-sm-10 sub-hero-item d-flex border-right">
+          <div className="col-lg-3 col-md-8 col-sm-10 sub-hero-item d-flex">
             <div>
               <i className="fas fa-shipping-fast brand-feature p-2"></i>
             </div>
@@ -21,7 +21,7 @@ const SubHero = () => {
               </p>
             </div>
           </div>
-          <div className="col-lg-3 col-md-8 col-sm-10 sub-hero-item d-flex border-right">
+          <div className="col-lg-3 col-md-8 col-sm-10 sub-hero-item d-flex">
             <div>
               <i className="fas fa-money-bill-wave brand-feature p-2"></i>
             </div>

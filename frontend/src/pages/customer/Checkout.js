@@ -189,7 +189,7 @@ const Checkout = () => {
                           <td>
                             ₱ {item.price} {item.unit_weight}
                           </td>
-                          <td>₱ {item.total}</td>
+                          <td>₱ {item.total.toFixed(2)}</td>
                         </tr>
                       ))}
                       <tr>

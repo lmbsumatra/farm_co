@@ -75,7 +75,6 @@ const AdminPanel = () => {
       try {
         const revenue = await axios.get("http://localhost:5000/revenue");
         setRevenueMonthly(revenue.data);
-        console.log(revenueMonthly);
       } catch (error) {
         console.error("Error fetching customers: ", error);
       }
@@ -111,7 +110,7 @@ const AdminPanel = () => {
     datasets: [
       {
         data: values || [0, 0, 0], // Use fetched data or default values
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#ff5956"], // Replace with your own colors
+        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#ff5956", "#7f52c7"], // Replace with your own colors
       },
     ],
   };

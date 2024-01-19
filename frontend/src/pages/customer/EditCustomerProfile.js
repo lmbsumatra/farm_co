@@ -36,7 +36,9 @@ const EditProfile = () => {
         setCustomerDetails((prevCustomerDetails) => ({
           ...prevCustomerDetails,
           customer_image: response.data[0].customer_image,
+          testimony: response.data[0].testimony,
         }));
+
         setUserImage(
           response.data[0].customer_image
             ? `http://localhost:5000/images/customers/${response.data[0].customer_image}`
@@ -98,6 +100,7 @@ const EditProfile = () => {
       formData.append("address", customerDetails.address);
       formData.append("username", customerDetails.username);
       formData.append("password", customerDetails.password);
+      formData.append("testimony", customerDetails.testimony);
       formData.append("customer_id", customerDetails.customer_id);
 
       await axios.put(
@@ -149,6 +152,17 @@ const EditProfile = () => {
                   type="text"
                   value={customerDetails.email}
                   name="email"
+                  onChange={handleChange}
+                  className="form-control"
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label>Testimony</label>
+                <input
+                  type="text"
+                  value={customerDetails.testimony}
+                  name="testimony"
                   onChange={handleChange}
                   className="form-control"
                 />

@@ -13,6 +13,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const auth = useUserAuth();
+  const [searchQuery, setSearchQeury] = useState();
 
   const handleLogout = () => {
     auth.logout();
@@ -46,6 +47,13 @@ const NavBar = () => {
     fetchProduct();
   }, [auth.user, userImage, location]);
 
+  const [searchInput, setSearchInput] = useState(""); // State to manage search input
+
+  const handleSearch = (event) => {
+    event.preventDefault(); // Prevent default form submission
+    navigate(`/shop?search=${searchInput}`);
+  };
+
   return (
     <section id="Navbar" className="container">
       <div className="row m-1">
@@ -60,12 +68,15 @@ const NavBar = () => {
               <form
                 className="d-flex mx-auto col-lg-11 col-md-12 col-sm-12"
                 role="search"
+                onSubmit={handleSearch} // Add onSubmit event to trigger search
               >
                 <input
                   className="form-control me-2 d-flex"
                   type="search"
-                  placeholder="Search"
+                  placeholder="Search product..."
                   aria-label="Search"
+                  value={searchInput} // Use searchInput state variable
+                  onChange={(e) => setSearchInput(e.target.value)} // Update searchInput state
                 />
                 <button className="btn btn-outline-secondary" type="submit">
                   Search

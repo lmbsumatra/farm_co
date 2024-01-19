@@ -7,6 +7,7 @@ import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
 
 import imgNotAvailable from "../assets/images/others/img-not-available.svg";
+import "../components/styles.css";
 
 const Product = () => {
   const [product, setProduct] = useState({});
@@ -111,18 +112,27 @@ const Product = () => {
   return (
     <div key={product.product_id}>
       <NavBar />
-      <section id="About-us" className="body-bg">
+      <section id="Product" className="body-bg">
         <h4 className="section-title">Product</h4>
         <div className="container-fluid">
-          <div className="card mx-auto overflow-hidden width-80vw height-30vw">
+          <div className="card mx-auto overflow-hidden col-8 height-30vw mb-3">
             <div className="row g-0">
               <div className="col-md-6">
                 {product.image != null ? (
-                  <img
-                    src={`http://localhost:5000/images/products/${product.image}`}
-                    className="img-fluid product-image"
-                    alt={product.description}
-                  />
+                  <div style={{ height: "30vw", position: "relative" }}>
+                    <div
+                      className="product-card-bg-s"
+                      style={{
+                        backgroundImage: `url(http://localhost:5000/images/products/${product.image})`,
+                      }}
+                    ></div>
+
+                    <img
+                      src={`http://localhost:5000/images/products/${product.image}`}
+                      className="product-card-img"
+                      alt={product.product_name}
+                    />
+                  </div>
                 ) : (
                   <div className="d-flex justify-content-center align-items-center product-image">
                     <img
@@ -137,7 +147,7 @@ const Product = () => {
               <div className="col-md-6">
                 <div className="card-body">
                   <h5 className="card-title">{product.product_name}</h5>
-                  <h3 className="price">₱ {product.price} per kilo</h3>
+                  <h3 className="price">₱ {product.price} {product.unit_weight}</h3>
 
                   <div>
                     <p>{product.description}</p>

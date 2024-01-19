@@ -200,7 +200,7 @@ const Cart = () => {
 
                 {selectedPaymentMethod === "PayNow" ? (
                   <div className="card d-flex justify-content-center align-items-center imgprev">
-                    Pay now is available with Gcash.
+                    Pay now is available with card.
                   </div>
                 ) : (
                   <div className="card d-flex justify-content-center align-items-center imgprev">

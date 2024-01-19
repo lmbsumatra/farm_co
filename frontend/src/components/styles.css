@@ -22,7 +22,7 @@
 
 /* Hero Section */
 #Hero {
-  background-image: url("../images/hero/hero_.jpg");
+  background-image: url("../assets/images/hero/hero_.jpg");
   background-size: cover;
   background-color: rgb(180, 180, 180);
 }
@@ -81,6 +81,25 @@
 #Shop .product-card-img,
 #Featured .product-card-img {
   height: 100px;
+  width: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+#Product .product-card-bg-s {
+  filter: blur(70px);
+  height: 100%;
+  background-size: contain;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+
+#Product .product-card-img {
+  height: 200px;
   width: auto;
   position: absolute;
   top: 50%;
@@ -175,7 +194,7 @@ section {
   background-color: rgb(238, 238, 238);
 }
 .body-bg-img {
-  background-image: url("../images/background/body-bg-img.jpg");
+  background-image: url("../assets/images/background/body-bg-img.jpg");
   background-size: cover;
   background-color: rgb(245, 245, 245);
 }

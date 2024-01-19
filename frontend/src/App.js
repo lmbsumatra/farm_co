@@ -34,7 +34,7 @@ import RequireUserAuth from "./pages/context/requireUserAuth.js";
 import RequireAdminAuth from "./pages/context/requireAdminAuth.js";
 
 import Success from "./pages/success.js";
-import Cancel from "./cancel.js";
+import Cancel from "./pages/cancel.js";
 
 const App = () => (
   <div className="App">
@@ -42,8 +42,22 @@ const App = () => (
       <UserAuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/success" Component={Success} />
-            <Route path="/cancel" Component={Cancel} />
+            <Route
+              path="/success"
+              element={
+                <RequireUserAuth>
+                  <Success />
+                </RequireUserAuth>
+              }
+            />
+            <Route
+              path="/cancel"
+              element={
+                <RequireUserAuth>
+                  <Cancel />
+                </RequireUserAuth>
+              }
+            />
             {/* public route */}
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />

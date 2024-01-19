@@ -30,7 +30,7 @@ const NavBarAdmin = () => {
           </Navbar.Brand>
 
           {/* Search Bar */}
-          <div className="col-lg-4 col-md-8 col-sm-7">
+          {/* <div className="col-lg-4 col-md-8 col-sm-7">
             <Nav>
               <form
                 className="d-flex mx-auto col-lg-11 col-md-12 col-sm-12"
@@ -47,7 +47,7 @@ const NavBarAdmin = () => {
                 </button>
               </form>
             </Nav>
-          </div>
+          </div> */}
 
           <Navbar.Toggle aria-controls="navbar-nav" />
 
@@ -57,9 +57,7 @@ const NavBarAdmin = () => {
               <Nav.Link
                 href={"/admin-panel"}
                 className={`me-2 my-3 ${
-                  location.pathname === "/admin-panel"
-                    ? "active"
-                    : ""
+                  location.pathname === "/admin-panel" ? "active" : ""
                 }`}
               >
                 Panel
@@ -67,27 +65,33 @@ const NavBarAdmin = () => {
 
               <Nav.Link
                 href={auth.admin ? `/admin-panel-products` : "/admin-login"}
-                className={`me-2 my-3 ${location.pathname ===  "/admin-panel-products" ? "active" : ""}`}
+                className={`me-2 my-3 ${
+                  location.pathname === "/admin-panel-products" ? "active" : ""
+                }`}
               >
                 Products
               </Nav.Link>
 
               <Nav.Link
                 href={auth.admin ? `/admin-panel-orders` : "/admin-login"}
-                className={`me-2 my-3 ${location.pathname ===  "/admin-panel-orders" ? "active" : ""}`}
+                className={`me-2 my-3 ${
+                  location.pathname === "/admin-panel-orders" ? "active" : ""
+                }`}
               >
                 Orders
               </Nav.Link>
 
               <Nav.Link
                 href={auth.admin ? `/admin-panel-customers` : "/admin-login"}
-                className={`me-2 my-3 ${location.pathname ===  "/admin-panel-customers" ? "active" : ""}`}
+                className={`me-2 my-3 ${
+                  location.pathname === "/admin-panel-customers" ? "active" : ""
+                }`}
               >
                 Customers
               </Nav.Link>
             </Nav>
 
-            <div className="col-lg-4 col-md-12 mx-auto">
+            <div className="col-lg-2 col-md-12 mx-auto">
               <Nav>
                 {!auth.admin ? (
                   <button

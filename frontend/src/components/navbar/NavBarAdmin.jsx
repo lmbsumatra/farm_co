@@ -53,7 +53,7 @@ const NavBarAdmin = () => {
 
           {/* Menu Bar */}
           <Navbar.Collapse id="navbar-nav">
-            <Nav className="col-lg-10 mx-auto align-items-center">
+            <Nav className="col-lg-9 mx-auto align-items-center">
               <Nav.Link
                 href={"/admin-panel"}
                 className={`me-2 my-3 ${
@@ -91,7 +91,7 @@ const NavBarAdmin = () => {
               </Nav.Link>
             </Nav>
 
-            <div className="col-lg-2 col-md-12 mx-auto">
+            <div className="col-lg-4 col-md-12 mx-auto">
               <Nav>
                 {!auth.admin ? (
                   <button

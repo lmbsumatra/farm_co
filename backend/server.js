@@ -33,7 +33,20 @@ const storage1 = multer.diskStorage({
     cb(null, "/Users/DELL/Documents/GitHub/farm_co/backend/images/products");
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    // Get the current date and time
+    const currentDate = new Date();
+
+    // Format the date as YYYYMMDD-HHMMSS
+    const formattedDate = currentDate
+      .toISOString()
+      .replace(/[-:]/g, "")
+      .replace("T", "-")
+      .split(".")[0];
+
+    // Concatenate the formatted date with the original filename
+    const newFilename = `${formattedDate}-${file.originalname}`;
+
+    cb(null, newFilename);
   },
 });
 
@@ -43,7 +56,20 @@ const storage2 = multer.diskStorage({
     cb(null, "/Users/DELL/Documents/GitHub/farm_co/backend/images/customers");
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    // Get the current date and time
+    const currentDate = new Date();
+
+    // Format the date as YYYYMMDD-HHMMSS
+    const formattedDate = currentDate
+      .toISOString()
+      .replace(/[-:]/g, "")
+      .replace("T", "-")
+      .split(".")[0];
+
+    // Concatenate the formatted date with the original filename
+    const newFilename = `${formattedDate}-${file.originalname}`;
+
+    cb(null, newFilename);
   },
 });
 

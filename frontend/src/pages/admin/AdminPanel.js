@@ -210,9 +210,6 @@ const AdminPanel = () => {
                 <div className="bg-white rounded-2 justify-content-center align-items-center p-2 mb-2 text-center">
                   <h4 className="">Monthly Revenue</h4>
                   {values && <Line data={revenue} />}
-                  what to lagay here?
-                  ?
-                  ?
                 </div>
               </div>
             </div>

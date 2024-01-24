@@ -17,7 +17,8 @@ const SubHero = () => {
             <div>
               <h6>Free Delivery</h6>
               <p>
-                Some quick example text to build.
+                Experience the convenience of complimentary delivery on all
+                orders.
               </p>
             </div>
           </div>
@@ -28,7 +29,8 @@ const SubHero = () => {
             <div>
               <h6>Money Back Guarantee</h6>
               <p>
-                Some quick example text to build.
+                Shop with confidence knowing we offer a hassle-free money-back
+                guarantee.
               </p>
             </div>
           </div>
@@ -39,7 +41,7 @@ const SubHero = () => {
             <div>
               <h6>24/7 Online Support</h6>
               <p>
-                Some quick example text to build.
+                Get instant assistance with our reliable 24/7 online support.
               </p>
             </div>
           </div>

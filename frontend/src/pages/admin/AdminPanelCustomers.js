@@ -39,6 +39,7 @@ const AdminPanelCustomers = () => {
       );
 
       if (response.status === 200) {
+        auth.deleteUser();
         setDeletionSuccess(true);
         window.location.reload();
       } else {
@@ -53,6 +54,7 @@ const AdminPanelCustomers = () => {
   useEffect(() => {
     if (deletionSuccess) {
       auth.logout();
+      
       navigate(`/admin-panel-customers`);
     }
   }, [deletionSuccess, auth, navigate]);

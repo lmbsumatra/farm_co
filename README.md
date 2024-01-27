@@ -6,7 +6,6 @@ Welcome to Farmco! This project is a modern e-commerce website built with [React
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [License](#license)
 
 ## Installation
 

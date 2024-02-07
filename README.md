@@ -1,11 +1,14 @@
 # Farmco Ecommerce
 
 Welcome to Farmco! This project is a modern e-commerce website built with [React](https://reactjs.org/) and [Node.js](https://nodejs.org/).
+![image](https://github.com/lmbsumatra/farm_co/assets/122442812/1ff61b29-4de8-4124-999c-fa4292064699)
+
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Demo](#demo)
 
 ## Installation
 
@@ -23,3 +26,5 @@ Explore the awesome features of our e-commerce website:
  - Confirmed orders are on orders page.
  - With customer side and admin side.
  - Feel free to provide feedback, report bugs, or contribute to the development of this project.
+
+## Demo

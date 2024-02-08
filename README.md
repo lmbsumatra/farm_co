@@ -28,3 +28,5 @@ Explore the awesome features of our e-commerce website:
  - Feel free to provide feedback, report bugs, or contribute to the development of this project.
 
 ## Demo
+```bash
+https://youtu.be/N1pF5WdQVaQ

@@ -16,6 +16,17 @@ Welcome to Farmco! This project is a modern e-commerce website built with [React
 
    ```bash
    git clone https://github.com/lmbsumatra/farm_co.git
+2. Open two(2) terminals.
+3. Go to respective folders in every terminal.
+   ```bash
+   cd frontend
+   ```
+   ```bash
+   cd backend
+4. Option(if some error occurs):
+   ```bash
+   npm install
+   
 
 ## Usage
 Explore the awesome features of our e-commerce website:
